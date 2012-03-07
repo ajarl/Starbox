@@ -50,7 +50,8 @@ public class SearchController extends HttpServlet {
 			viewStr = "/noview.jsp";
 		}
 		RequestDispatcher view = request.getRequestDispatcher(viewStr);
-		request.setAttribute("message", sm.getHello(params.get("param1")[0]));
+		if (params.get("param1") != null)
+			request.setAttribute("message", sm.getHello(params.get("param1")[0]));
 		view.forward(request, response);
 	}
 
