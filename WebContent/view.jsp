@@ -7,6 +7,6 @@
 <title>You set param1</title>
 </head>
 <body>
-Hello, you set param1 to <%= request.getParameter("param1") %>.
+Hello, you set param1 to <%= request.getParameter("param1") %>. Message: <%= request.getAttribute("message") %>
 </body>
 </html>

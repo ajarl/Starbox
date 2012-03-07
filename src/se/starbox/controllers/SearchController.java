@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import se.starbox.models.SearchModel;
+
 /**
  * Servlet implementation class SearchController
  */
@@ -23,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 		})
 public class SearchController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private SearchModel sm;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -30,6 +33,8 @@ public class SearchController extends HttpServlet {
     public SearchController() {
         super();
         // TODO Auto-generated constructor stub
+        
+        sm = new SearchModel();
     }
 
 	/**
@@ -45,6 +50,7 @@ public class SearchController extends HttpServlet {
 			viewStr = "/noview.jsp";
 		}
 		RequestDispatcher view = request.getRequestDispatcher(viewStr);
+		request.setAttribute("message", sm.getHello(params.get("param1")[0]));
 		view.forward(request, response);
 	}
 
