@@ -7,6 +7,10 @@
 <title>You set param1</title>
 </head>
 <body>
-Hello, you set param1 to <%= request.getParameter("param1") %>. Message: <%= request.getAttribute("message") %>
+<form method="get" action="/starbox/">
+	Sök: <input type="text" name="query"/>
+</form>
+query: <%= request.getAttribute("query") %>
+params: <%= request.getAttribute("params") %>
 </body>
 </html>
