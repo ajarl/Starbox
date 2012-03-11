@@ -45,7 +45,7 @@ public class SearchController extends HttpServlet {
 		// Search model expects input on this format
 		// query="seanbanan" params="filetype:exe;minfilesize:20;maxfilesize:10"
 		
-		/*query = request.getParameter("query");
+		query = request.getParameter("query");
 		Pattern pFileType = Pattern.compile("filetype:[,a-z0-9]*");
 		Matcher mFileType = pFileType.matcher(query);
 		query = query.replaceAll("filetype:[,a-z0-9]*", "");
@@ -71,7 +71,7 @@ public class SearchController extends HttpServlet {
 		// Trim off trailing ;
 		if (params.endsWith(";"))
 			params = params.substring(0, params.length()-1);
-				*/
+		
 		RequestDispatcher view = request.getRequestDispatcher("view.jsp");
 		request.setAttribute("query", query);
 		request.setAttribute("params", params);
