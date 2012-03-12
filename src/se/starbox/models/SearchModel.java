@@ -1,17 +1,11 @@
 package se.starbox.models;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.List;
 
 // Link to SolrJ dependencies.
 // http://repo1.maven.org/maven2/org/apache/solr/solr-solrj/1.4.0/solr-solrj-1.4.0.jar
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.params.ModifiableSolrParams;
 
 /**
  * A Model class for searching files in your local index.

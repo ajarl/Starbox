@@ -40,11 +40,13 @@ public class SettingsController extends HttpServlet {
 	 * Endast för teständamål, följer antagligen inte ADD. Ändra denna om det behövs!
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setAttribute("displayName", sm.getDisplayName());
 		request.setAttribute("email", sm.getEmail());
 		request.setAttribute("starboxFolder", sm.getStarboxFolder());
 		request.setAttribute("indexUpdateInterval", sm.getIndexUpdateInterval());
+		request.setAttribute("ip", sm.getIP());
 		
 		RequestDispatcher view = request.getRequestDispatcher("settings.jsp");
 		view.forward(request, response);
@@ -54,16 +56,21 @@ public class SettingsController extends HttpServlet {
 	 * Endast för teständamål, följer antagligen inte ADD. Ändra denna om det behövs!
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Map<String, String[]> params = request.getParameterMap();
 	
 		if (params.containsKey("email"))
 			sm.setEmail(params.get("email")[0]);
 		
+		if (params.containsKey("shutdown"))
+			sm.shutDown();
+		
 		request.setAttribute("displayName", sm.getDisplayName());
 		request.setAttribute("email", sm.getEmail());
 		request.setAttribute("starboxFolder", sm.getStarboxFolder());
 		request.setAttribute("indexUpdateInterval", sm.getIndexUpdateInterval());
+		request.setAttribute("ip", sm.getIP());
 		
 		RequestDispatcher view = request.getRequestDispatcher("settings.jsp");
 		view.forward(request, response);
