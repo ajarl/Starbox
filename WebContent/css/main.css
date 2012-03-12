@@ -74,7 +74,7 @@ table{
 
 body {
   background: #eee;
-  font-family: 'CreteRoundItalic';
+  font-family: 'CreteRoundRegular', Arial;
 }
 
 .header {
@@ -107,6 +107,25 @@ ul.menu li {
 
 .menu {
   color: #ccc;
+}
+
+h1, h2, h3 {
+	color: #999;
+	font-family: 'CreteRoundRegular', Arial;
+}
+
+h1 {
+	font-size: 32px;
+	margin-bottom: 16px;
+}
+
+h2 {
+	font-size: 26px;
+	margin-bottom: 13px;
+}
+
+.websymbol {
+	font-family: 'WebSymbolsRegular';
 }
 
 
