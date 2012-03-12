@@ -1,7 +1,6 @@
 package se.starbox.controllers;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,6 +10,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.json.simple.JSONObject;
+
 
 import se.starbox.models.SearchModel;
 
@@ -39,6 +41,7 @@ public class SearchController extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String query = request.getParameter("query");
 		String params = "";
@@ -86,14 +89,20 @@ public class SearchController extends HttpServlet {
 				// some list = sm.query(query, params);
 				// request.put(some list)
 			}
-			
-			response.getWriter().write("json");
+		
+			// JSON Test
+			JSONObject jso = new JSONObject();
+			jso.put("filename", "filnamn.exe");
+			jso.put("filesize", "100MB");
+			jso.put("filetype", "exe");
+			response.getWriter().write(jso.toString());
 		}
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
