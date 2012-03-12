@@ -16,7 +16,7 @@
             <table>
               <thead>
                 <tr>
-                  <th>Name</th>
+                  <th style="font-family: 'CreteRoundRegular';">Name</th>
                   <th>Size</th>
                   <th>Changed</th>
                   <th>User</th>
@@ -36,7 +36,7 @@
         </div>
       </div>
     </div>
-    <script src="js/jquery-1.7.1.min.js"></script>
-    <script src="js/search.js"></script>
+    <script src="/starbox/js/jquery-1.7.1.min.js"></script>
+    <script src="/starbox/js/search.js"></script>
   </body>
 </html>

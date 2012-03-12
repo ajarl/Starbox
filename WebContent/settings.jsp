@@ -11,12 +11,14 @@
 	Email: <input type="text" name="email" value="<%= request.getAttribute("email") %>" />
 	<input type="submit" value="Ändra" />
 </form>
+<form action="settings" method="post"><input type="submit" name="shutdown" value="Shut down Tomcat" /></form>
 <p>
 Current info:<br />
 <b>Email:</b> <%= request.getAttribute("email") %><br />
 <b>Display name:</b> <%= request.getAttribute("displayName") %><br />
 <b>Starbox folder:</b> <%= request.getAttribute("starboxFolder") %><br />
 <b>Index update interval:</b> <%= request.getAttribute("indexUpdateInterval") %><br />
+<br /><b>IP:</b> <%= request.getAttribute("ip") %>
 </p>
 
 </body>
