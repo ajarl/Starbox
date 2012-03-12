@@ -1,3 +1,4 @@
+package se.starbox.util;
 
 /**
  * A class made as a bridge between OpenPipeline and Solr. PipeToSolr takes the
@@ -25,16 +26,19 @@ public class PipeToSolr {
 	 * Compiles
 	 * @param item
 	 */
+	/*
 	private void processItem(Item item){
 		
 	}
+	*/
 	
 	/**
 	 * 
 	 */
+	/*
 	private void printToFile(List<Item>){
 		
 	}
-	
+	*/
 	
 }

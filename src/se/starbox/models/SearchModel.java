@@ -1,8 +1,11 @@
+package se.starbox.models;
+
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.List;
+
 // Link to SolrJ dependencies.
 // http://repo1.maven.org/maven2/org/apache/solr/solr-solrj/1.4.0/solr-solrj-1.4.0.jar
-
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -37,12 +40,17 @@ public class SearchModel {
 	public SearchModel() {
 		if (solr == null)
 			try {
+				/*
 				solr = new CommonsHttpSolrServer(solrServer);
 			} catch (MalformedURLException e) {
 				System.err.println("SearchModel() - Caught a MalformedURLException." +
 									"URL was " + solrServer);
 				e.printStackTrace();
-			}	
+				*/
+			} catch (Exception e) {	
+				System.err.println("SearchModel() - Caught an exception.");
+				e.printStackTrace();
+			}
 	}
 
 	
@@ -54,7 +62,8 @@ public class SearchModel {
 	* 
 	* @return Returns a list of SearchResults.
 	*/
-	public List<SearchResult> find(String inputQuery, String params){
+	//public List<SearchResult> find(String inputQuery, String params){
+	public List<String> find(String inputQuery, String params){
 		SolrQuery solrQuery = new SolrQuery();
 	    solrQuery.setQuery(inputQuery);
 	    
@@ -72,9 +81,11 @@ public class SearchModel {
 			sse.printStackTrace();	    	
 	    }
 	    
-	    List<SearchResult> resultList = rsp.getBeans(SearchResult.class);
-	    
-	    return resultList;
+	    //List<SearchResult> resultList = rsp.getBeans(SearchResult.class);
+	    List<String> resultList = new ArrayList<String>();
+	    resultList.add("result1");
+	    resultList.add("result2");
+	    return  resultList;
 	}
 	
 	/**  NEW METHOD - Not defined in ADD  
