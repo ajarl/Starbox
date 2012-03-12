@@ -42,11 +42,17 @@ public class SearchController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String query = request.getParameter("query");
 		String params = "";
-		
-		// Search model expects input on this format
-		// query="seanbanan" params="filetype:exe;minfilesize:20;maxfilesize:10"
-		// Parse out params and remove them from query. 
-		if (query != null) {
+
+		// If query is empty, return HTML view.
+		if (query == null) {
+			RequestDispatcher view = request.getRequestDispatcher("../search.jsp");
+			request.setAttribute("query", query);
+			request.setAttribute("params", params);
+			view.forward(request, response);
+		} else {
+			// Else, return JSON data from SearchModel.
+			// query="seanbanan" params="filetype:exe;minfilesize:20;maxfilesize:10"
+			// Parse out params and remove them from query. 
 			Pattern pFileType = Pattern.compile("filetype[:=][,a-z0-9]*");
 			Matcher mFileType = pFileType.matcher(query);
 			query = query.replaceAll("filetype[:=][,a-z0-9]*", "");
@@ -80,12 +86,9 @@ public class SearchController extends HttpServlet {
 				// some list = sm.query(query, params);
 				// request.put(some list)
 			}
+			
+			response.getWriter().write("json");
 		}
-	
-		RequestDispatcher view = request.getRequestDispatcher("../search.jsp");
-		request.setAttribute("query", query);
-		request.setAttribute("params", params);
-		view.forward(request, response);
 	}
 
 	/**
