@@ -17,11 +17,11 @@ import se.starbox.models.UserModel;
  * Servlet implementation class UserController
  */
 @WebServlet(
-		description = "Handles users",
-		urlPatterns = {
-				"/users"
-		}
-		)
+	description = "Handles users",
+	urlPatterns = {
+		"/users"
+	}
+)
 public class UserController extends HttpServlet {
 	private static final long serialversionUID = 1L; //ändra TODO
 
@@ -34,7 +34,7 @@ public class UserController extends HttpServlet {
 	}
 
 	// /user/
-	protected void doIndex(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// list all users
 		request.setAttribute("displayName", userModel.getUsers());
 
@@ -43,6 +43,7 @@ public class UserController extends HttpServlet {
 	}
 
 	// HTTP POST update or create user? Can you do both?
+	//Dvs add?
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//update in model
 
@@ -54,27 +55,21 @@ public class UserController extends HttpServlet {
 
 		request.setAttribute("user", userModel.getUser(request.getParameterMap()));
 
-		RequestDispatcher view = request.getRequestDispatcher("user.jsp");
+		RequestDispatcher view = request.getRequestDispatcher("users.jsp");
 		view.forward(request, response);
 	}
 
 
-	// HTTP POST to /user/add
-	protected void doAdd() throws Exception {
-
-	}
-
 	// /user/destroy
-	public String doDestroy() throws Exception {
-
-		//remove a user
-		return "SUCCESS";
-	}
-
-	// /user/{id}
-	public String doGet() throws Exception {
-
-		//show info about a user
-		return "SUCCESS";
+	protected void doDestroy(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		if (userModel.deleteUser(request.getParameterMaP())) {
+			request.setAttribute("deleted", true);
+		} else {
+			request.setAttribute("deleted", false);
+		}
+		
+		RequestDispatcher view = request.getRequestDispatcher("users.jsp");
+		view.forward(request, response);
+		
 	}
 }

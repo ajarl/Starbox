@@ -22,4 +22,8 @@ public class UserModel {
 		return id;
 	}
 	
+	public boolean deleteUser() {
+		return true;
+	}
+	
 }
