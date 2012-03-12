@@ -28,7 +28,7 @@ public class SearchModel {
 	* static instance of CommonsHttpSolrServer per solr server url and share it for all requests.
 	* See https://issues.apache.org/jira/browse/SOLR-861 for more details	
 	*/
-	private static CommonsHttpSolrServer solr;
+	//private static CommonsHttpSolrServer solr;
 	private String solrServer = "http://localhost:8983/solr";
 	
 	/**
@@ -38,19 +38,19 @@ public class SearchModel {
 	* @throws MalformedURLException
 	*/
 	public SearchModel() {
+		/*
 		if (solr == null)
 			try {
-				/*
 				solr = new CommonsHttpSolrServer(solrServer);
 			} catch (MalformedURLException e) {
 				System.err.println("SearchModel() - Caught a MalformedURLException." +
 									"URL was " + solrServer);
 				e.printStackTrace();
-				*/
 			} catch (Exception e) {	
 				System.err.println("SearchModel() - Caught an exception.");
 				e.printStackTrace();
 			}
+			*/
 	}
 
 	
@@ -64,6 +64,7 @@ public class SearchModel {
 	*/
 	//public List<SearchResult> find(String inputQuery, String params){
 	public List<String> find(String inputQuery, String params){
+		/*
 		SolrQuery solrQuery = new SolrQuery();
 	    solrQuery.setQuery(inputQuery);
 	    
@@ -86,6 +87,8 @@ public class SearchModel {
 	    resultList.add("result1");
 	    resultList.add("result2");
 	    return  resultList;
+	    */
+		return null;
 	}
 	
 	/**  NEW METHOD - Not defined in ADD  
