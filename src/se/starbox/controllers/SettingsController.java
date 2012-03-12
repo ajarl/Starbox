@@ -45,6 +45,7 @@ public class SettingsController extends HttpServlet {
 		request.setAttribute("email", sm.getEmail());
 		request.setAttribute("starboxFolder", sm.getStarboxFolder());
 		request.setAttribute("indexUpdateInterval", sm.getIndexUpdateInterval());
+		request.setAttribute("ip", sm.getIP());
 		
 		RequestDispatcher view = request.getRequestDispatcher("settings.jsp");
 		view.forward(request, response);
@@ -60,10 +61,14 @@ public class SettingsController extends HttpServlet {
 		if (params.containsKey("email"))
 			sm.setEmail(params.get("email")[0]);
 		
+		if (params.containsKey("shutdown"))
+			sm.shutDown();
+		
 		request.setAttribute("displayName", sm.getDisplayName());
 		request.setAttribute("email", sm.getEmail());
 		request.setAttribute("starboxFolder", sm.getStarboxFolder());
 		request.setAttribute("indexUpdateInterval", sm.getIndexUpdateInterval());
+		request.setAttribute("ip", sm.getIP());
 		
 		RequestDispatcher view = request.getRequestDispatcher("settings.jsp");
 		view.forward(request, response);

@@ -1,9 +1,16 @@
 package se.starbox.models;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.URL;
+import java.net.UnknownHostException;
 
 import javax.xml.parsers.*;
 
@@ -110,21 +117,57 @@ public class SettingsModel {
 	}
 	
 	/**
-	 * Gets user's IP address and returns it as a String
-	 * TODO: Not implemented yet
-	 * @return The user's IP address
+	 * Gets user's IP address and returns it as a String.
+	 * First attempts to get the external IP via whatismyip.com, if this fails, it gets local IP.
+	 * If both fail, returns null.
+	 * @return The user's IP address (or null on failure)
 	 */
 	public String getIP() {
-		// TODO Get IP address and return it
-		return null;
+		String ip;
+		try {
+			//Connect to whatismyip.com to fetch external IP
+			URL whatismyip = new URL("http://automation.whatismyip.com/n09230945.asp");
+			BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+			
+			ip = in.readLine();
+		} catch (Exception e) {
+			//If external IP was unavailable for whatever reason, get internal IP
+			try {
+				ip = InetAddress.getLocalHost().getHostAddress();
+			} catch (UnknownHostException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+				ip = null;
+			}
+		}
+		
+		return ip;
+	}
+	
+	/**
+	 * Starts the OpenPipeline job to begin indexing the local Starbox folder.
+	 */
+	public void updateIndex() {
+		// TODO: Start the OpenPipeline job
 	}
 	
 	/**
 	 * Shuts down program cleanly
 	 */
 	public void shutDown() {
-		System.exit(0);
-		// TODO: Needs to be fixed for Tomcat use and also making sure all changes have been saved, check current downloads are done etc.
+		// TODO: Before shutting down, make sure all changes have been saved, check current downloads are done etc.
+		try {
+			// Send shutdown command to shutdown port on Catalina
+			Socket socket = new Socket("localhost", 8005);
+			if (socket.isConnected()) {
+				PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
+				pw.println("SHUTDOWN");
+				pw.close();
+				socket.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
