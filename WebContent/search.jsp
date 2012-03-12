@@ -12,12 +12,12 @@
 				<div class="left">
 					<div class="search-filters">
 						<h1>Filters</h1>
-						<h2>Users</h2>
+						<h2>Users<span class="websymbol">]</span></h2>
 						<ul>
 							<li class="selected">Otto<span></span></li>
 							<li>Kim<span></span></li>
 						</ul>
-						<h2>Formats</h2>
+						<h2>Formats<span class="websymbol">]</span></h2>
 						<ul>
 							<li>Executeable<span></span></li>
 							<li>Document<span></span></li>
