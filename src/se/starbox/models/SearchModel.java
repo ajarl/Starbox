@@ -2,6 +2,7 @@ import java.net.MalformedURLException;
 import java.util.List;
 // Link to SolrJ dependencies.
 // http://repo1.maven.org/maven2/org/apache/solr/solr-solrj/1.4.0/solr-solrj-1.4.0.jar
+
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -33,7 +34,7 @@ public class SearchModel {
 	* 
 	* @throws MalformedURLException
 	*/
-	public SearchModel() throws Exception {
+	public SearchModel() {
 		if (solr == null)
 			try {
 				solr = new CommonsHttpSolrServer(solrServer);

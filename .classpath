@@ -13,5 +13,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="lib" path="lib"/>
+	<classpathentry kind="lib" path="lib/solr-solrj-1.4.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
