@@ -1,0 +1,18 @@
+.search-container {
+  margin-top: 250px;
+  width: 100%;
+}
+
+.search-inputs {
+  width: 500px;
+  margin: 0 auto;
+}
+
+.search-inputs input {
+  height: 35px;
+  width: 490px;
+  border: 1px solid #999;
+  color: #666;
+  font-size: 18px;
+  padding: 0 5px;
+}
