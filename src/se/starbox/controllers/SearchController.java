@@ -20,7 +20,7 @@ import se.starbox.models.SearchModel;
 @WebServlet(
 		description = "Handles search requests", 
 		urlPatterns = { 
-				"/"
+				"/search/"
 		})
 public class SearchController extends HttpServlet {
 	private static final long serialVersionUID = 132158L;
@@ -40,39 +40,49 @@ public class SearchController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String query = "";
+		String query = request.getParameter("query");
 		String params = "";
+		
 		// Search model expects input on this format
 		// query="seanbanan" params="filetype:exe;minfilesize:20;maxfilesize:10"
+		// Parse out params and remove them from query. 
+		if (query != null) {
+			Pattern pFileType = Pattern.compile("filetype[:=][,a-z0-9]*");
+			Matcher mFileType = pFileType.matcher(query);
+			query = query.replaceAll("filetype[:=][,a-z0-9]*", "");
+			Pattern pMinFileSize = Pattern.compile("minfilesize[:=][0-9]*");
+			Matcher mMinFileSize = pMinFileSize.matcher(query);
+			query = query.replaceAll("minfilesize[:=][0-9]*", "");
+			Pattern pMaxFileSize = Pattern.compile("maxfilesize[:=][0-9]*");
+			Matcher mMaxFileSize = pMaxFileSize.matcher(query);
+			query = query.replaceAll("maxfilesize[:=][0-9]*", "");
+			
+			while(mFileType.find()) {
+				params += mFileType.group() + ";";
+			}
+			
+			while(mMinFileSize.find()) {
+				params += mMinFileSize.group() + ";";
+			}
+			
+			while(mMaxFileSize.find()) {
+				params += mMaxFileSize.group() + ";";
+			}
+			
+			// Trim off trailing ;
+			if (params.endsWith(";"))
+				params = params.substring(0, params.length()-1);
 		
-		query = request.getParameter("query");
-		Pattern pFileType = Pattern.compile("filetype:[,a-z0-9]*");
-		Matcher mFileType = pFileType.matcher(query);
-		query = query.replaceAll("filetype:[,a-z0-9]*", "");
-		Pattern pMinFileSize = Pattern.compile("minfilesize:[0-9]*");
-		Matcher mMinFileSize = pMinFileSize.matcher(query);
-		query = query.replaceAll("maxfilesize:[0-9]*", "");
-		Pattern pMaxFileSize = Pattern.compile("maxfilesize:[0-9]*");
-		Matcher mMaxFileSize = pMaxFileSize.matcher(query);
-		query = query.replaceAll("minfilesize:[0-9]*", "");
-		
-		while(mFileType.find()) {
-			params += mFileType.group() + ";";
-		}
-		
-		while(mMinFileSize.find()) {
-			params += mMinFileSize.group() + ";";
-		}
-		
-		while(mMaxFileSize.find()) {
-			params += mMaxFileSize.group() + ";";
+			// If search query isn't null someone is trying to search.
+			// Fetch a list of SearchResult from the SearchModel and put them
+			// in the request.
+			if (query != "" || query != null) {
+				// some list = sm.query(query, params);
+				// request.put(some list)
+			}
 		}
 	
-		// Trim off trailing ;
-		if (params.endsWith(";"))
-			params = params.substring(0, params.length()-1);
-				
-		RequestDispatcher view = request.getRequestDispatcher("view.jsp");
+		RequestDispatcher view = request.getRequestDispatcher("../search.jsp");
 		request.setAttribute("query", query);
 		request.setAttribute("params", params);
 		view.forward(request, response);
