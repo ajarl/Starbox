@@ -1,0 +1,78 @@
+<html>
+  <head>
+    <title>StarBox</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/search.css" />
+  </head>
+  <body>
+    <div class="header">
+      <div class="layout clearfix">
+        <ul class="menu clearfix">
+          <li class="ip">IP</li>
+          <li class="add"><a href="/users.html">Add</a></li>
+          <li class="users"><a href="/users.html">Users</a></li>
+          <li class="settings"><a href="/settings.html">Settings</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="main">
+      <div class="layout">
+        <div class="settings-container">
+          <div class="settings-inputs">
+            <table>
+              <tr>
+                <td>
+                  <label for="path">Path</label>
+                </td>
+                <td>
+                  <input type="text" name="path" id="path" data-href="/settings/update_path"/>
+                </td>
+                <td>
+                  <a href="#save">Save</a>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label for="interval">Interval</label>
+                </td>
+                <td>
+                  <input type="text" name="interval" id="interval" data-href="/settings/update_interval"/>
+                </td>
+                <td>
+                  <a href="#save">Save</a>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label for="displayname">Displayname</label>
+                </td>
+                <td>
+                  <input type="text" name="displayname" id="displayname" data-href="/settings/update_name"/>
+                </td>
+                <td>
+                  <a href="#save">Save</a>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label for="email">Email</label>
+                </td>
+                <td>
+                  <input type="text" name="email" id="email" data-href="/settings/update_email"/>
+                </td>
+                <td>
+                  <a href="#save">Save</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="button" name="update-index" id="update-index" value="Update index" data-href="/settings/update_index"/></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="js/jquery-1.7.1.min.js"></script>
+    <script src="js/search.js"></script>
+  </body>
+</html>
