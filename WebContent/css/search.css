@@ -25,6 +25,16 @@
 	text-align: right;
 }
 
+.search-filters h2, li {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
 .search-filters h2:hover {
 	color: #666;
 	cursor: pointer;
