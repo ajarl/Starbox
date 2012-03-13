@@ -18,7 +18,7 @@ import se.starbox.models.SettingsModel;
 @WebServlet(
 		description = "Handles local user settings",
 		urlPatterns = {
-				"/settings"
+				"/settings/"
 		}
 )
 public class SettingsController extends HttpServlet {
@@ -48,7 +48,7 @@ public class SettingsController extends HttpServlet {
 		request.setAttribute("indexUpdateInterval", sm.getIndexUpdateInterval());
 		request.setAttribute("ip", sm.getIP());
 		
-		RequestDispatcher view = request.getRequestDispatcher("settings.jsp");
+		RequestDispatcher view = request.getRequestDispatcher("/settings.jsp");
 		view.forward(request, response);
 	}
 
