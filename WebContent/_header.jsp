@@ -1,5 +1,5 @@
 <%@page import="java.net.InetAddress"%>
-<div class="header">
+<div class="menu-container">
   <div class="layout clearfix">
     <ul class="menu clearfix">
       <li class="ip"><%= InetAddress.getLocalHost().getHostAddress() %></li>

@@ -74,10 +74,11 @@ table{
 
 body {
   background: #eee;
+  color: #666;
   font-family: 'CreteRoundRegular', Arial;
 }
 
-.header {
+.menu-container {
   height: 50px;
   background: #333;
   width: 100%;

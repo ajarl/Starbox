@@ -21,14 +21,17 @@
 
 .search-filters {
 	color: #999;
-	height: 400px;
+	opacity: 0.2;
 	text-align: right;
+}
+
+.search-filters:hover {
+	opacity: 1;
 }
 
 .search-filters h2 {
 	margin-top: 5px;
 }
-
 
 .search-filters h2:hover {
 	color: #666;
@@ -45,13 +48,21 @@
 }
 
 .search-filters li {
-	height: 16px;
+	height: 20px;
 	padding: 2px 0;
 }
 
 .search-filters li:hover {
 	color: #666;
 	cursor: pointer;
+}
+
+.search-filters li span {
+	display: block;
+	float: right;
+	height: 12px;
+	margin: 3px 0px 4px 4px;
+	width: 12px;
 }
 
 .search-filters li span {
@@ -94,8 +105,17 @@
 	text-align: left;
 }
 
+.search-results th:hover {
+	color: #666;
+	cursor: pointer;	
+}
+
 .search-results td {
 	padding: 8px 0;
+}
+
+.search-results tbody tr:hover {
+	background: #fefefe;
 }
 
 
