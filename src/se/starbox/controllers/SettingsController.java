@@ -18,7 +18,8 @@ import se.starbox.models.SettingsModel;
 @WebServlet(
 		description = "Handles local user settings",
 		urlPatterns = {
-				"/settings/"
+				"/settings/",
+				"/settings"
 		}
 )
 public class SettingsController extends HttpServlet {

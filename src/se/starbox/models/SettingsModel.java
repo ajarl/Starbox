@@ -17,6 +17,8 @@ import javax.xml.parsers.*;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+//import org.openpipeline.util.XMLConfig;
+
 /**
  * Model for getting and changing local user settings.
  * Keeps local variables and writes changes to UserSettings.xml.
@@ -27,6 +29,8 @@ public class SettingsModel {
 	private static final String XML_PATH = "UserSettings.xml";
 	private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<UserSettings xmlns=\"starbox\">\n";
 	private static final String XML_FOOTER = "</UserSettings>";
+	
+	//private static final String PATH_TO_OPENPIPELINE_JOB = "StarboxJob.xml";
 	
 	private static final String DEFAULT_STARBOX_FOLDER = "C:\\Documents\\";
 	private static final String DEFAULT_DISPLAY_NAME = "default display name";
@@ -122,7 +126,7 @@ public class SettingsModel {
 	 * If both fail, returns null.
 	 * @return The user's IP address (or null on failure)
 	 */
-	public String getIP() {
+	public static String getIP() {
 		String ip;
 		try {
 			//Connect to whatismyip.com to fetch external IP
