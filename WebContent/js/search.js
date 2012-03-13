@@ -1,6 +1,13 @@
-$(document).ready(function() {
+function applyFilters(data) {
+	//alert($(data).attr('data-type') + ' ' + $(data).attr('data-value'));
 	
+	$('.search-results tr[data-' + $(data).attr('data-type') + '=' + $(data).attr('data-value') + ']').toggle();
+}
+
+$(document).ready(function() {
 	$('#search-query').focus();
+	
+	$('.search-results table').tablesorter();
 	
 	$('#search-query').keyup(function() {
 		$.get('/starbox/search/', {
@@ -25,7 +32,10 @@ $(document).ready(function() {
 
 	$('.search-filters li').click(function() {
 		$(this).toggleClass('selected');
-
+		
+		applyFilters($(this));
 		return false;
 	});
+	
+	
 });
