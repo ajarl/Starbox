@@ -15,7 +15,7 @@
             <table>
               <tr>
                 <td>
-                  Otto Nordgren
+                  <a href="/starbox/users/?userID=1" data-userid="1">Otto Nordgren</a>
                 </td>
                 <td>
                   <a href="#remove" data-userid="1" data-controller="users" data-method="delete">Remove</a>
@@ -49,6 +49,11 @@
                 </td>
               </tr>
             </table>
+          </div>
+          <div class="add-users">
+          	<h2>Add a new user</h2>
+          	<a href="/users/" data-controller="users" data-method="add">Add User</a>
+          	
           </div>
         </div>
       </div>

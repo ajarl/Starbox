@@ -18,6 +18,10 @@ public class UserModel {
 		return true;
 	}
 	
+	public String getEmail() {
+		return "testemail@smallstars.se";
+	}
+	
 	public int getID() {
 		return id;
 	}

@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import se.starbox.models.UserModel;
+
 /**
  * Servlet implementation class UsersController
  */
@@ -20,40 +22,31 @@ public class UsersController extends HttpServlet {
 	private static String DELETE_JSP = "/Delete.jsp";
 	private static String EDIT_JSP = "/Edit.jsp";
 	private static String LIST_JSP = "/users.jsp";
+	private static String SHOW_JSP = "/user.jsp";
+	private UserModel userModel;
        
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public UsersController() {
         super();
         // TODO Auto-generated constructor stub
+       userModel = new UserModel();
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String forward="";
-		// Get a map of the request parameters
-		@SuppressWarnings("unchecked")
+		
 		Map parameters = request.getParameterMap();
-		if (parameters.containsKey("delete")){
-			forward = DELETE_JSP;
-		} else if (parameters.containsKey("edit")){
-			forward = EDIT_JSP;
+		if (parameters.containsKey("userID")){
+			
+			request.setAttribute("userEmail", userModel.getEmail());
+			forward = SHOW_JSP;
 		} else {
 			forward = LIST_JSP;
 		}
+		
 		RequestDispatcher view = request.getRequestDispatcher(forward);
 		view.forward(request, response);
 	}
 	
-	
-	
-
-	/**sdasd
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
