@@ -18,7 +18,7 @@
                   <a href="/starbox/users/?action=show&userID=1" data-userid="1">Otto Nordgren</a>
                 </td>
                 <td>
-                  <a href="#remove" data-userid="1" data-controller="users" data-method="delete">Remove</a>
+                  <a href="/starbox/users/?action=destroy&userID=1" data-userid="1" data-controller="users" data-method="delete">Remove</a>
                 </td>
               </tr>
             </table>
