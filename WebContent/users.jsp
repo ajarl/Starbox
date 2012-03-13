@@ -44,8 +44,8 @@
                   Anders Jonsson
                 </td>
                 <td>
-                  <a href="#accept" data-userid="1" data-controller="users" data-method="accept">Accept</a>
-                  <a href="#deny" data-userid="1" data-controller="users" data-method="deny">Deny</a>
+                  <a href="/starbox/users/?action=accept&userID=1" data-userid="1" data-controller="users" data-method="accept">Accept</a>
+                  <a href="/starbox/users/?action=deny&userID=1" data-userid="1" data-controller="users" data-method="deny">Deny</a>
                 </td>
               </tr>
             </table>

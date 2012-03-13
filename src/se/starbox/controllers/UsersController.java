@@ -43,9 +43,16 @@ public class UsersController extends HttpServlet {
 			forward = SHOW_JSP;
 		} else if (action.equals("add")) {
 			forward = ADD_JSP;
+		} else if (action.equals("accept")) {
+			request.setAttribute("userEmail", " accepted a new user " + userModel.getEmail(request.getParameter("userID").toString()));
+			forward = SHOW_JSP;
+		} else if (action.equals("deny")) {
+			request.setAttribute("userEmail", " denied a new user " + userModel.getEmail(request.getParameter("userID").toString()));
+			forward = LIST_JSP;
 		} else if (action.equals("destroy")) {
 			userModel.deleteUser();
 			forward = LIST_JSP;
+			
 		} else {
 			forward = LIST_JSP;
 		}
