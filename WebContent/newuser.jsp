@@ -12,7 +12,7 @@
         	<h1>Add new user</h1>
           	<form method="POST" action="?action=create" name="create">
           		<input type="textfield" name="ip" value="1.2.3.4"/>
-          		<input type="submit" value="Skapa"/>
+          		<input type="submit" value="Create"/>
           		
           	</form>
         </div>

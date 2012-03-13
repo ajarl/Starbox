@@ -13,7 +13,8 @@
           <div class="user-info">
             <h1>A user: <% out.println(request.getAttribute("userEmail")); %></h1>
             
-            <a href="/starbox/users/?userID=1&action=delete">Ta bort</a>
+            <a href="/starbox/users/?userID=1&action=delete">Destroy</a>
+            <a href="/starbox/users/?userID=1&action=edit">Change</a>
             
           </div>
           

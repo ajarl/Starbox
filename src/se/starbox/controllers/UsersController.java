@@ -19,8 +19,7 @@ import se.starbox.models.UserModel;
 @WebServlet(description = "handles user request from the interwebs.", urlPatterns = { "/users/" })
 public class UsersController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static String DELETE_JSP = "/Delete.jsp";
-	private static String EDIT_JSP = "/Edit.jsp";
+	private static String EDIT_JSP = "/edituser.jsp";
 	private static String LIST_JSP = "/users.jsp";
 	private static String SHOW_JSP = "/user.jsp";
 	private static String ADD_JSP = "/newuser.jsp";
@@ -43,6 +42,12 @@ public class UsersController extends HttpServlet {
 			forward = SHOW_JSP;
 		} else if (action.equals("add")) {
 			forward = ADD_JSP;
+		} else if (action.equals("edit")) {
+			request.setAttribute("userID","1");
+			request.setAttribute("userEmail","emajl@test.se");
+			request.setAttribute("userIP","1.2.3.4.5.6.7.8.9");
+			request.setAttribute("userName","TestNamn");
+			forward = EDIT_JSP;
 		} else if (action.equals("accept")) {
 			request.setAttribute("userEmail", " accepted a new user " + userModel.getEmail(request.getParameter("userID").toString()));
 			forward = SHOW_JSP;
@@ -74,6 +79,10 @@ public class UsersController extends HttpServlet {
 			//outputar ipt igen för att vi ska kunna testa innan modellen är gjord.
 			String output = userModel.createUser(request.getParameter("ip"));
 			request.setAttribute("userEmail", output);
+			forward = SHOW_JSP;
+		} else if (action.equals("update")){
+			userModel.updateUser();
+			request.setAttribute("userEmail", "update?");
 			forward = SHOW_JSP;
 		} else {
 			request.setAttribute("errorMessage", "Nu har du valt en knasig action. Felaktigt beteende igen.");
