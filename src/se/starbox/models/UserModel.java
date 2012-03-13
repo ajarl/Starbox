@@ -18,8 +18,8 @@ public class UserModel {
 		return true;
 	}
 	
-	public String getEmail() {
-		return "testemail@smallstars.se";
+	public String getEmail(String userID) {
+		return "testemail" + userID + "@smallstars.se";
 	}
 	
 	public int getID() {
@@ -28,6 +28,10 @@ public class UserModel {
 	
 	public boolean deleteUser() {
 		return true;
+	}
+	
+	public String createUser(String ip) {
+		return ip;
 	}
 	
 }

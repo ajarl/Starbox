@@ -8,15 +8,13 @@
   	<jsp:include page="_header.jsp" />
     <div class="main">
       <div class="layout">
-        <div class="user-container clearfix">
-        <a href="/starbox/users/">List all users</a>
-          <div class="user-info">
-            <h1>A user: <% out.println(request.getAttribute("userEmail")); %></h1>
-            
-            <a href="/starbox/users/?userID=1&action=delete">Ta bort</a>
-            
-          </div>
-          
+        <div class="users-container clearfix">
+        	<h1>Add new user</h1>
+          	<form method="POST" action="?action=create" name="create">
+          		<input type="textfield" name="ip" value="1.2.3.4"/>
+          		<input type="submit" value="Skapa"/>
+          		
+          	</form>
         </div>
       </div>
     </div>
