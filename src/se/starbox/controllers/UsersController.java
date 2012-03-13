@@ -38,7 +38,7 @@ public class UsersController extends HttpServlet {
 		if (action == null) {
 			forward = LIST_JSP;
 		} else if (action.equals("show")){
-			request.setAttribute("userEmail", userModel.getEmail(request.getParameter("userID").toString()));
+			request.setAttribute("userEmail", "user email. fix this");
 			forward = SHOW_JSP;
 		} else if (action.equals("add")) {
 			forward = ADD_JSP;
@@ -49,13 +49,13 @@ public class UsersController extends HttpServlet {
 			request.setAttribute("userName","TestNamn");
 			forward = EDIT_JSP;
 		} else if (action.equals("accept")) {
-			request.setAttribute("userEmail", " accepted a new user " + userModel.getEmail(request.getParameter("userID").toString()));
+			request.setAttribute("userEmail", " accepted a new user ");
 			forward = SHOW_JSP;
 		} else if (action.equals("deny")) {
-			request.setAttribute("userEmail", " denied a new user " + userModel.getEmail(request.getParameter("userID").toString()));
+			request.setAttribute("userEmail", " denied a new user");
 			forward = LIST_JSP;
 		} else if (action.equals("destroy")) {
-			userModel.deleteUser();
+			//userModel.deleteUser();
 			forward = LIST_JSP;
 			
 		} else {
@@ -76,12 +76,11 @@ public class UsersController extends HttpServlet {
 			request.setAttribute("errorMessage", "Du kan inte göra en post till users controllen utan en action. Tänk över ditt beteende.");
 			forward = LIST_JSP;
 		} else if (action.equals("create")){
-			//outputar ipt igen för att vi ska kunna testa innan modellen är gjord.
-			String output = userModel.createUser(request.getParameter("ip"));
-			request.setAttribute("userEmail", output);
+			userModel.addUser("String ip", "String email", "String name", "String group","String status");
+			request.setAttribute("userEmail", "Fixa controllerna");
 			forward = SHOW_JSP;
 		} else if (action.equals("update")){
-			userModel.updateUser();
+			//userModel.updateUser();
 			request.setAttribute("userEmail", "update?");
 			forward = SHOW_JSP;
 		} else {
