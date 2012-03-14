@@ -7,6 +7,7 @@ import java.util.List;
 // http://repo1.maven.org/maven2/org/apache/solr/solr-solrj/1.4.0/solr-solrj-1.4.0.jar
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.slf4j.LoggerFactory;
 
 /**
  * A Model class for searching files in your local index.
