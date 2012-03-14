@@ -26,7 +26,6 @@ public class SearchModel {
 	private static CommonsHttpSolrServer solr;
 	private String solrServer = "http://localhost:8983/solr";
 	
-	
 	/**
 	* Initiate the model instance. Creates an instance of Solr on startup if
 	* one has not been created already.
@@ -34,17 +33,17 @@ public class SearchModel {
 	* @throws MalformedURLException
 	*/
 	public SearchModel() {
-//		if (solr == null)
-//			try {
-//				solr = new CommonsHttpSolrServer(solrServer);
-//			} catch (MalformedURLException e) {
-//				System.err.println("SearchModel() - Caught a MalformedURLException." +
-//									"URL was " + solrServer);
-//				e.printStackTrace();
-//			} catch (Exception e) {	
-//				System.err.println("SearchModel() - Caught an exception.");
-//				e.printStackTrace();
-//			}
+		if (solr == null)
+			try {
+				solr = new CommonsHttpSolrServer(solrServer);
+			} catch (MalformedURLException e) {
+				System.err.println("SearchModel() - Caught a MalformedURLException." +
+									"URL was " + solrServer);
+				e.printStackTrace();
+			} catch (Exception e) {	
+				System.err.println("SearchModel() - Caught an exception.");
+				e.printStackTrace();
+			}
 	}
 
 	
