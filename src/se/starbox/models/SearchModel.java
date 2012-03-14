@@ -6,6 +6,7 @@ import java.util.List;
 // Link to SolrJ dependencies.
 // http://repo1.maven.org/maven2/org/apache/solr/solr-solrj/1.4.0/solr-solrj-1.4.0.jar
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 
 /**
  * A Model class for searching files in your local index.
@@ -22,8 +23,9 @@ public class SearchModel {
 	* static instance of CommonsHttpSolrServer per solr server url and share it for all requests.
 	* See https://issues.apache.org/jira/browse/SOLR-861 for more details	
 	*/
-	//private static CommonsHttpSolrServer solr;
+	private static CommonsHttpSolrServer solr;
 	private String solrServer = "http://localhost:8983/solr";
+	
 	
 	/**
 	* Initiate the model instance. Creates an instance of Solr on startup if
@@ -32,19 +34,17 @@ public class SearchModel {
 	* @throws MalformedURLException
 	*/
 	public SearchModel() {
-		/*
-		if (solr == null)
-			try {
-				solr = new CommonsHttpSolrServer(solrServer);
-			} catch (MalformedURLException e) {
-				System.err.println("SearchModel() - Caught a MalformedURLException." +
-									"URL was " + solrServer);
-				e.printStackTrace();
-			} catch (Exception e) {	
-				System.err.println("SearchModel() - Caught an exception.");
-				e.printStackTrace();
-			}
-			*/
+//		if (solr == null)
+//			try {
+//				solr = new CommonsHttpSolrServer(solrServer);
+//			} catch (MalformedURLException e) {
+//				System.err.println("SearchModel() - Caught a MalformedURLException." +
+//									"URL was " + solrServer);
+//				e.printStackTrace();
+//			} catch (Exception e) {	
+//				System.err.println("SearchModel() - Caught an exception.");
+//				e.printStackTrace();
+//			}
 	}
 
 	
