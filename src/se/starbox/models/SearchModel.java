@@ -1,12 +1,14 @@
 package se.starbox.models;
 
 import java.net.MalformedURLException;
+import java.util.Iterator;
 import java.util.List;
 
 // Link to SolrJ dependencies.
 // http://repo1.maven.org/maven2/org/apache/solr/solr-solrj/1.4.0/solr-solrj-1.4.0.jar
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.common.params.SolrParams;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -37,6 +39,8 @@ public class SearchModel {
 		if (solr == null)
 			try {
 				solr = new CommonsHttpSolrServer(solrServer);
+				solr.ping();
+				
 			} catch (MalformedURLException e) {
 				System.err.println("SearchModel() - Caught a MalformedURLException." +
 									"URL was " + solrServer);
@@ -46,7 +50,6 @@ public class SearchModel {
 				e.printStackTrace();
 			}
 	}
-
 	
 	/**
 	* Searches the index of Solr.
