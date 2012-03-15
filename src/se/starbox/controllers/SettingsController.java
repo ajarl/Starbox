@@ -67,6 +67,9 @@ public class SettingsController extends HttpServlet {
 		if (params.containsKey("shutdown"))
 			sm.shutDown();
 		
+		if (params.containsKey("updateIndex"))
+			sm.updateIndex();
+		
 		request.setAttribute("displayName", sm.getDisplayName());
 		request.setAttribute("email", sm.getEmail());
 		request.setAttribute("starboxFolder", sm.getStarboxFolder());

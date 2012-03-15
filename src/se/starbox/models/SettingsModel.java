@@ -11,6 +11,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.parsers.*;
 
@@ -18,7 +20,10 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import org.openpipeline.*;
+import org.openpipeline.scheduler.JobInfo;
+import org.openpipeline.scheduler.PipelineScheduler;
 import org.openpipeline.util.XMLConfig;
+import org.quartz.SchedulerException;
 
 /**
  * Model for getting and changing local user settings.
@@ -152,18 +157,31 @@ public class SettingsModel {
 	/**
 	 * Starts the OpenPipeline job to begin indexing the local Starbox folder.
 	 */
+	@SuppressWarnings("unchecked")
 	public void updateIndex() {
 		// TODO: Start the OpenPipeline job
 		// delete indexdata
 		// Openpipeline
-		/*XMLConfig c = new XMLConfig();
 		try {
-			c.load(new File("StarboxJob.xml"));
-		} catch (IOException e) {
+			//String currentDir = new File(".").getAbsolutePath();
+			//System.out.println("Current dir: " + currentDir);
+			System.setProperty("app.home", "."/*"C:\\Users\\Anders\\workspace\\starbox\\"*/);
+			
+			PipelineScheduler sched = PipelineScheduler.getInstance();
+			
+			List<JobInfo> jobs = sched.getJobs();
+			System.out.println("# of jobs: " + jobs.size());
+			Iterator<JobInfo> jobIt = jobs.iterator();
+			while (jobIt.hasNext()) {
+				System.out.println(jobIt.next().getJobName());
+			}
+			sched.startJob("StarboxJob");
+			//sched.wait(200);
+			//PipelineScheduler.stop();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
-		
+		}
 		
 	}
 	

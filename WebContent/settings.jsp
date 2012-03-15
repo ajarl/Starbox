@@ -12,6 +12,7 @@
 	<input type="submit" value="Ändra" />
 </form>
 <form action="settings" method="post"><input type="submit" name="shutdown" value="Shut down Tomcat" /></form>
+<form action="settings" method="post"><input type="submit" name="updateIndex" value="Update Index" /></form>
 <p>
 Current info:<br />
 <b>Email:</b> <%= request.getAttribute("email") %><br />

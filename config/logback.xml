@@ -1,0 +1,65 @@
+<configuration>
+
+	<!-- these properties must be defined or LoggerUtil won't work properly -->
+	<property name="MAIN_LOG_DIR" value="${app.home}/logs"/>
+	<property name="DEFAULT_ENCODER_PATTERN" value="%date{yyyy-MM-dd HH:mm:ss} %-4relative %-5level %msg%n" />
+	<property name="DEFAULT_FILENAME_PATTERN" value="-%d{yyyy-MM-dd}.log" />
+
+	<logger name="server" additivity="false">
+		<appender class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+				<fileNamePattern>${MAIN_LOG_DIR}/server/server${DEFAULT_FILENAME_PATTERN}</fileNamePattern>
+			</rollingPolicy>
+			<encoder><pattern>${DEFAULT_ENCODER_PATTERN}</pattern></encoder>
+		</appender>	
+	</logger>
+
+	<logger name="org.mortbay.log" additivity="false">
+		<appender class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+				<fileNamePattern>${MAIN_LOG_DIR}/jetty/jetty${DEFAULT_FILENAME_PATTERN}</fileNamePattern>
+			</rollingPolicy>
+			<encoder><pattern>${DEFAULT_ENCODER_PATTERN}</pattern></encoder>
+		</appender>	
+	</logger>
+
+	<logger name="org.openpipeline.logger.Slf4jRequestLogger" additivity="false">
+		<appender class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+				<fileNamePattern>${MAIN_LOG_DIR}/request/request${DEFAULT_FILENAME_PATTERN}</fileNamePattern>
+			</rollingPolicy>
+			<encoder><pattern>%msg%n</pattern></encoder>
+		</appender>	
+	</logger>
+
+	<logger name="org.quartz" additivity="false">
+		<appender class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+				<fileNamePattern>${MAIN_LOG_DIR}/quartz/quartz${DEFAULT_FILENAME_PATTERN}</fileNamePattern>
+			</rollingPolicy>
+			<encoder><pattern>${DEFAULT_ENCODER_PATTERN}</pattern></encoder>
+		</appender>	
+	</logger>
+
+	<root level="INFO">
+		<appender class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+				<fileNamePattern>${MAIN_LOG_DIR}/root/root${DEFAULT_FILENAME_PATTERN}</fileNamePattern>
+			</rollingPolicy>
+			<encoder><pattern>%date{yyyy-MM-dd HH:mm:ss} %-4relative %logger %-5level %msg%n</pattern></encoder>
+		</appender>	
+	</root>
+
+	<!--
+	Uncomment this section to override the configuration
+	used by loggers created by org.openpipeline.LoggerUtil.getLogger().
+	Configure these loggers by creating a logger named "dynamic".
+	See the source code for LoggerUtil for more.
+	
+	<property name="overrideDynamic" value="true" />
+	<logger name="dynamic" additivity="false">
+		// configure it here
+	</logger>
+	--> 
+  
+</configuration>
