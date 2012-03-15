@@ -17,7 +17,8 @@ import javax.xml.parsers.*;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-//import org.openpipeline.util.XMLConfig;
+import org.openpipeline.*;
+import org.openpipeline.util.XMLConfig;
 
 /**
  * Model for getting and changing local user settings.
@@ -153,6 +154,17 @@ public class SettingsModel {
 	 */
 	public void updateIndex() {
 		// TODO: Start the OpenPipeline job
+		// delete indexdata
+		// Openpipeline
+		/*XMLConfig c = new XMLConfig();
+		try {
+			c.load(new File("StarboxJob.xml"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
+		
 	}
 	
 	/**
