@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
@@ -165,7 +166,13 @@ public class SettingsModel {
 		try {
 			//String currentDir = new File(".").getAbsolutePath();
 			//System.out.println("Current dir: " + currentDir);
-			System.setProperty("app.home", "."/*"C:\\Users\\Anders\\workspace\\starbox\\"*/);
+			String path = SettingsModel.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+			String decodedPath = URLDecoder.decode(path, "UTF-8");
+			decodedPath = decodedPath.substring(0, decodedPath.length() - "SettingsModel.class".length());
+			decodedPath += "../../../../../";
+			System.out.println("********** Path: "+decodedPath);
+
+			System.setProperty("app.home", decodedPath/*"C:\\Users\\Anders\\workspace\\starbox\\"*/);
 			
 			PipelineScheduler sched = PipelineScheduler.getInstance();
 			
