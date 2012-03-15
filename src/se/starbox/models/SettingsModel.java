@@ -20,11 +20,8 @@ import javax.xml.parsers.*;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import org.openpipeline.*;
 import org.openpipeline.scheduler.JobInfo;
 import org.openpipeline.scheduler.PipelineScheduler;
-import org.openpipeline.util.XMLConfig;
-import org.quartz.SchedulerException;
 
 /**
  * Model for getting and changing local user settings.
@@ -158,38 +155,43 @@ public class SettingsModel {
 	/**
 	 * Starts the OpenPipeline job to begin indexing the local Starbox folder.
 	 */
-	@SuppressWarnings("unchecked")
 	public void updateIndex() {
-		// TODO: Start the OpenPipeline job
-		// delete indexdata
-		// Openpipeline
+		// TODO: delete index data, start the OpenPipeline job?
 		try {
-			//String currentDir = new File(".").getAbsolutePath();
-			//System.out.println("Current dir: " + currentDir);
-			String path = SettingsModel.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-			String decodedPath = URLDecoder.decode(path, "UTF-8");
-			decodedPath = decodedPath.substring(0, decodedPath.length() - "SettingsModel.class".length());
-			decodedPath += "../../../../../";
-			System.out.println("********** Path: "+decodedPath);
-
-			System.setProperty("app.home", decodedPath/*"C:\\Users\\Anders\\workspace\\starbox\\"*/);
-			
-			PipelineScheduler sched = PipelineScheduler.getInstance();
-			
-			List<JobInfo> jobs = sched.getJobs();
-			System.out.println("# of jobs: " + jobs.size());
-			Iterator<JobInfo> jobIt = jobs.iterator();
-			while (jobIt.hasNext()) {
-				System.out.println(jobIt.next().getJobName());
+			// Get project path
+			String thisClassPath = SettingsModel.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+			String projectPath = URLDecoder.decode(thisClassPath, "UTF-8");
+			for (int i = projectPath.length() - 1, slashCount = 0; i >= 0; i--) {
+				if (projectPath.charAt(i) == '\\' || projectPath.charAt(i) == '/') {
+					slashCount++;
+					if (slashCount == 6) {
+						projectPath = projectPath.substring(0, i);
+						break;
+					}
+				}
 			}
-			sched.startJob("StarboxJob");
-			//sched.wait(200);
+			System.out.println("Project path: " + projectPath);
+			
+			// Set 'app.home' property, required by openpipeline
+			System.setProperty("app.home", projectPath);
+			
+			// Test: List all jobs
+			PipelineScheduler scheduler = PipelineScheduler.getInstance();
+			@SuppressWarnings("unchecked")
+			List<JobInfo> jobs = scheduler.getJobs();
+			System.out.println("# of existing jobs: " + jobs.size());
+			for (Iterator<JobInfo> jobIt = jobs.iterator(); jobIt.hasNext(); )
+				System.out.println(jobIt.next().getJobName());
+			
+			// Test: Run all jobs
+			for (Iterator<JobInfo> jobIt = jobs.iterator(); jobIt.hasNext(); )
+				scheduler.startJob(jobIt.next().getJobName());
+			
 			//PipelineScheduler.stop();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	/**
