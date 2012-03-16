@@ -53,26 +53,15 @@ public class UserModel {
 	 * @param status the status of the contact(pending,accepted,denied)
 	 */
 	public void addUser(String ip, String email, String name, String group){
-		userList.add(new User(ip,email,name,group,STATE_SENT));
-		String url = ip+":"+TOMCAT_PORT+USER_APP_PATH;
 		try {
 			String ownIP = InetAddress.getLocalHost().toString();
 			String request = Requests.addRequest(ownIP, email, name);
-			HttpURLConnection connection = (HttpURLConnection) new URL(url+"?"+request).openConnection();
-			int response = connection.getResponseCode();
-			if(response != 200){
-				//FUCK, FEL
-				System.out.println("FUCK,FEL");
-			} else{
-				//Rätt
-				System.out.println("SHU");
-			}
-			
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+			sendRequest(ip,request);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		userList.add(new User(ip,email,name,group,STATE_SENT));
 		writeToFile();
 	}
 	
@@ -168,10 +157,19 @@ public class UserModel {
 	}
 	
 	private void sendRequestResponse(String response, String IP){
+		String ownIP;
+		try {
+			ownIP = InetAddress.getLocalHost().toString();
+			String request = Requests.responseRequest(ownIP,response);
+			sendRequest(IP,request);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void sendRequest(String IP,String request){
 		String url = IP+":"+TOMCAT_PORT+USER_APP_PATH;
 		try {
-			String ownIP = InetAddress.getLocalHost().toString();
-			String request = Requests.responseRequest(ownIP,response);
 			HttpURLConnection connection = (HttpURLConnection) new URL(url+"?"+request).openConnection();
 			int responseCode = connection.getResponseCode();
 			if(responseCode != 200){
