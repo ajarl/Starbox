@@ -1,12 +1,16 @@
-package se.starbox.models;
+package models;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * A Model class for executing tasks related to the contact list.
  * Keeps an internal list of current users in the contact list, aswell
@@ -22,9 +26,10 @@ public class UserModel {
 	private static final String STATE_ACCEPTED = "accepted";
 	private static final String STATE_DENIED = "denied";
 	private static final String STATE_PENDING = "pending";
-
+	private static final String STATE_SENT = "sent";
+	
 	private ArrayList<User> userList;
-
+	
 	/**
 	 * Initiate the model instance. Parses the users.xml file on startup.
 	 */
@@ -33,7 +38,7 @@ public class UserModel {
 	}
 	private void initModel(){
 		userList = (ArrayList<User>) (new UserParser(XML_PATH)).getAll();
-
+		
 	}
 	/**
 	 * Add a user to the contact list ( IP and email are required, rest are optional)
@@ -45,6 +50,25 @@ public class UserModel {
 	 */
 	public void addUser(String ip, String email, String name, String group,String status){
 		userList.add(new User(ip,email,name,group,status));
+		String url = "";
+		try {
+			String request = Requests.addRequest(ip, email, name, group, status);
+			HttpURLConnection connection = (HttpURLConnection) new URL(url+"?"+request).openConnection();
+			int response = connection.getResponseCode();
+			if(response != 200){
+				//FUCK, FEL
+				System.out.println("FUCK,FEL");
+			} else{
+				//Rätt
+				System.out.println("SHU");
+			}
+			
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		writeToFile();
 	}
 	/**
@@ -153,7 +177,7 @@ public class UserModel {
 			}
 		}
 	}
-
+	
 	private String getUserBlock(User u){
 		String block = "\t<User>\n\t\t<IP>"+u.getIp()+"</IP>\n"+
 						"\t\t<DisplayName>"+u.getName()+"</DisplayName>\n"+
