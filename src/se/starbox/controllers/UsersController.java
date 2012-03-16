@@ -16,7 +16,7 @@ import se.starbox.models.UserModel;
 /**
  * Servlet implementation class UsersController
  */
-@WebServlet(description = "handles user request from the interwebs.", urlPatterns = { "/users/" })
+@WebServlet(description = "handles user request from the interwebs.", urlPatterns = { "/users/", "/users" })
 public class UsersController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static String EDIT_JSP = "/edituser.jsp";
@@ -76,7 +76,7 @@ public class UsersController extends HttpServlet {
 			request.setAttribute("errorMessage", "Du kan inte göra en post till users controllen utan en action. Tänk över ditt beteende.");
 			forward = LIST_JSP;
 		} else if (action.equals("create")){
-			userModel.addUser("String ip", "String email", "String name", "String group","String status");
+			userModel.addUser("String ip", "String email", "String name", "String group");
 			request.setAttribute("userEmail", "Fixa controllerna");
 			forward = SHOW_JSP;
 		} else if (action.equals("update")){

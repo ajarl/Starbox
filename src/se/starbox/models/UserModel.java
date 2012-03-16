@@ -1,4 +1,4 @@
-package models;
+package se.starbox.models;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -6,9 +6,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -27,6 +29,8 @@ public class UserModel {
 	private static final String STATE_DENIED = "denied";
 	private static final String STATE_PENDING = "pending";
 	private static final String STATE_SENT = "sent";
+	private static final String TOMCAT_PORT = "8080";
+	private static final String USER_APP_PATH = "/starbox/users/";
 	
 	private ArrayList<User> userList;
 	
@@ -48,11 +52,12 @@ public class UserModel {
 	 * @param group the group the contact belongs to
 	 * @param status the status of the contact(pending,accepted,denied)
 	 */
-	public void addUser(String ip, String email, String name, String group,String status){
-		userList.add(new User(ip,email,name,group,status));
-		String url = "";
+	public void addUser(String ip, String email, String name, String group){
+		userList.add(new User(ip,email,name,group,STATE_SENT));
+		String url = ip+":"+TOMCAT_PORT+USER_APP_PATH;
 		try {
-			String request = Requests.addRequest(ip, email, name, group, status);
+			String ownIP = InetAddress.getLocalHost().toString();
+			String request = Requests.addRequest(ownIP, email, name);
 			HttpURLConnection connection = (HttpURLConnection) new URL(url+"?"+request).openConnection();
 			int response = connection.getResponseCode();
 			if(response != 200){
@@ -66,11 +71,16 @@ public class UserModel {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		writeToFile();
 	}
+	
+	public void addIncomingUser(String ip, String email, String name, String group){
+		userList.add(new User(ip,email,name,group,STATE_PENDING));
+		writeToFile();
+	}
+	
 	/**
 	 * Return a List of all users currently in users.xml
 	 * @return a List of all users currently in the contact list
@@ -107,6 +117,18 @@ public class UserModel {
 		writeToFile();
 	}
 	/**
+	 * Set if a friend request was accepted by a user (change STATE_SENT to STATE_ACCEPTED)
+	 * @param IP the ip address of the accepting contact
+	 */
+	public void requestAccepted(String IP){
+		for(int i=0;i<userList.size();i++){
+			if(userList.get(i).getIp().equals(IP)){
+				userList.get(i).setStatus(STATE_ACCEPTED);
+			}
+		}
+		writeToFile();
+	}
+	/**
 	 * Remove a user from the contact list
 	 * @param IP the IP address of the contact to remove
 	 */
@@ -128,6 +150,7 @@ public class UserModel {
 				u.setStatus(STATE_ACCEPTED);
 			}
 		}
+		sendRequestResponse("ACCEPT", IP);
 		writeToFile();
 	}
 	/**
@@ -140,7 +163,30 @@ public class UserModel {
 				u.setStatus(STATE_DENIED);
 			}
 		}
+		sendRequestResponse("DENY", IP);
 		writeToFile();
+	}
+	
+	private void sendRequestResponse(String response, String IP){
+		String url = IP+":"+TOMCAT_PORT+USER_APP_PATH;
+		try {
+			String ownIP = InetAddress.getLocalHost().toString();
+			String request = Requests.responseRequest(ownIP,response);
+			HttpURLConnection connection = (HttpURLConnection) new URL(url+"?"+request).openConnection();
+			int responseCode = connection.getResponseCode();
+			if(responseCode != 200){
+				//FUCK, FEL
+				System.out.println("FUCK,FEL");
+			} else{
+				//Rätt
+				System.out.println("SHU");
+			}
+			
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	/**
 	 * Get a list of the IP addresses which are whitelisted, 
