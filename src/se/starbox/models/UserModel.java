@@ -22,7 +22,7 @@ import java.util.List;
  *
  */
 public class UserModel {
-	private static final String XML_PATH = "src/files/users.xml";
+	private static final String XML_PATH = "users.xml";
 	private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<Users xmlns=\"starbox\">\n";
 	private static final String XML_TAIL = "</Users>";
 	private static final String STATE_ACCEPTED = "accepted";
@@ -61,12 +61,12 @@ public class UserModel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		userList.add(new User(ip,email,name,group,STATE_SENT));
+		userList.add(new User(ip,STATE_SENT));
 		writeToFile();
 	}
 	
 	public void addIncomingUser(String ip, String email, String name){
-		userList.add(new User(ip,email,name,STATE_PENDING));
+		userList.add(new User(ip,STATE_PENDING, email,name));
 		writeToFile();
 	}
 	
@@ -109,10 +109,12 @@ public class UserModel {
 	 * Set if a friend request was accepted by a user (change STATE_SENT to STATE_ACCEPTED)
 	 * @param IP the ip address of the accepting contact
 	 */
-	public void requestResponse(String IP,String response){
+	public void setRequestResponse(String IP,String response, String email, String name){
 		for(int i=0;i<userList.size();i++){
 			if(userList.get(i).getIp().equals(IP)){
 				userList.get(i).setStatus(response);
+				userList.get(i).setEmail(email);
+				userList.get(i).setName(name);
 			}
 		}
 		writeToFile();
@@ -133,13 +135,13 @@ public class UserModel {
 	 * Set a contact's status to accepted
 	 * @param IP the IP address of the contact to accept
 	 */
-	public void acceptRequest(String IP){
+	public void acceptRequest(String IP,String email, String name){
 		for(User u : userList){
 			if(u.getIp().equals(IP)){
 				u.setStatus(STATE_ACCEPTED);
 			}
 		}
-		sendRequestResponse(STATE_ACCEPTED, IP);
+		sendRequestResponse(STATE_ACCEPTED, IP, email, name);
 		writeToFile();
 	}
 	/**
@@ -152,15 +154,15 @@ public class UserModel {
 				u.setStatus(STATE_DENIED);
 			}
 		}
-		sendRequestResponse(STATE_DENIED, IP);
+		sendRequestResponse(STATE_DENIED, IP,"","");
 		writeToFile();
 	}
 	
-	private void sendRequestResponse(String response, String IP){
+	private void sendRequestResponse(String response, String IP,String email, String name){
 		String ownIP;
 		try {
 			ownIP = InetAddress.getLocalHost().toString();
-			String request = Requests.responseRequest(ownIP,response);
+			String request = Requests.responseRequest(ownIP,response, email, name);
 			sendRequest(IP,request);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();

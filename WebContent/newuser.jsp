@@ -10,6 +10,10 @@
       <div class="layout">
         <div class="users-container clearfix">
         	<h1>Add new user</h1>
+        	<%  if(!request.getAttribute("addedUser").equals("null")){
+        			out.println("Added user: "+request.getAttribute("addedUser"));
+        		}
+        	%>
           	<form method="POST" action="?action=create" name="create">
           		<input type="textfield" name="ip" value="1.2.3.4"/>
           		<input type="submit" value="Create"/>

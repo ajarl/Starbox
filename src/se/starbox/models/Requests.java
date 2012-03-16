@@ -22,14 +22,16 @@ public class Requests {
 		}
 		return request;
 	}
-	static public String responseRequest(String ip, String response){
+	static public String responseRequest(String ip, String response, String email, String name){
 		String charset = "UTF-8";
 		String request = "";
 		try {
-			request = String.format("action=%s&ip=%s&response=%s",
+			request = String.format("action=%s&ip=%s&response=%s&email=%s&name=%s",
 											URLEncoder.encode(REQUEST_RESPONSE, charset),
 											URLEncoder.encode(ip, charset),
-											URLEncoder.encode(response, charset)
+											URLEncoder.encode(response, charset),
+											URLEncoder.encode(email, charset),
+											URLEncoder.encode(name, charset)
 											);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();

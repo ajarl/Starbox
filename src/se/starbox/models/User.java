@@ -7,22 +7,19 @@ public class User {
 	private String status;
 	private String group;
 
-	public User(String ip, String email,String name,String group, String status){
+	public User(String ip, String status,String email,String name,String group){
 		this.setName(name);
 		this.setEmail(email);
 		this.setIp(ip);
 		this.setStatus(status);
 		this.setGroup(group);
 	}
-	public User(String ip, String email,String name,String status){
-		this(ip,email,name,"",status);
-	}
 
-	public User(String ip, String email,String name){
-		this(ip,email,name,"","");
+	public User(String ip, String status, String email,String name){
+		this(ip,status,email,name,"");
 	}
-	public User(String ip,String email){
-		this(ip,email,"");
+	public User(String ip,String status){
+		this(ip,status,"","");
 	}
 	public String getEmail() {
 		return email;
