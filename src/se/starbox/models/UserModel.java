@@ -65,8 +65,8 @@ public class UserModel {
 		writeToFile();
 	}
 	
-	public void addIncomingUser(String ip, String email, String name, String group){
-		userList.add(new User(ip,email,name,group,STATE_PENDING));
+	public void addIncomingUser(String ip, String email, String name){
+		userList.add(new User(ip,email,name,STATE_PENDING));
 		writeToFile();
 	}
 	
@@ -109,10 +109,10 @@ public class UserModel {
 	 * Set if a friend request was accepted by a user (change STATE_SENT to STATE_ACCEPTED)
 	 * @param IP the ip address of the accepting contact
 	 */
-	public void requestAccepted(String IP){
+	public void requestResponse(String IP,String response){
 		for(int i=0;i<userList.size();i++){
 			if(userList.get(i).getIp().equals(IP)){
-				userList.get(i).setStatus(STATE_ACCEPTED);
+				userList.get(i).setStatus(response);
 			}
 		}
 		writeToFile();
@@ -139,7 +139,7 @@ public class UserModel {
 				u.setStatus(STATE_ACCEPTED);
 			}
 		}
-		sendRequestResponse("ACCEPT", IP);
+		sendRequestResponse(STATE_ACCEPTED, IP);
 		writeToFile();
 	}
 	/**
@@ -152,7 +152,7 @@ public class UserModel {
 				u.setStatus(STATE_DENIED);
 			}
 		}
-		sendRequestResponse("DENY", IP);
+		sendRequestResponse(STATE_DENIED, IP);
 		writeToFile();
 	}
 	

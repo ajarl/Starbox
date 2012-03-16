@@ -14,6 +14,9 @@ public class User {
 		this.setStatus(status);
 		this.setGroup(group);
 	}
+	public User(String ip, String email,String name,String status){
+		this(ip,email,name,"",status);
+	}
 
 	public User(String ip, String email,String name){
 		this(ip,email,name,"","");
