@@ -3,18 +3,6 @@
   width: 100%;
 }
 
-.search-container .left {
-	border-right: 1px solid #999;
-	float: left;
-	padding-right: 20px;
-	width: 220px;
-}
-
-.search-container .right {
-	float: right;
-	width: 700px;
-}
-
 .search-inputs {
 
 }

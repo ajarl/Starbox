@@ -1,26 +1,65 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>StarBox</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/settings.css" />
 </head>
 <body>
-<form action="settings" method="post">
-	Email: <input type="text" name="email" value="<%= request.getAttribute("email") %>" />
-	<input type="submit" value="Ändra" />
-</form>
-<form action="settings" method="post"><input type="submit" name="shutdown" value="Shut down Tomcat" /></form>
-<form action="settings" method="post"><input type="submit" name="updateIndex" value="Update Index" /></form>
-<p>
-Current info:<br />
-<b>Email:</b> <%= request.getAttribute("email") %><br />
-<b>Display name:</b> <%= request.getAttribute("displayName") %><br />
-<b>Starbox folder:</b> <%= request.getAttribute("starboxFolder") %><br />
-<b>Index update interval:</b> <%= request.getAttribute("indexUpdateInterval") %><br />
-<br /><b>IP:</b> <%= request.getAttribute("ip") %>
-</p>
-
+	<jsp:include page="_header.jsp" />
+	<div class="main">
+		<div class="layout">
+			<div class="settings-container">
+				<div class="settings-inputs clearfix">
+					<div class="left">
+						<table>
+							<tr>
+								<td><input type="button" name="update-index"
+									id="update-index" value="Update index"
+									data-href="/settings/update_index" /></td>
+							</tr>
+							<tr>
+								<td><input type="button" name="shutdown"
+									value="Shut down Tomcat" /></td>
+							</tr>
+						</table>
+					</div>
+					<div class="right">
+						<table>
+							<tr>
+								<td><label for="path">Path</label></td>
+								<td><input type="text" name="path" id="path"
+									data-href="/settings/update_path"
+									value="<%= request.getAttribute("starboxFolder") %>" /></td>
+								<td><a href="#save">Save</a></td>
+							</tr>
+							<tr>
+								<td><label for="interval">Interval</label></td>
+								<td><input type="text" name="interval" id="interval"
+									data-href="/settings/update_interval"
+									value="<%= request.getAttribute("indexUpdateInterval") %>" /></td>
+								<td><a href="#save">Save</a></td>
+							</tr>
+							<tr>
+								<td><label for="displayname">Displayname</label></td>
+								<td><input type="text" name="displayname" id="displayname"
+									data-href="/settings/update_name"
+									value="<%= request.getAttribute("displayName") %>" /></td>
+								<td><a href="#save">Save</a></td>
+							</tr>
+							<tr>
+								<td><label for="email">Email</label></td>
+								<td><input type="text" name="email" id="email"
+									data-href="/settings/update_email"
+									value="<%= request.getAttribute("email") %>" /></td>
+								<td><a href="#save">Save</a></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/settings.js"></script>
 </body>
 </html>
