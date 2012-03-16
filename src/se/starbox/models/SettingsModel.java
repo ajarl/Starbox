@@ -10,14 +10,18 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.UnknownHostException;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.parsers.*;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-//import org.openpipeline.util.XMLConfig;
+import org.openpipeline.scheduler.JobInfo;
+import org.openpipeline.scheduler.PipelineScheduler;
 
 /**
  * Model for getting and changing local user settings.
@@ -152,7 +156,42 @@ public class SettingsModel {
 	 * Starts the OpenPipeline job to begin indexing the local Starbox folder.
 	 */
 	public void updateIndex() {
-		// TODO: Start the OpenPipeline job
+		// TODO: delete index data, start the OpenPipeline job?
+		try {
+			// Get project path
+			String thisClassPath = SettingsModel.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+			String projectPath = URLDecoder.decode(thisClassPath, "UTF-8");
+			for (int i = projectPath.length() - 1, slashCount = 0; i >= 0; i--) {
+				if (projectPath.charAt(i) == '\\' || projectPath.charAt(i) == '/') {
+					slashCount++;
+					if (slashCount == 6) {
+						projectPath = projectPath.substring(0, i);
+						break;
+					}
+				}
+			}
+			System.out.println("Project path: " + projectPath);
+			
+			// Set 'app.home' property, required by openpipeline
+			System.setProperty("app.home", projectPath);
+			
+			// Test: List all jobs
+			PipelineScheduler scheduler = PipelineScheduler.getInstance();
+			@SuppressWarnings("unchecked")
+			List<JobInfo> jobs = scheduler.getJobs();
+			System.out.println("# of existing jobs: " + jobs.size());
+			for (Iterator<JobInfo> jobIt = jobs.iterator(); jobIt.hasNext(); )
+				System.out.println(jobIt.next().getJobName());
+			
+			// Test: Run all jobs
+			for (Iterator<JobInfo> jobIt = jobs.iterator(); jobIt.hasNext(); )
+				scheduler.startJob(jobIt.next().getJobName());
+			
+			//PipelineScheduler.stop();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
