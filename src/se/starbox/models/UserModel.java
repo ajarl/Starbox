@@ -12,6 +12,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 /**
  * A Model class for executing tasks related to the contact list.
@@ -25,10 +27,10 @@ public class UserModel {
 	private static final String XML_PATH = "users.xml";
 	private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<Users xmlns=\"starbox\">\n";
 	private static final String XML_TAIL = "</Users>";
-	private static final String STATE_ACCEPTED = "accepted";
-	private static final String STATE_DENIED = "denied";
-	private static final String STATE_PENDING = "pending";
-	private static final String STATE_SENT = "sent";
+	public static final String STATE_ACCEPTED = "accepted";
+	public static final String STATE_DENIED = "denied";
+	public static final String STATE_PENDING = "pending";
+	public static final String STATE_SENT = "sent";
 	private static final String TOMCAT_PORT = "8080";
 	private static final String USER_APP_PATH = "/starbox/users/";
 	
@@ -77,6 +79,7 @@ public class UserModel {
 	public List<User> getUsers(){
 		if(userList == null){
 		}
+		Collections.sort(userList);
 		return userList;
 	}
 	/**

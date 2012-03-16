@@ -1,6 +1,6 @@
 package se.starbox.models;
 
-public class User {
+public class User implements Comparable<User> {
 	private String name;
 	private String email;
 	private String ip;
@@ -50,6 +50,40 @@ public class User {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public int compareTo(User otherUser){
+		boolean hasHigherPrio = points(otherUser.getStatus()) > points(status);
+		if(hasHigherPrio){
+			return -1;
+		}
+		boolean hasSamePrio = points(otherUser.getStatus()) == points(status);
+		if(hasSamePrio){
+			if(otherUser.getName().equals("") | name.equals("")){
+				return 0;
+			}
+			char otherFirstLetter = otherUser.getName().charAt(0);
+			char myFirstLetter = name.charAt(0);
+			if(otherFirstLetter < myFirstLetter){
+				return -1;
+			}else if(otherFirstLetter > myFirstLetter)
+				return 1;
+			else{
+				return 0;
+			}
+		} else{
+			return 1;
+		}
+	}
+	private int points(String status){
+		if(status.equals(UserModel.STATE_PENDING)){
+			return 4;
+		} else if(status.equals(UserModel.STATE_ACCEPTED)){
+			return 3;
+		} else if(status.equals(UserModel.STATE_SENT)){
+			return 2;
+		} else{
+			return 1;
+		}
 	}
 
 }
