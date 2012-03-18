@@ -1,14 +1,24 @@
 //package se.starbox.util;
 //
-//import java.io.File;
 //import java.net.MalformedURLException;
+//import java.io.File;
+//import java.io.FileWriter;
+//import java.io.IOException;
 //
-//import org.apache.solr.client.solrj.SolrServer;
 //import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+//
 //import org.openpipeline.pipeline.item.DocBinary;
 //import org.openpipeline.pipeline.item.Item;
 //import org.openpipeline.pipeline.stage.Stage;
 //import org.openpipeline.scheduler.PipelineException;
+//
+//import org.jdom.Attribute;
+//import org.jdom.Document;
+//import org.jdom.Element;
+//import org.jdom.JDOMException;
+//import org.jdom.input.SAXBuilder;
+//import org.jdom.output.Format;
+//import org.jdom.output.XMLOutputter;
 //
 ///**
 // * A class made as a bridge between OpenPipeline and Solr. PipeToSolr takes the
@@ -50,15 +60,79 @@
 //	 * @param item Input from SimpleTokenizer
 //	 */
 //	public void processItem(Item item) throws PipelineException{
-//	
+//		String name = "";
+//		String doctype = "";
+//		long size = 0;
+//		long timeStamp = 0;
 //		DocBinary docBinary = item.getDocBinary();
 //		
 //		if (docBinary != null && docBinary.getBinary().size() > 0) {
-//			String name 	= docBinary.getName();
-//			String extension= docBinary.getExtension();
-//			long size 		= docBinary.getSize();
-//			long timeStamp 	= docBinary.getTimestamp();
+//			name 		= docBinary.getName();
+//			doctype		= docBinary.getExtension();
+//			size 		= docBinary.getSize();
+//			timeStamp 	= docBinary.getTimestamp();
+//			//TODO Plocka ut url till filen
 //		}
+//		
+//		boolean exists = (new File(indexDataPath)).exists();
+//		if (exists) {
+//			SAXBuilder builder = new SAXBuilder();
+//			File indexData = new File(indexDataPath);
+//	 
+//			Document doc = null;
+//			try {
+//				doc = (Document) builder.build(indexData);
+//			} catch (JDOMException | IOException e) {
+//				System.err.println("PipeToSolr - Error when trying to read IndexData for update.");
+//				e.printStackTrace();
+//			}
+//	 
+//			Element items = new Element("items");
+//			items.setAttribute(new Attribute("id", "asd")); //TODO Koll av ID
+//			items.addContent(new Element("name").setText(name));
+//			items.addContent(new Element("doctype").setText(doctype));
+//			items.addContent(new Element("timeStamp").setText("" + timeStamp)); //TODO Fulhack?
+//			items.addContent(new Element("filesize").setText("" + size));
+//			//TODO Lägg till url
+//			
+//			doc.getRootElement().addContent(items);
+//	 
+//			XMLOutputter xmlOutput = new XMLOutputter();
+//			xmlOutput.setFormat(Format.getPrettyFormat());
+//			try {
+//				xmlOutput.output(doc, new FileWriter(indexDataPath));
+//			} catch (IOException e) {
+//				System.err.println("PipeToSolr - Error when trying to save update to IndexData.xml");
+//				e.printStackTrace();
+//			}
+//			
+//		} else {
+//			Element creator = new Element("creator");
+//			creator.setAttribute("filecreator", "asd"); //TODO Hur se vem som skapat?
+//			Document doc = new Document(creator);
+//			doc.setRootElement(creator);
+//			
+//			Element items = new Element("items");
+//			items.setAttribute(new Attribute("id", "asd")); //TODO Koll av ID
+//			items.addContent(new Element("name").setText(name));
+//			items.addContent(new Element("doctype").setText(doctype));
+//			items.addContent(new Element("timeStamp").setText("" + timeStamp)); //TODO Fulhack?
+//			items.addContent(new Element("filesize").setText("" + size));
+//			//TODO Lägg till url
+//			
+//			doc.getRootElement().addContent(items);
+//			
+//			XMLOutputter xmlOutput = new XMLOutputter();
+//			xmlOutput.setFormat(Format.getPrettyFormat());
+//			try {
+//				xmlOutput.output(doc, new FileWriter(indexDataPath)); //TODO Namnge indexData efter skaparen
+//			} catch (IOException e) {
+//				System.err.println("PipeToSolr - Error while trying to create IndexData.xml");
+//				e.printStackTrace();
+//			}
+//
+//		}		 
+//	
 //	}
 //	
 //	
