@@ -137,7 +137,9 @@ public class PipeToSolr extends Stage{
 	
 	}
 	
-	
+	public void toSolr(){
+		
+	}
 
 	/**
 	 * 
@@ -166,15 +168,6 @@ public class PipeToSolr extends Stage{
 		    }
 		  
 	}
-	
-	/**
-	 * 
-	 */
-	/*
-	private void printToFile(List<Item>){
-		
-	}
-	*/
 	
 	@Override
 	public String getDescription() {
