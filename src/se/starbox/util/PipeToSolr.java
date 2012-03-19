@@ -89,14 +89,16 @@ public class PipeToSolr extends Stage{
 			}
 	 
 			Element items = new Element("items");
+			
 			items.addContent(new Element("name").setText(name));
 			items.addContent(new Element("url").setText(url));
 			items.addContent(new Element("doctype").setText(doctype));
 			items.addContent(new Element("timeStamp").setText("" + timeStamp));
 			items.addContent(new Element("filesize").setText("" + size));
-			
+
 			doc.getRootElement().addContent(items);
 	 
+			
 			XMLOutputter xmlOutput = new XMLOutputter();
 			xmlOutput.setFormat(Format.getPrettyFormat());
 			try {
@@ -118,6 +120,7 @@ public class PipeToSolr extends Stage{
 			items.addContent(new Element("doctype").setText(doctype));
 			items.addContent(new Element("timeStamp").setText("" + timeStamp));
 			items.addContent(new Element("filesize").setText("" + size));
+	
 			
 			doc.getRootElement().addContent(items);
 			
@@ -135,6 +138,34 @@ public class PipeToSolr extends Stage{
 	}
 	
 	
+
+	/**
+	 * 
+	 * Deletes IndexData.xml
+	 * 
+	 */
+	
+	public void clearIndexData (){
+		
+		    try {
+		    	
+		      File target = new File(indexDataPath);
+
+		      if (!target.exists()) {
+		        System.err.println("IndexData.xml doesn't exist.");
+		        return;
+		      }
+
+		      if (target.delete())
+		        System.err.println("** Deleted IndexData.xml **");
+		      else
+		        System.err.println("Failed to delete IndexData.xml");
+		    } catch (SecurityException e) {
+		      System.err.println("Unable to delete IndexData.xml ("
+		          + e.getMessage() + ")");
+		    }
+		  
+	}
 	
 	/**
 	 * 
