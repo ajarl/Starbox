@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<add>
+  <doc>
+    <field name="namn">name</field>
+    <field name="url">url</field>
+    <field name="doctype">doctype</field>
+    <field name="timeStamp">timeStamp</field>
+    <field name="fileSize">size</field>
+  </doc>
+  <doc>
+    <field name="namn">name</field>
+    <field name="url">url</field>
+    <field name="doctype">doctype</field>
+    <field name="timeStamp">timeStamp</field>
+    <field name="fileSize">size</field>
+  </doc>
+  <doc>
+    <field name="namn">name</field>
+    <field name="url">url</field>
+    <field name="doctype">doctype</field>
+    <field name="timeStamp">timeStamp</field>
+    <field name="fileSize">size</field>
+  </doc>
+  <doc>
+    <field name="namn">name</field>
+    <field name="url">url</field>
+    <field name="doctype">doctype</field>
+    <field name="timeStamp">timeStamp</field>
+    <field name="fileSize">size</field>
+  </doc>
+  <doc>
+    <field name="namn">name</field>
+    <field name="url">url</field>
+    <field name="doctype">doctype</field>
+    <field name="timeStamp">timeStamp</field>
+    <field name="fileSize">size</field>
+  </doc>
+</add>
+
