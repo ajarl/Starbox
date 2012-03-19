@@ -41,7 +41,7 @@ public class PipeToSolr extends Stage{
 	 */
 	public void initialize() {
 		solrURL = "http://localhost:8983/solr";
-		indexDataPath = "path till en mapp där allas indexData ligger/minIndexData.xml";  //TODO Namnge indexData efter användaren
+		indexDataPath = "path till en mapp där allas indexData ligger/minIndexData.xml";  //TODO Namnge indexData efter användaren och kirra pathen
 		try {
 			solrServer = new CommonsHttpSolrServer(solrURL);
 		} catch (MalformedURLException e) {
@@ -56,16 +56,16 @@ public class PipeToSolr extends Stage{
 	/**
 	 * Takes input from OpenPipeline, one file at a time as an item. 
 	 * ProcessItem takes each item and adds it to IndexData.xml 
-	 * <creator = "creator">
-	 * 		<items>
-	 * 			<name>"filename"</name>
-	 * 			<url>"url"</url>
+	 * <add>
+	 * 		<doc>
+	 * 			<field name="name">"filename"</field>
+	 * 			<field name="url">"url"</field>
 	 * 			..
-	 * 		</items>
-	 * 		<items>
-	 * 		</items>
+	 * 		</doc>
+	 * 		<doc>
+	 * 		</doc>
 	 * 		..
-	 * </creator>
+	 * </add>
 	 * 
 	 * @param item Input from SimpleTokenizer
 	 */
@@ -90,54 +90,52 @@ public class PipeToSolr extends Stage{
 			SAXBuilder builder = new SAXBuilder();
 			File indexData = new File(indexDataPath);
 	 
-			Document doc = null;
+			Document document = null;
 			try {
-				doc = (Document) builder.build(indexData);
+				document = (Document) builder.build(indexData);
 			} catch (JDOMException | IOException e) {
 				System.err.println("PipeToSolr - Error when trying to read IndexData for update.");
 				e.printStackTrace();
 			}
 	 
-			Element items = new Element("items");
-			
-			items.addContent(new Element("name").setText(name));
-			items.addContent(new Element("url").setText(url));
-			items.addContent(new Element("doctype").setText(doctype));
-			items.addContent(new Element("timeStamp").setText("" + timeStamp));
-			items.addContent(new Element("filesize").setText("" + size));
+			Element doc = new Element("doc");
+			doc.addContent(new Element("<field name=\"name\"").setText(name));
+			doc.addContent(new Element("<field name=\"url\"").setText(url));
+			doc.addContent(new Element("<field name=\"doctype\"").setText(doctype));
+			doc.addContent(new Element("<field name=\"timeStamp\"").setText("" + timeStamp));
+			doc.addContent(new Element("<field name=\"fileSize\"").setText("" + size));
 
-			doc.getRootElement().addContent(items);
+			document.getRootElement().addContent(doc);
 	 
 			
 			XMLOutputter xmlOutput = new XMLOutputter();
 			xmlOutput.setFormat(Format.getPrettyFormat());
 			try {
-				xmlOutput.output(doc, new FileWriter(indexDataPath));
+				xmlOutput.output(document, new FileWriter(indexDataPath));
 			} catch (IOException e) {
 				System.err.println("PipeToSolr - Error when trying to save update to IndexData.xml");
 				e.printStackTrace();
 			}
 			
 		} else {
-			Element creator = new Element("creator");
-			creator.setAttribute("filecreator", "asd"); //TODO Hur se vem som skapat?
-			Document doc = new Document(creator);
-			doc.setRootElement(creator);
+			Element add = new Element("add");
+			Document document = new Document(add);
+			document.setRootElement(add);
 			
-			Element items = new Element("items");
-			items.addContent(new Element("name").setText(name));
-			items.addContent(new Element("url").setText(url));
-			items.addContent(new Element("doctype").setText(doctype));
-			items.addContent(new Element("timeStamp").setText("" + timeStamp));
-			items.addContent(new Element("filesize").setText("" + size));
+			Element doc = new Element("doc");
+			doc.addContent(new Element("<field name=\"name\"").setText(name));
+			doc.addContent(new Element("<field name=\"url\"").setText(url));
+			doc.addContent(new Element("<field name=\"doctype\"").setText(doctype));
+			doc.addContent(new Element("<field name=\"timeStamp\"").setText("" + timeStamp));
+			doc.addContent(new Element("<field name=\"fileSize\"").setText("" + size));
 	
 			
-			doc.getRootElement().addContent(items);
+			document.getRootElement().addContent(doc);
 			
 			XMLOutputter xmlOutput = new XMLOutputter();
 			xmlOutput.setFormat(Format.getPrettyFormat());
 			try {
-				xmlOutput.output(doc, new FileWriter(indexDataPath));
+				xmlOutput.output(document, new FileWriter(indexDataPath));
 			} catch (IOException e) {
 				System.err.println("PipeToSolr - Error while trying to create IndexData.xml");
 				e.printStackTrace();
@@ -147,7 +145,10 @@ public class PipeToSolr extends Stage{
 	
 	}
 	
+	
 	public void toSolr(){
+		
+		
 		
 	}
 
