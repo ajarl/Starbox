@@ -1,11 +1,19 @@
 package se.starbox.util;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.client.solrj.request.DirectXmlRequest;
+import org.apache.solr.common.SolrInputDocument;
 
 import org.openpipeline.pipeline.item.DocBinary;
 import org.openpipeline.pipeline.item.Item;
@@ -147,8 +155,41 @@ public class PipeToSolr extends Stage{
 	
 	}
 	
+	/**
+	 * 
+	 * Reads all index files in index folder and sends sends them to Solr.
+	 * 
+	 */
+	
+	
 	public void toSolr(){
+		SAXBuilder builder = new SAXBuilder();
+	
 		
+		try {
+			File dir = new File(indexDataPath);
+			 
+			for (File child : dir.listFiles()) {
+			    if (".".equals(child.getName()) || "..".equals(child.getName())) {
+			      continue;  
+			    }
+			    
+			    Document doc = builder.build(child);
+			    Element root = doc.getRootElement();
+			    String s = root.toString();
+			    DirectXmlRequest xmlreq = new DirectXmlRequest( "/update", s); 
+			    solrServer.request(xmlreq);
+			  }
+		} catch (SolrServerException e) {
+			System.err.println("PipeToSolr caught a SolrServerException");
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.err.println("PipeToSolr caught an IOException");
+			e.printStackTrace();
+		}catch (JDOMException e) {
+			System.err.println("PipeToSolr caught an JDOMException");
+			e.printStackTrace();
+		}
 	}
 
 	/**
