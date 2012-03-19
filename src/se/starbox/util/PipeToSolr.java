@@ -41,7 +41,7 @@ public class PipeToSolr extends Stage{
 	 */
 	public void initialize() {
 		solrURL = "http://localhost:8983/solr";
-		indexDataPath = "path till en mapp där allas indexData ligger/minIndexData.xml";
+		indexDataPath = "path till en mapp där allas indexData ligger/minIndexData.xml";  //TODO Namnge indexData efter användaren
 		try {
 			solrServer = new CommonsHttpSolrServer(solrURL);
 		} catch (MalformedURLException e) {
@@ -56,6 +56,16 @@ public class PipeToSolr extends Stage{
 	/**
 	 * Takes input from OpenPipeline, one file at a time as an item. 
 	 * ProcessItem takes each item and adds it to IndexData.xml 
+	 * <creator = "creator">
+	 * 		<items>
+	 * 			<name>"filename"</name>
+	 * 			<url>"url"</url>
+	 * 			..
+	 * 		</items>
+	 * 		<items>
+	 * 		</items>
+	 * 		..
+	 * </creator>
 	 * 
 	 * @param item Input from SimpleTokenizer
 	 */
@@ -127,7 +137,7 @@ public class PipeToSolr extends Stage{
 			XMLOutputter xmlOutput = new XMLOutputter();
 			xmlOutput.setFormat(Format.getPrettyFormat());
 			try {
-				xmlOutput.output(doc, new FileWriter(indexDataPath)); //TODO Namnge indexData efter skaparen
+				xmlOutput.output(doc, new FileWriter(indexDataPath));
 			} catch (IOException e) {
 				System.err.println("PipeToSolr - Error while trying to create IndexData.xml");
 				e.printStackTrace();
