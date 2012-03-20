@@ -1,8 +1,8 @@
 <html>
 <head>
 <title>StarBox</title>
-<link rel="stylesheet" href="css/main.css" />
-<link rel="stylesheet" href="css/settings.css" />
+<link rel="stylesheet" href="/starbox/css/main.css" />
+<link rel="stylesheet" href="/starbox/css/settings.css" />
 </head>
 <body>
 	<jsp:include page="_header.jsp" />
@@ -13,13 +13,16 @@
 					<div class="left">
 						<table>
 							<tr>
-								<td><input type="button" name="update-index"
-									id="update-index" value="Update index"
-									data-href="/settings/update_index" /></td>
+								<td>
+									<button class="control-button" id="update-index"
+									data-href="/settings/update_index">Update index</button>
+								</td>
 							</tr>
 							<tr>
-								<td><input type="button" name="shutdown"
-									value="Shut down Tomcat" /></td>
+								<td>
+									<button class="control-button" id="shut-down"
+									data-href="/settings/shut_down" >Shut down</button>
+								</td>
 							</tr>
 						</table>
 					</div>
@@ -29,29 +32,29 @@
 								<td><label for="path">Path</label></td>
 								<td><input type="text" name="path" id="path"
 									data-href="/settings/update_path"
-									value="<%= request.getAttribute("starboxFolder") %>" /></td>
-								<td><a href="#save">Save</a></td>
+									value="<%= request.getAttribute("starboxFolder") %>" />
+									<button class="save-setting">Save</button></td>
 							</tr>
 							<tr>
 								<td><label for="interval">Interval</label></td>
 								<td><input type="text" name="interval" id="interval"
 									data-href="/settings/update_interval"
-									value="<%= request.getAttribute("indexUpdateInterval") %>" /></td>
-								<td><a href="#save">Save</a></td>
+									value="<%= request.getAttribute("indexUpdateInterval") %>" />
+									<button class="save-setting">Save</button></td>
 							</tr>
 							<tr>
 								<td><label for="displayname">Displayname</label></td>
 								<td><input type="text" name="displayname" id="displayname"
 									data-href="/settings/update_name"
-									value="<%= request.getAttribute("displayName") %>" /></td>
-								<td><a href="#save">Save</a></td>
+									value="<%= request.getAttribute("displayName") %>" />
+									<button class="save-setting">Save</button></td>
 							</tr>
 							<tr>
 								<td><label for="email">Email</label></td>
 								<td><input type="text" name="email" id="email"
 									data-href="/settings/update_email"
-									value="<%= request.getAttribute("email") %>" /></td>
-								<td><a href="#save">Save</a></td>
+									value="<%= request.getAttribute("email") %>" />
+									<button class="save-setting">Save</button></td>
 							</tr>
 						</table>
 					</div>
@@ -59,7 +62,7 @@
 			</div>
 		</div>
 	</div>
-	<script src="js/jquery-1.7.1.min.js"></script>
-	<script src="js/settings.js"></script>
+	<script src="/starbox/js/jquery-1.7.1.min.js"></script>
+	<script src="/starbox/js/settings.js"></script>
 </body>
 </html>

@@ -129,14 +129,14 @@ h2 {
 	font-family: 'WebSymbolsRegular';
 }
 
-.search-container, .settings-container .left {
+.layout .left {
 	border-right: 1px solid #999;
 	float: left;
 	padding-right: 20px;
 	width: 220px;
 }
 
-.search-container, .settings-container .right {
+.layout .right {
 	float: right;
 	width: 700px;
 }
