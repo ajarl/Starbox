@@ -1,16 +1,18 @@
 package se.starbox.models;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Iterator;
 import java.util.List;
 
-// Link to SolrJ dependencies.
-// http://repo1.maven.org/maven2/org/apache/solr/solr-solrj/1.4.0/solr-solrj-1.4.0.jar
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
-import org.apache.solr.common.params.SolrParams;
-import org.slf4j.LoggerFactory;
+import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
+import org.apache.solr.core.CoreContainer;
+import org.xml.sax.SAXException;
+
+
 
 /**
  * A Model class for searching files in your local index.
@@ -20,16 +22,11 @@ import org.slf4j.LoggerFactory;
 */
 
 public class SearchModel {
-	/**
-	* CommonsHttpSolrServer is thread-safe and if you are using the following constructor,
-	* you *MUST* re-use the same instance for all requests.  If instances are created on
-	* the fly, it can cause a connection leak. The recommended practice is to keep a
-	* static instance of CommonsHttpSolrServer per solr server url and share it for all requests.
-	* See https://issues.apache.org/jira/browse/SOLR-861 for more details	
-	*/
-	private static SolrServer solr;
-	private String solrServer = "http://localhost:8983/solr";
+
 	
+	private static EmbeddedSolrServer solr;
+	private final String SOLR_HOME = "solr/";
+
 	/**
 	* Initiate the model instance. Creates an instance of Solr on startup if
 	* one has not been created already.
@@ -37,22 +34,64 @@ public class SearchModel {
 	* @throws MalformedURLException
 	*/
 	public SearchModel() {
-		
-		if (solr == null)
-			try {
-				this.solr = new CommonsHttpSolrServer(solrServer);
-				//solr.ping();
-				
-			} catch (MalformedURLException e) {
-				System.err.println("SearchModel() - Caught a MalformedURLException." +
-									"URL was " + solrServer);
-				e.printStackTrace();
-			} catch (Exception e) {	
-				System.err.println("SearchModel() - Caught an exception.");
-				e.printStackTrace();
-			}
+	
+		// Initilize Solr
+//		if (solr == null)
+			// detta krashar sidan
+//			getSolr();
+//		
+//			
+//		try {
+//			solr.deleteById("*");
+//		} catch (SolrServerException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+	
 	}
 	
+	
+	/**
+	 * This method creates an embedded instance of Solr.
+	 */
+	private void getSolr() {
+		File home = new File(SOLR_HOME);
+		File f = new File(home, "conf/solr.xml");
+
+		CoreContainer container = new CoreContainer();
+		try {
+			container.load(SOLR_HOME, f);
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		solr  = new EmbeddedSolrServer(container,
+				"core");
+		/*
+		try {
+			System.setProperty("solr.solr.home", SOLR_HOME);
+		} catch (SecurityException se) {
+			System.err.println("SearchModel caught a SecurityException. Couldn't set system property!");
+			se.toString();
+		}
+	
+		CoreContainer coreContainer = new CoreContainer();
+		CoreContainer.Initializer initiliazer = new CoreContainer.Initializer();
+		solr = new EmbeddedSolrServer(coreContainer, "core"); */
+	}
+
+
+
 	/**
 	* Searches the index of Solr.
 	* @param inputQuery The string which you are searching for
