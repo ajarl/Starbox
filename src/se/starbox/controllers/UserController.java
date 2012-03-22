@@ -12,10 +12,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject;
+
 import se.starbox.models.Requests;
 import se.starbox.models.SettingsModel;
 import se.starbox.models.User;
 import se.starbox.models.UserModel;
+import se.starbox.util.JSONUtils;
 
 /**
  * Servlet implementation class UsersController
@@ -39,37 +42,34 @@ public class UserController extends HttpServlet {
        userModel = new UserModel();
        settingsModel = new SettingsModel();
     }
+    
+    private String userlistToJSON(List<User> users){
+    	StringBuilder json = new StringBuilder();
+    	json.append(JSONUtils.getJSONUserHeader());
+    	for(User u : users){
+    		json.append(JSONUtils.userToJSON(u));
+    	}
+    	json.append(JSONUtils.getJSONUserFooter());
+    	return json.toString();
+    	
+    }
 
+	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String forward="";
 		String action = request.getParameter("action");
-		
 		if (action == null) {
 			List<User> users = userModel.getUsers();
-			request.setAttribute("userList", users);
+			String jsonString = userlistToJSON(users);
+			response.getWriter().write(jsonString);
 			forward = LIST_JSP;
 		}/* else if (action.equals("show")){
 			request.setAttribute("userEmail", "user email. fix this");
 			forward = SHOW_JSP;
-		}*/else if (action.equals("add")) {
+		}else if (action.equals("adduser")) {
 			forward = ADD_JSP;
-		} else if (action.equals("edit")) {
-			request.setAttribute("userID","1");
-			request.setAttribute("userEmail","emajl@test.se");
-			request.setAttribute("userIP","1.2.3.4.5.6.7.8.9");
-			request.setAttribute("userName","TestNamn");
-			forward = EDIT_JSP;
-		} else if (action.equals("accept")) {
-			request.setAttribute("userEmail", " accepted a new user ");
-			forward = SHOW_JSP;
-		} else if (action.equals("deny")) {
-			request.setAttribute("userEmail", " denied a new user");
-			forward = LIST_JSP;
-		} else if (action.equals("destroy")) {
-			//userModel.deleteUser();
-			forward = LIST_JSP;
-			
-		} else if(action.equals(Requests.REQUEST_ADD)){
+		*/
+		else if(action.equals(Requests.REQUEST_ADD)){
 			String ip = (String) request.getAttribute("ip");
 			String email = (String) request.getAttribute("email");
 			String name = (String) request.getAttribute("name");
@@ -87,9 +87,11 @@ public class UserController extends HttpServlet {
 		} else {
 			forward = LIST_JSP;
 		}
+
+		//response.getWriter().write(jsonReturn.toString());
 		
-		RequestDispatcher view = request.getRequestDispatcher(forward);
-		view.forward(request, response);
+		//RequestDispatcher view = request.getRequestDispatcher(forward);
+		//view.forward(request, response);
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
