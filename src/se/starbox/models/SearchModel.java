@@ -8,6 +8,7 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.core.CoreContainer;
 import org.xml.sax.SAXException;
@@ -25,7 +26,8 @@ public class SearchModel {
 
 	
 	private static EmbeddedSolrServer solr;
-	private final String SOLR_HOME = "solr/";
+	// Får inte den här att fungera med en path relativ till projektet.
+	private final String SOLR_HOME = "C:/solr/";
 
 	/**
 	* Initiate the model instance. Creates an instance of Solr on startup if
@@ -35,21 +37,22 @@ public class SearchModel {
 	*/
 	public SearchModel() {
 	
-		// Initilize Solr
-//		if (solr == null)
-			// detta krashar sidan
-//			getSolr();
-//		
-//			
-//		try {
-//			solr.deleteById("*");
-//		} catch (SolrServerException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		//Initilize Solr
+		if (solr == null) {
+			//detta krashar sidan
+			getSolr();
+		}
+		
+			
+		try {
+			solr.deleteById("*");
+		} catch (SolrServerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	
 	}
 	
@@ -60,7 +63,9 @@ public class SearchModel {
 	private void getSolr() {
 		File home = new File(SOLR_HOME);
 		File f = new File(home, "conf/solr.xml");
-
+		
+//		System.out.println("PATH: " + f.getParentFile().getAbsolutePath());
+		
 		CoreContainer container = new CoreContainer();
 		try {
 			container.load(SOLR_HOME, f);
@@ -77,7 +82,6 @@ public class SearchModel {
 		
 		solr  = new EmbeddedSolrServer(container,
 				"core");
-		/*
 		try {
 			System.setProperty("solr.solr.home", SOLR_HOME);
 		} catch (SecurityException se) {
@@ -87,7 +91,7 @@ public class SearchModel {
 	
 		CoreContainer coreContainer = new CoreContainer();
 		CoreContainer.Initializer initiliazer = new CoreContainer.Initializer();
-		solr = new EmbeddedSolrServer(coreContainer, "core"); */
+		solr = new EmbeddedSolrServer(coreContainer, "core"); 
 	}
 
 
