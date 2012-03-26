@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,39 +33,21 @@ public class UserController extends HttpServlet {
 	private static String TEST_JSP = "/JSONTests.jsp";
 	private UserModel userModel;
 	private SettingsModel settingsModel;
-	
+
 	private static final String ACTION_ADD_USER = "adduser";
 	private static final String ACTION_UPDATE = "update";
 	private static final String ACTION_REMOVE = "remove";
-	
+
 	private static final String ACTION_GO_TO_ADD = "gotoadd";
-	
-       
-    public UserController() {
-        super();
-        // TODO Auto-generated constructor stub
-       userModel = new UserModel();
-       settingsModel = new SettingsModel();
-    }
-    
-    private String userlistToJSON(List<User> users){
-    	StringBuilder json = new StringBuilder();
-    	json.append(JSONUtils.getJSONUserHeader());
-    	for(User u : users){
-    		json.append(JSONUtils.userToJSON(u));
-    	}
-    	json.append(JSONUtils.getJSONUserFooter());
-    	return json.toString();
-    	
-    }
 
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		setFields(request);
 		String forward="";
 		String action = request.getParameter("action");
 		if (action == null) {
 			List<User> users = userModel.getUsers();
-			String jsonString = userlistToJSON(users);
+			String jsonString = userlistToJSONFormatted(users);
 			//request.setAttribute("userlist", jsonString);
 			response.getWriter().write(jsonString.toString());
 			forward = "WROTE";
@@ -73,20 +56,20 @@ public class UserController extends HttpServlet {
 			forward = ADD_JSP;
 		}
 		else if(action.equals(Requests.REQUEST_ADD)){
-			String ip = (String) request.getAttribute("ip");
-			String email = (String) request.getAttribute("email");
-			String name = (String) request.getAttribute("name");
+			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
+			String email = (String) request.getParameter(Requests.ATTRIBUTE_EMAIL);
+			String name = (String) request.getParameter(Requests.ATTRIBUTE_NAME);
 			userModel.addIncomingUser(ip, email, name);
 			forward = EMPTY_JSP;
-			
+
 		} else if(action.equals(Requests.REQUEST_RESPONSE)){
-			String ip = (String) request.getAttribute("ip");
-			String email = (String) request.getAttribute("email");
-			String name = (String) request.getAttribute("name");
-			String requestResponse = (String) request.getAttribute("response");
+			String ip = (String) request.getParameter("ip");
+			String email = (String) request.getParameter("email");
+			String name = (String) request.getParameter("name");
+			String requestResponse = (String) request.getParameter("response");
 			userModel.setRequestResponse(ip,requestResponse,email,name);
 			forward = EMPTY_JSP;
-			
+
 		} else {
 			forward = LIST_JSP;
 		}
@@ -95,24 +78,25 @@ public class UserController extends HttpServlet {
 			view.forward(request, response);
 		}
 	}
-	
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		setFields(request);
 		String forward="";
 		String action = request.getParameter("action");
-		
+
 		if (action == null) {
 			//error?
 			request.setAttribute("errorMessage", "Du kan inte göra en post till users controllen utan en action. Tänk över ditt beteende.");
 			forward = LIST_JSP;
 		} else if (action.equals(ACTION_ADD_USER)){
-			String ip = (String) request.getAttribute("ip");
+			String ip = (String) request.getParameter("ip");
 			userModel.addUser(ip, settingsModel.getEmail(), settingsModel.getDisplayName(),"");
 			request.setAttribute("addedUser", ip);
 			forward = ADD_JSP;
 		} else if (action.equals(ACTION_UPDATE)){
-			String newName = (String) request.getAttribute(Requests.ATTRIBUTE_NAME);
-			String newGroup = (String) request.getAttribute(Requests.ATTRIBUTE_GROUP);
-			String ip = (String) request.getAttribute(Requests.ATTRIBUTE_IP);
+			String newName = (String) request.getParameter(Requests.ATTRIBUTE_NAME);
+			String newGroup = (String) request.getParameter(Requests.ATTRIBUTE_GROUP);
+			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
 			if (newName != ""){
 				userModel.changeName(ip, newName);
 			}
@@ -121,16 +105,41 @@ public class UserController extends HttpServlet {
 			}
 			forward = LIST_JSP;
 		} else if(action.equals(ACTION_REMOVE)){
-			String ip = (String) request.getAttribute(Requests.ATTRIBUTE_IP);
+			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
 			userModel.removeUser(ip);
 			forward = LIST_JSP;
 		} else {
 			request.setAttribute("errorMessage", "Nu har du valt en knasig action. Felaktigt beteende igen.");
 			forward = LIST_JSP;
 		}
-		
+
 		RequestDispatcher view = request.getRequestDispatcher(forward);
 		view.forward(request, response);
+	}
+	private void setFields(HttpServletRequest request){
+		ServletContext context = request.getServletContext();
+		userModel = new UserModel(context);
+		settingsModel = new SettingsModel();
+	}
+
+	private String userlistToJSON(List<User> users){
+		StringBuilder json = new StringBuilder();
+		json.append(JSONUtils.getJSONUserHeader());
+		for(User u : users){
+			json.append(JSONUtils.userToJSON(u));
+		}
+		json.append(JSONUtils.getJSONUserFooter());
+		return json.toString();
+
+	}
+	private String userlistToJSONFormatted(List<User> users){
+		StringBuilder json = new StringBuilder();
+		json.append(JSONUtils.getJSONUserHeaderFormatted());
+		for(User u : users){
+			json.append(JSONUtils.userToJSONFormatted(u));
+		}
+		json.append(JSONUtils.getJSONUserFooterFormatted());
+		return json.toString();
 	}
 
 }
