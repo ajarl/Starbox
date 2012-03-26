@@ -93,7 +93,7 @@ public class UserParser {
 					}
 				}
 				if(line.contains("</User>")){
-					User u = new User(ip,email,name,group,status);
+					User u = new User(ip,status,email,name,group);
 					return u;
 				}
 				if(line.contains("</Users>")){
