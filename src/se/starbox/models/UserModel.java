@@ -105,6 +105,7 @@ public class UserModel {
 		for(User u : userList){
 			if(u.getIp().equals(IP)){
 				u.setName(newName);
+				break;
 			}
 		}
 		writeToFile();
@@ -117,7 +118,8 @@ public class UserModel {
 	public void changeGroup(String IP, String newGroup){
 		for(User u : userList){
 			if(u.getIp().equals(IP)){
-				u.setName(newGroup);
+				u.setGroup(newGroup);
+				break;
 			}
 		}
 		writeToFile();
@@ -132,6 +134,7 @@ public class UserModel {
 				userList.get(i).setStatus(response);
 				userList.get(i).setEmail(email);
 				userList.get(i).setName(name);
+				break;
 			}
 		}
 		writeToFile();
@@ -144,6 +147,7 @@ public class UserModel {
 		for(int i=0;i<userList.size();i++){
 			if(userList.get(i).getIp().equals(IP)){
 				userList.remove(i);
+				break;
 			}
 		}
 		writeToFile();
@@ -156,6 +160,7 @@ public class UserModel {
 		for(User u : userList){
 			if(u.getIp().equals(IP)){
 				u.setStatus(STATE_ACCEPTED);
+				break;
 			}
 		}
 		sendRequestResponse(STATE_ACCEPTED, IP, email, name);
@@ -169,6 +174,7 @@ public class UserModel {
 		for(User u : userList){
 			if(u.getIp().equals(IP)){
 				u.setStatus(STATE_DENIED);
+				break;
 			}
 		}
 		sendRequestResponse(STATE_DENIED, IP,"","");

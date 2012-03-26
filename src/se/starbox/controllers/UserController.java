@@ -63,9 +63,9 @@ public class UserController extends HttpServlet {
 			forward = EMPTY_JSP;
 
 		} else if(action.equals(Requests.REQUEST_RESPONSE)){
-			String ip = (String) request.getParameter("ip");
-			String email = (String) request.getParameter("email");
-			String name = (String) request.getParameter("name");
+			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
+			String email = (String) request.getParameter(Requests.ATTRIBUTE_EMAIL);
+			String name = (String) request.getParameter(Requests.ATTRIBUTE_NAME);
 			String requestResponse = (String) request.getParameter("response");
 			userModel.setRequestResponse(ip,requestResponse,email,name);
 			forward = EMPTY_JSP;
@@ -97,10 +97,10 @@ public class UserController extends HttpServlet {
 			String newName = (String) request.getParameter(Requests.ATTRIBUTE_NAME);
 			String newGroup = (String) request.getParameter(Requests.ATTRIBUTE_GROUP);
 			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
-			if (newName != ""){
+			if (newName != null){
 				userModel.changeName(ip, newName);
 			}
-			if (newGroup != ""){
+			if (newGroup != null){
 				userModel.changeGroup(ip, newGroup);
 			}
 			forward = LIST_JSP;

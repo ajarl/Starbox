@@ -12,6 +12,7 @@ public class Requests {
 	public static final String ATTRIBUTE_NAME = "name";
 	public static final String ATTRIBUTE_GROUP = "group";
 	public static final String ATTRIBUTE_STATUS = "status";
+	public static final String ATTRIBUTE_RESPONSE = "response";
 	
 	static public String addRequest(String ip, String email, String name){
 		String charset = "UTF-8";
@@ -36,7 +37,7 @@ public class Requests {
 		try {
 			request = String.format("action=%s&"+
 									ATTRIBUTE_IP+"=%s&" +
-									"response=%s&"+
+									ATTRIBUTE_RESPONSE+"=%s&"+
 									ATTRIBUTE_EMAIL+"=%s&"+
 									ATTRIBUTE_NAME+"=%s",
 											URLEncoder.encode(REQUEST_RESPONSE, charset),
