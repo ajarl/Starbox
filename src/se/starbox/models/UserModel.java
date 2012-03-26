@@ -37,6 +37,7 @@ public class UserModel {
 	public static final String STATE_SENT = "sent";
 	private static final String TOMCAT_PORT = "8080";
 	private static final String USER_APP_PATH = "/users/";
+	private static final String USERS_URL = "/starbox/users";
 
 	private ArrayList<User> userList;
 
@@ -68,7 +69,7 @@ public class UserModel {
 	 */
 	public void addUser(String ip, String email, String name, String group){
 		try {
-			String ownIP = InetAddress.getLocalHost().toString();
+			String ownIP = InetAddress.getLocalHost().getHostAddress().toString();
 			String request = Requests.addRequest(ownIP, email, name);
 			sendRequest(ip,request);
 		} catch (UnknownHostException e) {
@@ -191,13 +192,16 @@ public class UserModel {
 	}
 
 	private void sendRequest(String IP,String request){
-		String url = IP+":"+TOMCAT_PORT+USER_APP_PATH;
+		IP = IP.trim();
+		String url = "http://"+IP+":"+TOMCAT_PORT+USERS_URL;
 		try {
-			HttpURLConnection connection = (HttpURLConnection) new URL(url+"?"+request).openConnection();
+			String requestString = url+"?"+request;
+			System.out.println("Requeststring: "+requestString);
+			HttpURLConnection connection = (HttpURLConnection) new URL(requestString).openConnection();
 			int responseCode = connection.getResponseCode();
 			if(responseCode != 200){
 				//FUCK, FEL
-				System.out.println("FUCK,FEL");
+				System.out.println("FUCK,FEL. Response:\n"+connection.getResponseMessage());
 			} else{
 				//Rätt
 				System.out.println("SHU");
