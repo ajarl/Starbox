@@ -52,8 +52,6 @@ public class UserModel {
 			appDir.mkdir();
 		}
 		XML_PATH = APP_PATH+XML_FILE;
-		System.out.println("XMLPATH: "+XML_PATH);
-		System.out.println(APP_PATH);
 		initModel();
 	}
 	private void initModel(){

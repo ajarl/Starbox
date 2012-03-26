@@ -2,6 +2,7 @@ package se.starbox.controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,14 +28,14 @@ import se.starbox.util.JSONUtils;
 @WebServlet(description = "handles user request from the interwebs.", urlPatterns = { "/users/", "/users" })
 public class UserController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static String LIST_JSP = "/users.jsp";
+	private static String LIST_JSP = "/usersTEST.jsp";
 	private static String ADD_JSP = "/newuser.jsp";
 	private static String EMPTY_JSP = "/empty.jsp";
 	private static String TEST_JSP = "/JSONTests.jsp";
 	private UserModel userModel;
 	private SettingsModel settingsModel;
 
-	private static final String ACTION_ADD_USER = "adduser";
+	private static final String ACTION_ADD_USER = "create";
 	private static final String ACTION_UPDATE = "update";
 	private static final String ACTION_REMOVE = "remove";
 
@@ -46,11 +47,8 @@ public class UserController extends HttpServlet {
 		String forward="";
 		String action = request.getParameter("action");
 		if (action == null) {
-			List<User> users = userModel.getUsers();
-			String jsonString = userlistToJSONFormatted(users);
-			//request.setAttribute("userlist", jsonString);
-			response.getWriter().write(jsonString.toString());
-			forward = "WROTE";
+			request = getUserlistRequest(request);
+			forward = LIST_JSP;
 		}
 		else if (action.equals(ACTION_GO_TO_ADD)) {
 			forward = ADD_JSP;
@@ -71,12 +69,11 @@ public class UserController extends HttpServlet {
 			forward = EMPTY_JSP;
 
 		} else {
+			request = getUserlistRequest(request);
 			forward = LIST_JSP;
 		}
-		if(!forward.equals("WROTE")){
-			RequestDispatcher view = request.getRequestDispatcher(forward);
-			view.forward(request, response);
-		}
+		RequestDispatcher view = request.getRequestDispatcher(forward);
+		view.forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -87,6 +84,7 @@ public class UserController extends HttpServlet {
 		if (action == null) {
 			//error?
 			request.setAttribute("errorMessage", "Du kan inte göra en post till users controllen utan en action. Tänk över ditt beteende.");
+			request = getUserlistRequest(request);
 			forward = LIST_JSP;
 		} else if (action.equals(ACTION_ADD_USER)){
 			String ip = (String) request.getParameter("ip");
@@ -103,18 +101,29 @@ public class UserController extends HttpServlet {
 			if (newGroup != null){
 				userModel.changeGroup(ip, newGroup);
 			}
+			request = getUserlistRequest(request);
 			forward = LIST_JSP;
 		} else if(action.equals(ACTION_REMOVE)){
 			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
 			userModel.removeUser(ip);
+			request = getUserlistRequest(request);
 			forward = LIST_JSP;
 		} else {
 			request.setAttribute("errorMessage", "Nu har du valt en knasig action. Felaktigt beteende igen.");
+			request = getUserlistRequest(request);
 			forward = LIST_JSP;
 		}
 
 		RequestDispatcher view = request.getRequestDispatcher(forward);
 		view.forward(request, response);
+	}
+	private HttpServletRequest getUserlistRequest(HttpServletRequest request){
+		List<User> allUsers = userModel.getUsers();
+		request.setAttribute("USERS_ALL", allUsers);
+		request.setAttribute("USERS_PENDING", getPendingUsers(allUsers));
+		request.setAttribute("USERS_ACCEPTED", getAcceptedUsers(allUsers));
+		request.setAttribute("USERS_SENT", getSentUsers(allUsers));
+		return request;
 	}
 	private void setFields(HttpServletRequest request){
 		ServletContext context = request.getServletContext();
@@ -141,5 +150,26 @@ public class UserController extends HttpServlet {
 		json.append(JSONUtils.getJSONUserFooterFormatted());
 		return json.toString();
 	}
+	
+	private List<User> getPendingUsers(List<User> list){
+		return getUserlistWithStatus(list,UserModel.STATE_PENDING);
+	}
+	private List<User> getAcceptedUsers(List<User> list){
+		return getUserlistWithStatus(list,UserModel.STATE_ACCEPTED);
+	}
+	private List<User> getSentUsers(List<User> list){
+		return getUserlistWithStatus(list,UserModel.STATE_SENT);
+	}
+	private List<User> getUserlistWithStatus(List<User> list, String state){
+		List<User> returnList = new ArrayList<User>();
+		for (User u : list){
+			if(u.getStatus().equals(state))
+				returnList.add(u);
+		}
+		return returnList;
+	}
+	
+	
+	
 
 }

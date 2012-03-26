@@ -14,21 +14,9 @@
         
           <div class="add-users">
           	<h2>Current Users:</h2>
-          	<%/* 
+          	<% 
           		ArrayList<User> users = (ArrayList<User>) request.getAttribute("userList");
-          		for(User user : users){ 
-          			out.println("Email: "+user.getEmail());
-          			out.println("<br>");
-          			out.println("Status: "+user.getStatus());
-          			out.println("<br>");
-          			out.println("IP: "+user.getIp());
-          			out.println("<br>");
-          			out.println("Name: "+user.getName());
-          			out.println("<br>");
-          			out.println("Group: "+user.getGroup());
-          			out.println("<br>");
-          			out.println("<p>-----------------<p>");
-          		}*/
+          		
           		%>
           	
           </div>
