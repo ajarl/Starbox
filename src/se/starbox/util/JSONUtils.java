@@ -1,5 +1,6 @@
 package se.starbox.util;
 
+import se.starbox.models.Requests;
 import se.starbox.models.User;
 
 public class JSONUtils {
@@ -8,7 +9,7 @@ public class JSONUtils {
 		return "{\"users\": {\n";
 	}
 	public static String getJSONUserHeader(){
-		return "{\"users\": {";
+		return "{users: {";
 	}
 	public static String getJSONUserFooter(){
 		return "}}";
@@ -31,14 +32,14 @@ public class JSONUtils {
 	}
 	public static String userToJSON(User u){
 		StringBuilder user = new StringBuilder();
-		user.append("\"user\": [");
-		String jsonFluff = "{\"value: \"";
-		user.append(jsonFluff+"IP\", \""+u.getIp()+"\"},");
-		user.append(jsonFluff+"Name\", \""+u.getName()+"\"},");
-		user.append(jsonFluff+"Email\", \""+u.getEmail()+"\"},");
-		user.append(jsonFluff+"Status\", \""+u.getStatus()+"\"},");
-		user.append(jsonFluff+"Group\", \""+u.getGroup()+"\"}");
-		user.append("]");
+		user.append("user: {");
+		String last = "\",";
+		user.append(Requests.ATTRIBUTE_IP+": \""+u.getIp()+last);
+		user.append(Requests.ATTRIBUTE_NAME+": \""+u.getName()+last);
+		user.append(Requests.ATTRIBUTE_EMAIL+": \""+u.getEmail()+last);
+		user.append(Requests.ATTRIBUTE_STATUS+": \""+u.getStatus()+last);
+		user.append(Requests.ATTRIBUTE_GROUP+": \""+u.getGroup()+"\"");
+		user.append("}");
 		return user.toString();
 	}
 

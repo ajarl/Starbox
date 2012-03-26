@@ -26,15 +26,19 @@ import se.starbox.util.JSONUtils;
 @WebServlet(description = "handles user request from the interwebs.", urlPatterns = { "/users/", "/users" })
 public class UserController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static String EDIT_JSP = "/edituser.jsp";
 	private static String LIST_JSP = "/users.jsp";
-	private static String SHOW_JSP = "/user.jsp";
 	private static String ADD_JSP = "/newuser.jsp";
 	private static String EMPTY_JSP = "/empty.jsp";
+	private static String TEST_JSP = "/JSONTests.jsp";
 	private UserModel userModel;
 	private SettingsModel settingsModel;
 	
-	private static final String ACTION_CREATE = "create";
+	private static final String ACTION_ADD_USER = "adduser";
+	private static final String ACTION_UPDATE = "update";
+	private static final String ACTION_REMOVE = "remove";
+	
+	private static final String ACTION_GO_TO_ADD = "gotoadd";
+	
        
     public UserController() {
         super();
@@ -61,14 +65,13 @@ public class UserController extends HttpServlet {
 		if (action == null) {
 			List<User> users = userModel.getUsers();
 			String jsonString = userlistToJSON(users);
-			response.getWriter().write(jsonString);
-			forward = LIST_JSP;
-		}/* else if (action.equals("show")){
-			request.setAttribute("userEmail", "user email. fix this");
-			forward = SHOW_JSP;
-		}else if (action.equals("adduser")) {
+			//request.setAttribute("userlist", jsonString);
+			response.getWriter().write(jsonString.toString());
+			forward = "WROTE";
+		}
+		else if (action.equals(ACTION_GO_TO_ADD)) {
 			forward = ADD_JSP;
-		*/
+		}
 		else if(action.equals(Requests.REQUEST_ADD)){
 			String ip = (String) request.getAttribute("ip");
 			String email = (String) request.getAttribute("email");
@@ -87,11 +90,10 @@ public class UserController extends HttpServlet {
 		} else {
 			forward = LIST_JSP;
 		}
-
-		//response.getWriter().write(jsonReturn.toString());
-		
-		//RequestDispatcher view = request.getRequestDispatcher(forward);
-		//view.forward(request, response);
+		if(!forward.equals("WROTE")){
+			RequestDispatcher view = request.getRequestDispatcher(forward);
+			view.forward(request, response);
+		}
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -102,15 +104,26 @@ public class UserController extends HttpServlet {
 			//error?
 			request.setAttribute("errorMessage", "Du kan inte göra en post till users controllen utan en action. Tänk över ditt beteende.");
 			forward = LIST_JSP;
-		} else if (action.equals(ACTION_CREATE)){
+		} else if (action.equals(ACTION_ADD_USER)){
 			String ip = (String) request.getAttribute("ip");
 			userModel.addUser(ip, settingsModel.getEmail(), settingsModel.getDisplayName(),"");
 			request.setAttribute("addedUser", ip);
 			forward = ADD_JSP;
-		} else if (action.equals("update")){
-			//userModel.updateUser();
-			request.setAttribute("userEmail", "update?");
-			forward = SHOW_JSP;
+		} else if (action.equals(ACTION_UPDATE)){
+			String newName = (String) request.getAttribute(Requests.ATTRIBUTE_NAME);
+			String newGroup = (String) request.getAttribute(Requests.ATTRIBUTE_GROUP);
+			String ip = (String) request.getAttribute(Requests.ATTRIBUTE_IP);
+			if (newName != ""){
+				userModel.changeName(ip, newName);
+			}
+			if (newGroup != ""){
+				userModel.changeGroup(ip, newGroup);
+			}
+			forward = LIST_JSP;
+		} else if(action.equals(ACTION_REMOVE)){
+			String ip = (String) request.getAttribute(Requests.ATTRIBUTE_IP);
+			userModel.removeUser(ip);
+			forward = LIST_JSP;
 		} else {
 			request.setAttribute("errorMessage", "Nu har du valt en knasig action. Felaktigt beteende igen.");
 			forward = LIST_JSP;

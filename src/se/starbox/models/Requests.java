@@ -6,9 +6,12 @@ import java.net.URLEncoder;
 public class Requests {
 	public static final String REQUEST_ADD = "addRequest";
 	public static final String REQUEST_RESPONSE = "responseRequest";
+	public static final String REQUEST_IPCHANGE = "ipChange";
 	public static final String ATTRIBUTE_IP = "ip";
 	public static final String ATTRIBUTE_EMAIL = "email";
 	public static final String ATTRIBUTE_NAME = "name";
+	public static final String ATTRIBUTE_GROUP = "group";
+	public static final String ATTRIBUTE_STATUS = "status";
 	
 	static public String addRequest(String ip, String email, String name){
 		String charset = "UTF-8";
