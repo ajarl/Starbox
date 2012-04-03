@@ -16,6 +16,7 @@ import se.starbox.models.SearchModel;
 
 /**
  * Servlet implementation class SearchController
+ * @author Kim Nilsson
  */
 @WebServlet(
 		description = "Handles search requests", 

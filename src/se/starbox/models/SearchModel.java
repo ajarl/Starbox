@@ -60,7 +60,7 @@ public class SearchModel {
 	private void getSolr() {
 		File home = new File(SOLR_HOME);
 		File f = new File(home, "conf/solr.xml");
-
+/*
 		CoreContainer container = new CoreContainer();
 		try {
 			container.load(SOLR_HOME, f);
@@ -88,6 +88,7 @@ public class SearchModel {
 		CoreContainer coreContainer = new CoreContainer();
 		CoreContainer.Initializer initiliazer = new CoreContainer.Initializer();
 		solr = new EmbeddedSolrServer(coreContainer, "core"); */
+		*/
 	}
 
 

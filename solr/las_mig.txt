@@ -1,2 +1,0 @@
-Den här mappen (solr/) borde kunna gå att nå via en relativ path, men jag får det
-inte att fungera.
