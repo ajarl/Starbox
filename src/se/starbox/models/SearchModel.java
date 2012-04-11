@@ -67,7 +67,6 @@ public class SearchModel {
 //		}
 //	}
 
-
 	/**
 	 * Reads a file into a string.
 	 * @param file
