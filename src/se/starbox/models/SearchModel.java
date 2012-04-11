@@ -48,24 +48,24 @@ public class SearchModel {
 			getSolr();
 		
 		//checkConnection();
-		testFill();
+//		testFill();
 	}
 
-	// Fill the db with test data.
-	public void testFill() {
-		File testIndexData = new File("C:/Users/Kim/workspace/Starbox/exempelIndexData.xml");
-		
-		String doc = getStringFromDocument(testIndexData);
-		System.out.println("Read file, content was: " + doc);
-		
-		DirectXmlRequest xmlreq = new DirectXmlRequest("/update", doc);
-		try {
-			solr.request(xmlreq);
-		} catch (SolrServerException | IOException e) {
-			System.err.println("Error updating solr");
-			e.printStackTrace();
-		}
-	}
+//	// Fill the db with test data.
+//	public void testFill() {
+//		File testIndexData = new File("E:/solrTest/exempelIndexData.xml");
+//		
+//		String doc = getStringFromDocument(testIndexData);
+//		System.out.println("Read file, content was: " + doc);
+//		
+//		DirectXmlRequest xmlreq = new DirectXmlRequest("/update", doc);
+//		try {
+//			solr.request(xmlreq);
+//		} catch (SolrServerException | IOException e) {
+//			System.err.println("Error updating solr");
+//			e.printStackTrace();
+//		}
+//	}
 
 
 	/**
