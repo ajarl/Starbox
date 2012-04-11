@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -16,6 +17,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.request.DirectXmlRequest;
+import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.schema.UUIDField;
 import org.xml.sax.SAXException;
@@ -47,13 +49,13 @@ public class SearchModel {
 		if (solr == null)
 			getSolr();
 		
-		//checkConnection();
-		testFill();
+		checkConnection();
+		//testFill();
 	}
 
 	// Fill the db with test data.
 	public void testFill() {
-		File testIndexData = new File("C:/Users/Kim/workspace/Starbox/exempelIndexData.xml");
+		File testIndexData = new File("exempelIndexData.xml");
 		
 		String doc = getStringFromDocument(testIndexData);
 		System.out.println("Read file, content was: " + doc);
@@ -128,11 +130,10 @@ public class SearchModel {
 	* @param params Parameters to filter the search, on this format:
 	* 		 "filetype:exe;minfilesize:20;maxfilesize:10"
 	* 
-	* @return Returns a list of SearchResults.
+	* @return Returns a JSON-formatted string.
 	*/
 	//public List<SearchResult> find(String inputQuery, String params){
-	public List<String> find(String inputQuery, String params){
-		/*
+	public List<String> query(String inputQuery, String params){
 		SolrQuery solrQuery = new SolrQuery();
 	    solrQuery.setQuery(inputQuery);
 	    
@@ -149,14 +150,12 @@ public class SearchModel {
 								"params was " + params);
 			sse.printStackTrace();	    	
 	    }
-	    
+	   
 	    //List<SearchResult> resultList = rsp.getBeans(SearchResult.class);
 	    List<String> resultList = new ArrayList<String>();
 	    resultList.add("result1");
 	    resultList.add("result2");
-	    return  resultList;
-	    */
-		return null;
+	    return resultList;
 	}
 	
 	/**  NEW METHOD - Not defined in ADD  
@@ -170,8 +169,7 @@ public class SearchModel {
 	 * @return returns a SolrQuery with the set parameters
 	 */
 	private SolrQuery setParams(SolrQuery solrQuery, String params){
-		// TODO: Här ska params bakas in i solrQuery.
-	    // solrQuery.set?
+		solrQuery.set("namn", )
 		return solrQuery;
 	}
 
