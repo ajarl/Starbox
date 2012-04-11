@@ -2,7 +2,15 @@
 <add>
   <doc>
 	<field name="id" type="uuid" indexed="true" stored="true" default="NEW"/>
-    <field name="namn">name</field>
+    <field name="name">metallica</field>
+    <field name="url">url_metallica</field>
+    <field name="doctype">mp3</field>
+    <field name="timeStamp">timeStamp</field>
+    <field name="fileSize">3000000</field>
+  </doc>
+  <doc>
+	<field name="id" type="uuid" indexed="true" stored="true" default="NEW"/>
+    <field name="name">name</field>
     <field name="url">url</field>
     <field name="doctype">doctype</field>
     <field name="timeStamp">timeStamp</field>
@@ -10,15 +18,7 @@
   </doc>
   <doc>
 	<field name="id" type="uuid" indexed="true" stored="true" default="NEW"/>
-    <field name="namn">name</field>
-    <field name="url">url</field>
-    <field name="doctype">doctype</field>
-    <field name="timeStamp">timeStamp</field>
-    <field name="fileSize">size</field>
-  </doc>
-  <doc>
-	<field name="id" type="uuid" indexed="true" stored="true" default="NEW"/>
-    <field name="namn">name</field>
+    <field name="name">name</field>
     <field name="url">url</field>
     <field name="doctype">doctype</field>
     <field name="timeStamp">timeStamp</field>
@@ -26,19 +26,19 @@
 </doc>
   <doc>
 	<field name="id" type="uuid" indexed="true" stored="true" default="NEW"/>
-    <field name="namn">name</field>
-    <field name="url">url</field>
-    <field name="doctype">doctype</field>
+    <field name="name">in_diana_jones</field>
+    <field name="url">url_film</field>
+    <field name="doctype">avi</field>
     <field name="timeStamp">timeStamp</field>
-    <field name="fileSize">size</field>
+    <field name="fileSize">700000000</field>
 </doc>
   <doc>
 	<field name="id" type="uuid" indexed="true" stored="true" default="NEW"/>
-    <field name="namn">name</field>
-    <field name="url">url</field>
-    <field name="doctype">doctype</field>
+    <field name="name">ziparkivet</field>
+    <field name="url">url_zip</field>
+    <field name="doctype">zip</field>
     <field name="timeStamp">timeStamp</field>
-    <field name="fileSize">size</field>
+    <field name="fileSize">2312300</field>
   </doc>
 </add>
 

@@ -18,6 +18,8 @@ import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.request.DirectXmlRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.schema.UUIDField;
 import org.xml.sax.SAXException;
@@ -51,12 +53,12 @@ public class SearchModel {
 		
 
 		checkConnection();
-		//testFill();
+		testFill();
 	}
 
 	// Fill the db with test data.
 	public void testFill() {
-		File testIndexData = new File("exempelIndexData.xml");
+		File testIndexData = new File("C:/Users/Kim/workspace/Starbox/exempelIndexData.xml");
 		
 		String doc = getStringFromDocument(testIndexData);
 		System.out.println("Read file, content was: " + doc);
@@ -127,50 +129,53 @@ public class SearchModel {
 
 	/**
 	* Searches the index of Solr.
-	* @param inputQuery The string which you are searching for
-	* @param params Parameters to filter the search, on this format:
+	* @param SearchString - The string which you are searching for
+	* @param params - Parameters to filter the search, on this format:
 	* 		 "filetype:exe;minfilesize:20;maxfilesize:10"
 	* 
-	* @return Returns a JSON-formatted string.
+	* @return Returns a JSON-formatted string. This might change.
 	*/
 	//public List<SearchResult> find(String inputQuery, String params){
-	public List<String> query(String inputQuery, String params){
-		SolrQuery solrQuery = new SolrQuery();
-	    solrQuery.setQuery(inputQuery);
+	public String query(String searchString, String params){
+		SolrQuery solrQuery = null;
 	    
 	    // Update the search query with the chosen parameters
 	    if(params != null)
-	    	solrQuery = setParams(solrQuery, params);
+	    	solrQuery = buildQuery(searchString, params);
 	    
 	    QueryResponse rsp;
+	    SolrDocumentList results;
+	    StringBuilder sb = new StringBuilder();
 	    try {
 	    	rsp = solr.query(solrQuery);
+	    	results = rsp.getResults();
+	    	
+	    	for (SolrDocument res : results) {
+	    		sb.append(res.toString());
+	    	}
 	    } catch (SolrServerException sse) {
 			System.err.println("SearchModel() - Caught a SolrServerException" +
-								"inputQuery was " + inputQuery + 
-								"params was " + params);
+								"\ninputQuery was " + searchString + 
+								"\nparams was " + params);
 			sse.printStackTrace();	    	
 	    }
-	   
-	    //List<SearchResult> resultList = rsp.getBeans(SearchResult.class);
-	    List<String> resultList = new ArrayList<String>();
-	    resultList.add("result1");
-	    resultList.add("result2");
-	    return resultList;
+	    
+	    return sb.toString();
 	}
 	
 	/**  NEW METHOD - Not defined in ADD  
 	 *
 	 * Parses the params string and sets parameters for the Solr-query based
 	 * on that string.
-	 * @param solrQuery the query for the solr search
+	 * @param searchString - the query for the solr search
 	 * @param params parameters to filter the search, on this format:
 	 * 		  "filetype:exe;minfilesize:20;maxfilesize:10"
 	 * 
 	 * @return returns a SolrQuery with the set parameters
 	 */
-	private SolrQuery setParams(SolrQuery solrQuery, String params){
-		solrQuery.set("namn", )
+	private SolrQuery buildQuery(String searchString, String params){
+		SolrQuery solrQuery = new SolrQuery();
+		solrQuery.setParam("fileType", "*");
 		return solrQuery;
 	}
 
