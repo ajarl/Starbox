@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <add>
   <doc>
+	<field name="id" type="uuid" indexed="true" stored="true" default="NEW"/>
     <field name="namn">name</field>
     <field name="url">url</field>
     <field name="doctype">doctype</field>
@@ -8,6 +9,7 @@
     <field name="fileSize">size</field>
   </doc>
   <doc>
+	<field name="id" type="uuid" indexed="true" stored="true" default="NEW"/>
     <field name="namn">name</field>
     <field name="url">url</field>
     <field name="doctype">doctype</field>
@@ -15,20 +17,23 @@
     <field name="fileSize">size</field>
   </doc>
   <doc>
+	<field name="id" type="uuid" indexed="true" stored="true" default="NEW"/>
     <field name="namn">name</field>
     <field name="url">url</field>
     <field name="doctype">doctype</field>
     <field name="timeStamp">timeStamp</field>
     <field name="fileSize">size</field>
-  </doc>
+</doc>
   <doc>
+	<field name="id" type="uuid" indexed="true" stored="true" default="NEW"/>
     <field name="namn">name</field>
     <field name="url">url</field>
     <field name="doctype">doctype</field>
     <field name="timeStamp">timeStamp</field>
     <field name="fileSize">size</field>
-  </doc>
+</doc>
   <doc>
+	<field name="id" type="uuid" indexed="true" stored="true" default="NEW"/>
     <field name="namn">name</field>
     <field name="url">url</field>
     <field name="doctype">doctype</field>
