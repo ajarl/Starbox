@@ -102,9 +102,9 @@ public class PipeToSolr extends Stage{
 				}
 		 
 				Element doc = new Element("doc");
-				doc.addContent(new Element("field").setText(name).setAttribute("name", "namn"));
+				doc.addContent(new Element("field").setText(name).setAttribute("name", "name"));
 				doc.addContent(new Element("field").setText(url).setAttribute("name", "url"));
-				doc.addContent(new Element("field").setText(doctype).setAttribute("name", "doctype"));
+				doc.addContent(new Element("field").setText(doctype).setAttribute("name", "docType"));
 				doc.addContent(new Element("field").setText("" + timeStamp).setAttribute("name", "timeStamp"));
 				doc.addContent(new Element("field").setText("" + size).setAttribute("name", "fileSize"));
 				
@@ -127,9 +127,9 @@ public class PipeToSolr extends Stage{
 				document.setRootElement(add);
 				
 				Element doc = new Element("doc");
-				doc.addContent(new Element("field").setText(name).setAttribute("name", "namn"));
+				doc.addContent(new Element("field").setText(name).setAttribute("name", "name"));
 				doc.addContent(new Element("field").setText(url).setAttribute("name", "url"));
-				doc.addContent(new Element("field").setText(doctype).setAttribute("name", "doctype"));
+				doc.addContent(new Element("field").setText(doctype).setAttribute("name", "docType"));
 				doc.addContent(new Element("field").setText("" + timeStamp).setAttribute("name", "timeStamp"));
 				doc.addContent(new Element("field").setText("" + size).setAttribute("name", "fileSize"));
 		
