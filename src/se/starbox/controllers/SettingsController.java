@@ -38,7 +38,6 @@ public class SettingsController extends HttpServlet {
     }
 
 	/**
-	 * Endast för teständamål, följer antagligen inte ADD. Ändra denna om det behövs!
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	@Override
@@ -47,34 +46,51 @@ public class SettingsController extends HttpServlet {
 		request.setAttribute("email", sm.getEmail());
 		request.setAttribute("starboxFolder", sm.getStarboxFolder());
 		request.setAttribute("indexUpdateInterval", sm.getIndexUpdateInterval());
-		request.setAttribute("ip", sm.getIP());
+		request.setAttribute("ip", SettingsModel.getIP());
 		
 		RequestDispatcher view = request.getRequestDispatcher("/settings.jsp");
 		view.forward(request, response);
 	}
 
 	/**
-	 * Endast för teständamål, följer antagligen inte ADD. Ändra denna om det behövs!
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Map<String, String[]> params = request.getParameterMap();
-	
+
+		
+		if (params.containsKey("path"))
+			sm.setStarboxFolder(params.get("path")[0]);
+		
+		if (params.containsKey("interval")) {
+			try {
+				int interval = Integer.parseInt(params.get("interval")[0]);
+				if (interval > 0)
+					sm.setIndexUpdateInterval(interval);
+			} catch (NumberFormatException e) {
+				System.err.println("SettignsController - Incorrect interval given");
+			}
+		}
+		
+		if (params.containsKey("displayname"))
+			sm.setDisplayName(params.get("displayname")[0]);
+		
 		if (params.containsKey("email"))
 			sm.setEmail(params.get("email")[0]);
-		
+
+		if (params.containsKey("updateindex"))
+			sm.updateIndex();
+
 		if (params.containsKey("shutdown"))
 			sm.shutDown();
-		
-		if (params.containsKey("updateIndex"))
-			sm.updateIndex();
+
 		
 		request.setAttribute("displayName", sm.getDisplayName());
 		request.setAttribute("email", sm.getEmail());
 		request.setAttribute("starboxFolder", sm.getStarboxFolder());
 		request.setAttribute("indexUpdateInterval", sm.getIndexUpdateInterval());
-		request.setAttribute("ip", sm.getIP());
+		request.setAttribute("ip", SettingsModel.getIP());
 		
 		RequestDispatcher view = request.getRequestDispatcher("settings.jsp");
 		view.forward(request, response);
