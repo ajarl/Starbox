@@ -25,16 +25,16 @@ import se.starbox.models.SearchModel;
 		})
 public class SearchController extends HttpServlet {
 	private static final long serialVersionUID = 132158L;
-	private SearchModel sm;
+	private static SearchModel sm;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
     public SearchController() {
         super();
-        // TODO Auto-generated constructor stub
-        
-        sm = new SearchModel();
+       
+        if (sm == null)
+	        sm = new SearchModel();
     }
 
 	/**
@@ -85,16 +85,18 @@ public class SearchController extends HttpServlet {
 			// Fetch a list of SearchResult from the SearchModel and put them
 			// in the request.
 			if (query != "" || query != null) {
-				// some list = sm.query(query, params);
-				// request.put(some list)
+				String res = sm.query(query, params);
+				response.getWriter().write(res);
 			}
-		
+	
+			/*
 			// JSON Test
 			JSONObject jso = new JSONObject();
 			jso.put("filename", "filnamn.exe");
 			jso.put("filesize", "100MB");
 			jso.put("filetype", "exe");
 			response.getWriter().write(jso.toString());
+			*/
 		}
 	}
 
