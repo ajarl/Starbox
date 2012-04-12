@@ -1,12 +1,16 @@
 $(document).ready(function() {
 	
 	$('button.save-setting').click(function() {
-		var input = $(this).prev('input');
+		var data = $(this).prev('input').serialize();
 
-		$.get($(input).data('href'), {
-			value : $(input).val()
-		}, function(data) {
-
-		});
+		$.post("/starbox/settings", data, function(){
+			alert("success");
+	    })
+	    .error(function() { 
+	    	alert("error"); 
+	    })
+	    .complete(function() { 
+	    	alert("complete"); 
+	    });
 	});
 });

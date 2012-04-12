@@ -92,8 +92,7 @@ public class SettingsController extends HttpServlet {
 		request.setAttribute("indexUpdateInterval", sm.getIndexUpdateInterval());
 		request.setAttribute("ip", SettingsModel.getIP());
 		
-		RequestDispatcher view = request.getRequestDispatcher("settings.jsp");
-		view.forward(request, response);
+		//RequestDispatcher view = request.getRequestDispatcher("/settings.jsp");
+		//view.forward(request, response);
 	}
-
 }

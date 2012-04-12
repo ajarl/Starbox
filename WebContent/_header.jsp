@@ -3,9 +3,9 @@
   <div class="layout clearfix">
     <ul class="menu clearfix">
       <li class="ip"><%= InetAddress.getLocalHost().getHostAddress() %></li>
-      <li class="search"><a href="/starbox/search/">L</a></li>
-      <li class="users"><a href="/starbox/users/">U</a></li>
-      <li class="settings"><a href="/starbox/settings/">S</a></li>
+      <li class=""><a href="/starbox/search/" class="search"></a></li>
+      <li class=""><a href="/starbox/users/" class="user"></a></li>
+      <li class=""><a href="/starbox/settings/" class="settings"></a></li>
     </ul>
   </div>
 </div>

@@ -141,6 +141,35 @@ h2 {
 	width: 700px;
 }
 
+.menu li {
+	height: 24px;
+	padding: 13px 0px;
+	width: 40px;
+}
+
+.menu li.ip {
+	height: 18px;
+	font-size: 18px;
+	padding: 16px 0px;
+	width: 70px;
+}
+
+.menu .search, .user, .settings {
+	height: 24px;
+	width: 40px;
+	display: block;
+	background-repeat: no-repeat;
+}
+
+.menu .search {
+	background-image: url('images/search.png');
+}
+.menu .settings {
+	background-image: url('images/settings.png');
+}
+.menu .user {
+	background-image: url('images/user.png');
+}
 
 @font-face{ 
   font-family: 'WebSymbolsRegular';
