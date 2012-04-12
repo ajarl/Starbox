@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import javax.servlet.ServletContext;
 /**
  * A Model class for executing tasks related to the contact list.
  * Keeps an internal list of current users in the contact list, aswell
@@ -24,7 +26,9 @@ import java.util.List;
  *
  */
 public class UserModel {
-	private static final String XML_PATH = "users.xml";
+	private final String APP_PATH;
+	private final String XML_PATH;
+	private static final String XML_FILE = "users.xml";
 	private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<Users xmlns=\"starbox\">\n";
 	private static final String XML_TAIL = "</Users>";
 	public static final String STATE_ACCEPTED = "accepted";
@@ -32,19 +36,28 @@ public class UserModel {
 	public static final String STATE_PENDING = "pending";
 	public static final String STATE_SENT = "sent";
 	private static final String TOMCAT_PORT = "8080";
-	private static final String USER_APP_PATH = "/starbox/users/";
-	
+	private static final String USER_APP_PATH = "/users/";
+	private static final String USERS_URL = "/starbox/users";
+
 	private ArrayList<User> userList;
-	
+
 	/**
 	 * Initiate the model instance. Parses the users.xml file on startup.
+	 * @param context 
 	 */
-	public UserModel(){
+	public UserModel(ServletContext context){
+		String fileDivider = System.getProperty("file.separator");
+		APP_PATH = context.getRealPath(USER_APP_PATH)+fileDivider;
+		File appDir = new File(APP_PATH);
+		if(!appDir.exists()){
+			appDir.mkdir();
+		}
+		XML_PATH = APP_PATH+XML_FILE;
 		initModel();
 	}
 	private void initModel(){
 		userList = (ArrayList<User>) (new UserParser(XML_PATH)).getAll();
-		
+
 	}
 	/**
 	 * Add a user to the contact list ( IP and email are required, rest are optional)
@@ -56,7 +69,7 @@ public class UserModel {
 	 */
 	public void addUser(String ip, String email, String name, String group){
 		try {
-			String ownIP = InetAddress.getLocalHost().toString();
+			String ownIP = InetAddress.getLocalHost().getHostAddress().toString();
 			String request = Requests.addRequest(ownIP, email, name);
 			sendRequest(ip,request);
 		} catch (UnknownHostException e) {
@@ -66,12 +79,12 @@ public class UserModel {
 		userList.add(new User(ip,STATE_SENT));
 		writeToFile();
 	}
-	
+
 	public void addIncomingUser(String ip, String email, String name){
 		userList.add(new User(ip,STATE_PENDING, email,name));
 		writeToFile();
 	}
-	
+
 	/**
 	 * Return a List of all users currently in users.xml
 	 * @return a List of all users currently in the contact list
@@ -91,6 +104,7 @@ public class UserModel {
 		for(User u : userList){
 			if(u.getIp().equals(IP)){
 				u.setName(newName);
+				break;
 			}
 		}
 		writeToFile();
@@ -103,7 +117,8 @@ public class UserModel {
 	public void changeGroup(String IP, String newGroup){
 		for(User u : userList){
 			if(u.getIp().equals(IP)){
-				u.setName(newGroup);
+				u.setGroup(newGroup);
+				break;
 			}
 		}
 		writeToFile();
@@ -118,6 +133,7 @@ public class UserModel {
 				userList.get(i).setStatus(response);
 				userList.get(i).setEmail(email);
 				userList.get(i).setName(name);
+				break;
 			}
 		}
 		writeToFile();
@@ -130,6 +146,7 @@ public class UserModel {
 		for(int i=0;i<userList.size();i++){
 			if(userList.get(i).getIp().equals(IP)){
 				userList.remove(i);
+				break;
 			}
 		}
 		writeToFile();
@@ -142,6 +159,7 @@ public class UserModel {
 		for(User u : userList){
 			if(u.getIp().equals(IP)){
 				u.setStatus(STATE_ACCEPTED);
+				break;
 			}
 		}
 		sendRequestResponse(STATE_ACCEPTED, IP, email, name);
@@ -155,12 +173,13 @@ public class UserModel {
 		for(User u : userList){
 			if(u.getIp().equals(IP)){
 				u.setStatus(STATE_DENIED);
+				break;
 			}
 		}
 		sendRequestResponse(STATE_DENIED, IP,"","");
 		writeToFile();
 	}
-	
+
 	private void sendRequestResponse(String response, String IP,String email, String name){
 		String ownIP;
 		try {
@@ -171,20 +190,23 @@ public class UserModel {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void sendRequest(String IP,String request){
-		String url = IP+":"+TOMCAT_PORT+USER_APP_PATH;
+		IP = IP.trim();
+		String url = "http://"+IP+":"+TOMCAT_PORT+USERS_URL;
 		try {
-			HttpURLConnection connection = (HttpURLConnection) new URL(url+"?"+request).openConnection();
+			String requestString = url+"?"+request;
+			System.out.println("Requeststring: "+requestString);
+			HttpURLConnection connection = (HttpURLConnection) new URL(requestString).openConnection();
 			int responseCode = connection.getResponseCode();
 			if(responseCode != 200){
 				//FUCK, FEL
-				System.out.println("FUCK,FEL");
+				System.out.println("FUCK,FEL. Response:\n"+connection.getResponseMessage());
 			} else{
 				//Rätt
 				System.out.println("SHU");
 			}
-			
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -206,34 +228,35 @@ public class UserModel {
 		return ipList;
 	}
 	private void writeToFile(){
-		BufferedWriter out = null;
-		try {
-			File xmlFile = new File(XML_PATH);
-			out = new BufferedWriter(new FileWriter(xmlFile));
-			out.write(XML_HEADER);
-			for(User u : userList){
-				out.write(getUserBlock(u));
-			}
-			out.write(XML_TAIL);
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally{
+		synchronized(this){
+			BufferedWriter out = null;
 			try {
-				out.close();
+				File xmlFile = new File(XML_PATH);
+				out = new BufferedWriter(new FileWriter(xmlFile));
+				out.write(XML_HEADER);
+				for(User u : userList){
+					out.write(getUserBlock(u));
+				}
+				out.write(XML_TAIL);
 			} catch (IOException e) {
 				e.printStackTrace();
+			} finally{
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
-	
+
 	private String getUserBlock(User u){
 		String block = "\t<User>\n\t\t<IP>"+u.getIp()+"</IP>\n"+
-						"\t\t<DisplayName>"+u.getName()+"</DisplayName>\n"+
-						"\t\t<Email>"+u.getEmail()+"</Email>\n"+
-						"\t\t<GroupName>"+u.getGroup()+"</GroupName>\n"+
-						"\t\t<Status>"+u.getStatus()+"</Status>\n"+
-						"\t</User>\n";
+				"\t\t<DisplayName>"+u.getName()+"</DisplayName>\n"+
+				"\t\t<Email>"+u.getEmail()+"</Email>\n"+
+				"\t\t<GroupName>"+u.getGroup()+"</GroupName>\n"+
+				"\t\t<Status>"+u.getStatus()+"</Status>\n"+
+				"\t</User>\n";
 		return block;
 	}
 
