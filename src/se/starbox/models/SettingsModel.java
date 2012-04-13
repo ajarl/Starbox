@@ -16,10 +16,17 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.parsers.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 import org.openpipeline.scheduler.JobInfo;
 import org.openpipeline.scheduler.PipelineScheduler;
 
@@ -30,11 +37,11 @@ import org.openpipeline.scheduler.PipelineScheduler;
  *
  */
 public class SettingsModel {
-	private static final String XML_PATH = "UserSettings.xml";
+	private static final String XML_PATH = SettingsModel.getProjectRootPath() + "/UserSettings.xml";
 	private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<UserSettings xmlns=\"starbox\">\n";
 	private static final String XML_FOOTER = "</UserSettings>";
 	
-	//private static final String PATH_TO_OPENPIPELINE_JOB = "StarboxJob.xml";
+	private static final String PATH_TO_OPENPIPELINE_JOB = SettingsModel.getProjectRootPath() + "/config/jobs/StarboxJob.xml";
 	
 	private static final String DEFAULT_STARBOX_FOLDER = "C:\\Documents\\";
 	private static final String DEFAULT_DISPLAY_NAME = "default display name";
@@ -153,12 +160,37 @@ public class SettingsModel {
 	}
 	
 	/**
+	 * Returns the path to the root of the Starbox webapp running on Tomcat. This means it will point to the root of the WebContent folder!
+	 * @return The path of the webapp root (WebContent)
+	 */
+	public static String getProjectRootPath() {
+		// Get project path
+		String projectPath = null;
+		try {
+			String thisClassPath = SettingsModel.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+			projectPath = URLDecoder.decode(thisClassPath, "UTF-8");
+			for (int i = projectPath.length() - 1, slashCount = 0; i >= 0; i--) {
+				if (projectPath.charAt(i) == '\\' || projectPath.charAt(i) == '/') {
+					slashCount++;
+					if (slashCount == 6) {
+						projectPath = projectPath.substring(0, i);
+						break;
+					}
+				}
+			}
+		} catch (Exception e) {
+			return null;
+		}
+		return projectPath;
+	}
+	
+	/**
 	 * Starts the OpenPipeline job to begin indexing the local Starbox folder.
 	 */
 	public void updateIndex() {
 		// TODO: delete index data, start the OpenPipeline job?
 		try {
-			// Get project path
+			/*// Get project path
 			String thisClassPath = SettingsModel.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 			String projectPath = URLDecoder.decode(thisClassPath, "UTF-8");
 			for (int i = projectPath.length() - 1, slashCount = 0; i >= 0; i--) {
@@ -169,7 +201,8 @@ public class SettingsModel {
 						break;
 					}
 				}
-			}
+			}*/
+			String projectPath = SettingsModel.getProjectRootPath();
 			System.out.println("Project path: " + projectPath);
 			
 			// Set 'app.home' property, required by openpipeline
@@ -246,12 +279,33 @@ public class SettingsModel {
 	}
 	
 	/**
-	 * Updates user's starbox folder setting and writes to UserSettings.xml
+	 * Updates user's starbox folder setting and writes to UserSettings.xml and StarboxJob.xml
 	 * @param path The new starbox folder as a String
 	 */
 	public void setStarboxFolder(String path) {
 		starboxFolder = path;
 		writeToFile();
+		
+		// Write to StarboxJob.xml
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		try {
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document d = db.parse(PATH_TO_OPENPIPELINE_JOB);
+			
+			d.getElementsByTagName("fileroots").item(0).setTextContent(path);
+			
+			TransformerFactory tf = TransformerFactory.newInstance();
+			Transformer t = tf.newTransformer();
+			t.setOutputProperty(OutputKeys.INDENT, "yes");
+			
+			DOMSource s = new DOMSource(d);
+			StreamResult sr = new StreamResult(new File(PATH_TO_OPENPIPELINE_JOB));
+			
+			t.transform(s, sr);
+		} catch (Exception e) {
+			System.err.println("SettingsModel - could not update StarboxJob.xml");
+		}
+			
 	}
 	
 	/**
@@ -280,7 +334,26 @@ public class SettingsModel {
 		indexUpdateInterval = seconds;
 		writeToFile();
 		
-		// TODO Update OpenPipeline job with new interval
+		// Write to StarboxJob.xml
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		try {
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document d = db.parse(PATH_TO_OPENPIPELINE_JOB);
+			
+			d.getElementsByTagName("period").item(0).setTextContent("seconds");
+			d.getElementsByTagName("period-interval").item(0).setTextContent(Integer.toString(seconds));
+			
+			TransformerFactory tf = TransformerFactory.newInstance();
+			Transformer t = tf.newTransformer();
+			t.setOutputProperty(OutputKeys.INDENT, "yes");
+			
+			DOMSource s = new DOMSource(d);
+			StreamResult sr = new StreamResult(new File(PATH_TO_OPENPIPELINE_JOB));
+			
+			t.transform(s, sr);
+		} catch (Exception e) {
+			System.err.println("SettingsModel - could not update StarboxJob.xml");
+		}
 	}
 	
 	
