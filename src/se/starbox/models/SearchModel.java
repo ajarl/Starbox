@@ -52,8 +52,8 @@ public class SearchModel {
 			getSolr();
 		
 
-		checkConnection();
-		testFill();
+		//checkConnection();
+		//testFill();
 	}
 
 	// Fill the db with test data.
@@ -174,8 +174,7 @@ public class SearchModel {
 	 * @return returns a SolrQuery with the set parameters
 	 */
 	private SolrQuery buildQuery(String searchString, String params){
-		SolrQuery solrQuery = new SolrQuery();
-		solrQuery.setParam("fileType", "*");
+		SolrQuery solrQuery = new SolrQuery("name:" + searchString);
 		return solrQuery;
 	}
 

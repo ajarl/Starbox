@@ -85,8 +85,8 @@ public class SearchController extends HttpServlet {
 			// Fetch a list of SearchResult from the SearchModel and put them
 			// in the request.
 			if (query != "" || query != null) {
-				//String res = sm.query(query, params);
-				//response.getWriter().write(res);
+				String res = sm.query(query, params);
+				response.getWriter().write(res);
 			}
 	
 			/*
