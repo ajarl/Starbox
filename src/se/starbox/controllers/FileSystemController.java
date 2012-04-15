@@ -26,7 +26,7 @@ import se.starbox.models.UserModel;
 */
 @WebServlet(
 	description = "Handles index file and file transfer requests", 
-	urlPatterns = { "/file/" }
+	urlPatterns = { "/file/", "/file" }
 )
 public class FileSystemController extends HttpServlet {
 	private static final long serialVersionUID = 5338560270728801227L;
