@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 
 import se.starbox.models.FileSystemModel;
-import se.starbox.models.SettingsModel;
-import se.starbox.models.UserModel;
 
 /**
 * Handles incoming filedownloading-requests and reformats the parameters that are passed on to the File System Model.
@@ -32,18 +30,31 @@ public class FileSystemController extends HttpServlet {
 	private static final long serialVersionUID = 5338560270728801227L;
 	
 	private FileSystemModel fileSystemModel;
-	   
+
 	/**
 	 * Constructs a new FileSystemController.
 	 */
-	public FileSystemController(UserModel userModel, SettingsModel settingsModel) {
-		this.fileSystemModel = new FileSystemModel(userModel, settingsModel);
+	public FileSystemController() {
+		// TODO: New models are created here - should they really? Get existent models instead?
+		
+		// --- Calling getServletContext() = crash! wtf? ---
+		
+		//fileSystemModel = new FileSystemModel(new UserModel(getServletContext()), new SettingsModel());
+		//System.out.println("getServletContext(): " + getServletContext());
+		
+		fileSystemModel = null;
 	}
+	
+	/*public FileSystemController(UserModel userModel, SettingsModel settingsModel) {
+		this.fileSystemModel = new FileSystemModel(userModel, settingsModel);
+	}*/
 	   
 	/**
 	 * Handle web get request, it should either be a get file request or a get index request.
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("FileSystemController.doGet called.");
+		
 		// Is get file reqeust?
 		String file = request.getParameter("file");
 		if (file != null)
@@ -73,6 +84,8 @@ public class FileSystemController extends HttpServlet {
 	 * @param request The HTTP-request that will be interpreted and filtered.
 	 */
 	public void getFile(HttpServletRequest request, HttpServletResponse response, String fileRequest) throws ServletException, IOException {
+		System.out.println("FileSystemController.getFile called.");
+		
 		File file = fileSystemModel.requestDownload(fileRequest, request.getRemoteAddr());
 		if (file != null) {
 			// Request is valid and allowed
@@ -98,6 +111,8 @@ public class FileSystemController extends HttpServlet {
 	 */
 	@SuppressWarnings("unchecked")
 	public void getIndexData(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("FileSystemController.getIndexData called.");
+		
 		File indexFile = fileSystemModel.requestIndexData(request.getRemoteAddr());
 		if (indexFile != null) {
 			// Request is valid and allowed
