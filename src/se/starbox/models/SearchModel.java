@@ -1,12 +1,14 @@
 package se.starbox.models;
 
 import java.io.BufferedReader;
+import se.starbox.util.SearchResult;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,8 +39,10 @@ public class SearchModel {
 	// Handle for Solr
 	private static SolrServer solr = null;
 	
-	// URI to Solr
-	private String SOLR_URI = "http://localhost:8080/starbox-solr-server/";
+	/**
+	 * URI to the Solr server.
+	 */
+	public final String SOLR_URI = "http://localhost:8080/starbox-solr-server/";
 
 	/**
 	* Initiate the model instance. Creates an instance of Solr on startup if
@@ -133,10 +137,9 @@ public class SearchModel {
 	* @param params - Parameters to filter the search, on this format:
 	* 		 "filetype:exe;minfilesize:20;maxfilesize:10"
 	* 
-	* @return Returns a JSON-formatted string. This might change.
+	* @return Returns a LinkedList<SearchResult> with the matches.
 	*/
-	//public List<SearchResult> find(String inputQuery, String params){
-	public String query(String searchString, String params){
+	public LinkedList<SearchResult> query(String searchString, String params){
 		SolrQuery solrQuery = null;
 	    
 	    // Update the search query with the chosen parameters
@@ -145,13 +148,16 @@ public class SearchModel {
 	    
 	    QueryResponse rsp;
 	    SolrDocumentList results;
-	    StringBuilder sb = new StringBuilder();
+	    LinkedList<SearchResult> searchResults = new LinkedList<SearchResult>();
 	    try {
 	    	rsp = solr.query(solrQuery);
 	    	results = rsp.getResults();
-	    	
+	    
+	    	// Loop over all hits and create a SearchResult instance for each hit.
 	    	for (SolrDocument res : results) {
-	    		sb.append(res.toString());
+	    		SearchResult sr = new SearchResult();
+	    		sr.setName((String)res.getFieldValue("name"));
+	    		searchResults.add(sr);
 	    	}
 	    } catch (SolrServerException sse) {
 			System.err.println("SearchModel() - Caught a SolrServerException" +
@@ -160,7 +166,7 @@ public class SearchModel {
 			sse.printStackTrace();	    	
 	    }
 	    
-	    return sb.toString();
+	    return searchResults;
 	}
 	
 	/**  NEW METHOD - Not defined in ADD  
@@ -174,7 +180,8 @@ public class SearchModel {
 	 * @return returns a SolrQuery with the set parameters
 	 */
 	private SolrQuery buildQuery(String searchString, String params){
-		SolrQuery solrQuery = new SolrQuery("name:" + searchString);
+		SolrQuery solrQuery = new SolrQuery(searchString);
+		solrQuery.setSortField("id", SolrQuery.ORDER.asc); 
 		return solrQuery;
 	}
 
