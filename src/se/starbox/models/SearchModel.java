@@ -157,6 +157,7 @@ public class SearchModel {
 	    	for (SolrDocument res : results) {
 	    		SearchResult sr = new SearchResult();
 	    		sr.setName((String)res.getFieldValue("name"));
+	    		sr.setUrl((String)res.getFieldValue("url"));
 	    		searchResults.add(sr);
 	    	}
 	    } catch (SolrServerException sse) {
