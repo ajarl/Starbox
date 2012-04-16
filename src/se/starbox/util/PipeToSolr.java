@@ -25,6 +25,8 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
+import se.starbox.models.SettingsModel;
+
 /**
  * A class made as a bridge between OpenPipeline and Solr. PipeToSolr takes the
  * output from OpenPipeline and sends it to Solr.
@@ -46,7 +48,7 @@ public class PipeToSolr extends Stage{
 	 */
 	public void initialize() {
 		solrURL = "http://localhost:8983/solr";
-		indexDataPath = "path till en mapp där allas indexData ligger"; //TODO kirra pathen
+		indexDataPath = SettingsModel.getProjectRootPath() + "/Index"; //TODO kirra pathen
 		try {
 			solrServer = new CommonsHttpSolrServer(solrURL);
 		} catch (MalformedURLException e) {
