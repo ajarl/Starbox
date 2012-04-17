@@ -4,8 +4,9 @@ import org.json.simple.JSONObject;
 
 public class SearchResult {
 	
-	private String name;
-	private String url;
+	private String name, url, doctype, timestamp;
+	
+	private int filesize;
 
 	/**
 	 * Default constructor.
@@ -22,10 +23,12 @@ public class SearchResult {
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON() {
 		JSONObject json = new JSONObject();
-	
-		// TODO: Här saknas det fält.
+		
 		json.put("name", this.getName());
 		json.put("url", this.getUrl());
+		json.put("doctype", this.getDoctype());
+		json.put("timestamp", this.getTimestamp());
+		json.put("filesize", this.getFilesize());
 		
 		return json;
 	}
@@ -60,5 +63,53 @@ public class SearchResult {
 	 */
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	
+	/**
+	 * Get the doctype of this search result.
+	 * @return String - The doctype of this search result.
+	 */
+	public String getDoctype() {
+		return doctype;
+	}
+
+	/**
+	 * Set the doctype of this search result.
+	 * @param url - The doctype of this search result.
+	 */
+	public void setDoctype(String doctype) {
+		this.doctype = doctype;
+	}
+	
+	/**
+	 * Get the timestamp of this search result.
+	 * @return String - The timestamp of this search result.
+	 */
+	public String getTimestamp() {
+		return timestamp;
+	}
+
+	/**
+	 * Set the timestamp of this search result.
+	 * @param url - The timestamp of this search result.
+	 */
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	/**
+	 * Get the filesize of this search result.
+	 * @return String - The filesize of this search result.
+	 */
+	public int getFilesize() {
+		return filesize;
+	}
+
+	/**
+	 * Set the filesize of this search result.
+	 * @param url - The filesize of this search result.
+	 */
+	public void setFilesize(String filesize) {
+		this.filesize = filesize;
 	}
 }
