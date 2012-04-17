@@ -110,7 +110,7 @@ public class SearchResult {
 	 * Set the filesize of this search result.
 	 * @param filesize - The filesize of this search result.
 	 */
-	public void setFilesize(String filesize) {
+	public void setFilesize(int filesize) {
 		this.filesize = filesize;
 	}
 }

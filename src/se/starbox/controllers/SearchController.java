@@ -100,6 +100,7 @@ public class SearchController extends HttpServlet {
 				Iterator<SearchResult> it = searchResults.iterator();
 			
 				// Begin JSON array.
+				response.setContentType("application/json");
 				response.getWriter().println("[");
 				
 				while(it.hasNext()) {

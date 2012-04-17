@@ -1,11 +1,11 @@
 input {
 	height: 32px;
-	width: 350px;
+	width: 200px;
 	border: 1px solid #999;
 	color: #666;
 	font-size: 14px;
 	padding: 0 5px;
-	margin: 0px 10px;
+	margin: 7px 0px 7px 0px;
 }
 
 label {
@@ -16,6 +16,10 @@ td {
 	padding: 0px 0px 7px 0px;
 }
 
-.left, .right{
+.layout .left, .layout .right {
 	padding-top: 50px;
+}
+
+.add-user-form {
+	display: none;
 }
