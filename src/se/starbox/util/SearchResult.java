@@ -75,7 +75,8 @@ public class SearchResult {
 
 	/**
 	 * Set the doctype of this search result.
-	 * @param url - The doctype of this search result.
+	 * @param doctype - The doctype of this search result.
+	 * @param doctype - The doctype of this search result.
 	 */
 	public void setDoctype(String doctype) {
 		this.doctype = doctype;
@@ -91,7 +92,7 @@ public class SearchResult {
 
 	/**
 	 * Set the timestamp of this search result.
-	 * @param url - The timestamp of this search result.
+	 * @param timestamp - The timestamp of this search result.
 	 */
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
@@ -107,7 +108,7 @@ public class SearchResult {
 
 	/**
 	 * Set the filesize of this search result.
-	 * @param url - The filesize of this search result.
+	 * @param filesize - The filesize of this search result.
 	 */
 	public void setFilesize(String filesize) {
 		this.filesize = filesize;
