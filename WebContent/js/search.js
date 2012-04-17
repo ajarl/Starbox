@@ -13,7 +13,9 @@ $(document).ready(function() {
 		$.get('/starbox/search/', {
 			query : $(this).val()
 		}, function(data) {
-
+			if(data != '') {
+				alert(data);
+			}
 		});
 	});
 

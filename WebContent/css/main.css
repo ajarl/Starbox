@@ -141,7 +141,7 @@ h2 {
 	width: 700px;
 }
 
-.menu li {
+.menu li.icon {
 	height: 24px;
 	padding: 13px 0px;
 	width: 40px;
@@ -150,8 +150,7 @@ h2 {
 .menu li.ip {
 	height: 18px;
 	font-size: 18px;
-	padding: 16px 0px;
-	width: 70px;
+	padding: 16px 15px 16px 0px;
 }
 
 .menu .search, .user, .settings {
