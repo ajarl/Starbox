@@ -2,7 +2,7 @@
 <job>
   <jobname>StarboxJob</jobname>
   <max-file-size>100</max-file-size>
-  <fileroots>C:\Temp\openpipeline-0.9.1</fileroots>
+  <fileroots>D:\Program\openpipeline-0.9.1</fileroots>
   <subdirs>N</subdirs>
   <compressed-files>Y</compressed-files>
   <jobclass>org.openpipeline.pipeline.connector.FileScanner</jobclass>

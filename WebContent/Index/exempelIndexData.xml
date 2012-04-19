@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<add>
+  <doc>
+	<id>ee122211-51c8-4f11-b360-f9411e06fac2</id>
+    <name>sista</name>
+    <url>url_meta</url>
+    <docType>mp34</docType>
+    <timeStamp>timeStamp</timeStamp>
+    <fileSize>23</fileSize>
+  </doc>
+  
+  <doc>
+	<id>ee121226-21c8-4111-b360-f9411e06fac1</id>
+    <name>sista2</name>
+    <url>url_metaasdasdasdasdas</url>
+    <docType>mp34</docType>
+    <timeStamp>timeStamp</timeStamp>
+    <fileSize>23</fileSize>
+  </doc>
+ 
+</add>
+
