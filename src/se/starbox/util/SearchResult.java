@@ -13,6 +13,7 @@ public class SearchResult {
 	 */
 	public SearchResult() {
 		
+		// SearchModel skickar inte med några parametrar vid skapandet av SearchResult-objekt, tänkte att det var dumt att ändra 
 	}
 	
 	/**
