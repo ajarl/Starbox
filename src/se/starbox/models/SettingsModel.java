@@ -25,8 +25,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
 import org.openpipeline.scheduler.JobInfo;
 import org.openpipeline.scheduler.PipelineScheduler;
 
