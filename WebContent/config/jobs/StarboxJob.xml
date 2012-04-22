@@ -2,7 +2,7 @@
 <job>
   <jobname>StarboxJob</jobname>
   <max-file-size>100</max-file-size>
-  <fileroots>D:\Program\openpipeline-0.9.1</fileroots>
+  <fileroots>D:\Linus\KTH\Starbox\Starbox\WebContent\Testfiler</fileroots>
   <subdirs>N</subdirs>
   <compressed-files>Y</compressed-files>
   <jobclass>org.openpipeline.pipeline.connector.FileScanner</jobclass>
@@ -20,6 +20,7 @@
         </docfilter>
         <docfilter>
           <classname>org.openpipeline.pipeline.docfilter.MetadataOnlyFilter</classname>
+          <extensions>mp3,jpg,avi,exe,js,torrent,pdf</extensions>
           <enabled>Y</enabled>
         </docfilter>
         <docfilter>
@@ -47,10 +48,7 @@
     </stage>
     <stage>
       <id>6aa40db9-beb7-4385-ab67-cb234583a30e</id>
-      <classname>org.openpipeline.pipeline.stage.DiskWriter</classname>
-      <include-binary>Y</include-binary>
-      <output-dir>/temp/items</output-dir>
-      <include-annotations>N</include-annotations>
+      <classname>se.starbox.util.PipeToSolr</classname>
     </stage>
   </stages>
   <trigger>
