@@ -11,7 +11,6 @@ import java.io.IOException;
 
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
-import org.apache.solr.client.solrj.request.DirectXmlRequest;
 import org.apache.solr.common.SolrInputDocument;
 
 import org.openpipeline.pipeline.item.DocBinary;
@@ -59,9 +58,6 @@ public class PipeToSolr extends Stage{
 			System.err.println("PipeToSolr - Caught an exception when trying " +
 								"to instantiate the solrServer.");
 			e.printStackTrace();
-//		} catch (SolrServerException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
 		}	
 	}
 
@@ -101,7 +97,7 @@ public class PipeToSolr extends Stage{
 			try {
 				solrServer.deleteByQuery( "*:*" );
 			} catch (SolrServerException | IOException e) {
-				// TODO Auto-generated catch block
+				System.err.println("Error while trying to delete the Solr index.");
 				e.printStackTrace();
 			}
 			Thread t = new toSolr();
@@ -134,16 +130,16 @@ public class PipeToSolr extends Stage{
 					e.printStackTrace();
 				}
 		 
-				Element doc = new Element("doc");
-				doc.addContent(new Element("id").setText("" + uuid));
-				doc.addContent(new Element("name").setText(name));
-				doc.addContent(new Element("url").setText(url));
-				doc.addContent(new Element("docType").setText(doctype));
-				doc.addContent(new Element("timeStamp").setText("" + timeStamp));
-				doc.addContent(new Element("fileSize").setText("" + size));
+				Element indexItem = new Element("item");
+				indexItem.addContent(new Element("id").setText("" + uuid));
+				indexItem.addContent(new Element("name").setText(name));
+				indexItem.addContent(new Element("url").setText(url));
+				indexItem.addContent(new Element("docType").setText(doctype));
+				indexItem.addContent(new Element("timeStamp").setText("" + timeStamp));
+				indexItem.addContent(new Element("fileSize").setText("" + size));
 				
 	
-				indexDataDocument.getRootElement().addContent(doc);
+				indexDataDocument.getRootElement().addContent(indexItem);
 		 
 				
 				XMLOutputter xmlOutput = new XMLOutputter();
@@ -156,20 +152,20 @@ public class PipeToSolr extends Stage{
 				}
 				
 			} else {
-				Element documents = new Element("documents");
-				Document indexDataDocument = new Document(documents);
-				indexDataDocument.setRootElement(documents);
+				Element indexItems = new Element("items");
+				Document indexDataDocument = new Document(indexItems);
+				indexDataDocument.setRootElement(indexItems);
 				
-				Element doc = new Element("doc");
-				doc.addContent(new Element("id").setText("" + uuid));
-				doc.addContent(new Element("name").setText(name));
-				doc.addContent(new Element("url").setText(url));
-				doc.addContent(new Element("docType").setText(doctype));
-				doc.addContent(new Element("timeStamp").setText("" + timeStamp));
-				doc.addContent(new Element("fileSize").setText("" + size));
+				Element indexItem = new Element("item");
+				indexItem.addContent(new Element("id").setText("" + uuid));
+				indexItem.addContent(new Element("name").setText(name));
+				indexItem.addContent(new Element("url").setText(url));
+				indexItem.addContent(new Element("docType").setText(doctype));
+				indexItem.addContent(new Element("timeStamp").setText("" + timeStamp));
+				indexItem.addContent(new Element("fileSize").setText("" + size));
 		
 				
-				indexDataDocument.getRootElement().addContent(doc);
+				indexDataDocument.getRootElement().addContent(indexItem);
 				
 				XMLOutputter xmlOutput = new XMLOutputter();
 				xmlOutput.setFormat(Format.getPrettyFormat());
@@ -195,6 +191,7 @@ public class PipeToSolr extends Stage{
 	private class toSolr extends Thread{
 		public void run(){
 	        
+			//TODO Kolla om OP är klar istället för att vänta.
 			long t0,t1;
 	        t0=System.currentTimeMillis();
 	        t1=System.currentTimeMillis();
@@ -217,14 +214,14 @@ public class PipeToSolr extends Stage{
 					try {
 						document = builder.build(child);
 					} catch (JDOMException e1) {
-						// TODO Auto-generated catch block
+						System.err.println("Error while building a document in toSolr()");
 						e1.printStackTrace();
 					} catch (IOException e1) {
-						// TODO Auto-generated catch block
+						System.err.println("Error while reading file in toSolr()");
 						e1.printStackTrace();
 					}
 					Element root = document.getRootElement();
-					List row = root.getChildren("doc"); //Lista med docs
+					List row = root.getChildren("item"); //Lista med item
 					
 					for(int i = 0; i < row.size(); i++){
 						Element docs = (Element) row.get(i);
