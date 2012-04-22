@@ -185,7 +185,7 @@ public class SettingsModel {
 	/**
 	 * Starts the OpenPipeline job to begin indexing the local Starbox folder.
 	 */
-	public void updateIndex() {
+	public static void updateIndex() {
 		// TODO: delete index data, start the OpenPipeline job?
 		try {
 			/*// Get project path
@@ -228,7 +228,7 @@ public class SettingsModel {
 	/**
 	 * Shuts down program cleanly
 	 */
-	public void shutDown() {
+	public static void shutDown() {
 		// TODO: Before shutting down, make sure all changes have been saved, check current downloads are done etc.
 		try {
 			// Send shutdown command to shutdown port on Catalina
