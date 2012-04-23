@@ -56,7 +56,7 @@ public class FileSystemController extends HttpServlet {
 		
 		// temp fail message
 		if (fileSystemModel == null) {
-			response.setContentType("text/html");
+			/*response.setContentType("text/html");
 			
 			PrintWriter writer = response.getWriter();
 			writer.println("<html>");
@@ -67,7 +67,7 @@ public class FileSystemController extends HttpServlet {
 			writer.println("</html>");
 			writer.flush();
 			
-			return;
+			return;*/
 		}
 		
 		// Is get file reqeust?
@@ -101,16 +101,16 @@ public class FileSystemController extends HttpServlet {
 	private void getFile(HttpServletRequest request, HttpServletResponse response, String fileRequest) throws ServletException, IOException {
 		System.out.println("FileSystemController.getFile called with fileRequest='" + fileRequest + "'.");
 		
-		/*// temp
-		if (fileSystemModel == null) {
-			sendFile(response, new File("C:/Starbox/u.png"));
+		// temp
+		/*if (fileSystemModel == null) {
+			sendFile(response, new File("C:/Starbox/u.png"), false);
 			return;
 		}*/
 		
 		File file = fileSystemModel != null ? fileSystemModel.requestDownload(fileRequest, request.getRemoteAddr()) : null;
 		if (file != null) {
 			// Request is valid and allowed
-			sendFile(response, file);
+			sendFile(response, file, true);
 		}
 		else {
 			// Request is invalid or not allowed
@@ -137,7 +137,7 @@ public class FileSystemController extends HttpServlet {
 		File indexFile = fileSystemModel != null ? fileSystemModel.requestIndexData(request.getRemoteAddr()) : null;
 		if (indexFile != null) {
 			// Request is valid and allowed
-			sendFile(response, indexFile);
+			sendFile(response, indexFile, true);
 		}
 		else {
 			// Request is invalid or not allowed
@@ -153,10 +153,9 @@ public class FileSystemController extends HttpServlet {
 	 * Writes the file to the response's output stream; this sends the file through
 	 * browser file transfer.
 	 */
-	private void sendFile(HttpServletResponse response, File file) throws IOException {
+	private void sendFile(HttpServletResponse response, File file, boolean http) throws IOException {
 		// Set response of "file transfer" type
 		String fileName = file.getName();
-		response.addHeader("Content-Disposition", "attachment; filename=" + fileName);
 		// Determine file type (file extension)
 		String fileType = "octet-stream";	// default
 		for (int i = fileName.length() - 2; i >= 0; i--)
@@ -164,15 +163,21 @@ public class FileSystemController extends HttpServlet {
 				fileType = fileName.substring(i + 1, fileName.length());
 				break;
 			}
+		
 		response.setContentType("application/" + fileType);
+		response.setContentLength((int)file.length());
+		response.addHeader("Content-Disposition", "attachment; filename=" + fileName);
+
+		OutputStream out = response.getOutputStream();
 		
 		// Transfer file - Write file to output stream
+		//System.out.println("BEGIN TRANSFER");
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
-		OutputStream out = response.getOutputStream();
-		byte[] buffer = new byte[1024];
+		byte[] buffer = new byte[4096];
 		int bytesRead;
 		while ((bytesRead = in.read(buffer)) != -1)
 			out.write(buffer, 0, bytesRead);
+		//System.out.println("END TRANSFER");
 		
 		in.close();
 		out.flush();
