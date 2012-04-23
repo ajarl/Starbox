@@ -29,46 +29,18 @@ import se.starbox.models.FileSystemModel;
 )
 public class FileSystemController extends HttpServlet {
 	private static final long serialVersionUID = 5338560270728801227L;
-	
-	private FileSystemModel fileSystemModel;
 
 	/**
 	 * Constructs a new FileSystemController.
 	 */
 	public FileSystemController() {
-		// TODO: get or create FileSystemModel. Calling getServletContext() = crash! :S
-		
-		//fileSystemModel = new FileSystemModel(new UserModel(getServletContext()), new SettingsModel());
-		//System.out.println("getServletContext(): " + getServletContext());
-		
-		fileSystemModel = null;
 	}
-	
-	/*public FileSystemController(UserModel userModel, SettingsModel settingsModel) {
-		this.fileSystemModel = new FileSystemModel(userModel, settingsModel);
-	}*/
 	   
 	/**
 	 * Handle web get request, it should either be a get file request or a get index request.
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("FileSystemController.doGet called.");
-		
-		// temp fail message
-		if (fileSystemModel == null) {
-			/*response.setContentType("text/html");
-			
-			PrintWriter writer = response.getWriter();
-			writer.println("<html>");
-			writer.println("<head><title>Starbox - Unable to handle request</title></head>");
-			writer.println("<body>");
-			writer.println("<p>Unable to handle request due to 'fileSystemModel' being null.</p>");
-			writer.println("</body>");
-			writer.println("</html>");
-			writer.flush();
-			
-			return;*/
-		}
 		
 		// Is get file reqeust?
 		String file = request.getParameter("file");
@@ -101,16 +73,10 @@ public class FileSystemController extends HttpServlet {
 	private void getFile(HttpServletRequest request, HttpServletResponse response, String fileRequest) throws ServletException, IOException {
 		System.out.println("FileSystemController.getFile called with fileRequest='" + fileRequest + "'.");
 		
-		// temp
-		/*if (fileSystemModel == null) {
-			sendFile(response, new File("C:/Starbox/u.png"), false);
-			return;
-		}*/
-		
-		File file = fileSystemModel != null ? fileSystemModel.requestDownload(fileRequest, request.getRemoteAddr()) : null;
+		File file = FileSystemModel.requestDownload(fileRequest, request.getRemoteAddr());
 		if (file != null) {
 			// Request is valid and allowed
-			sendFile(response, file, true);
+			sendFile(response, file);
 		}
 		else {
 			// Request is invalid or not allowed
@@ -134,15 +100,14 @@ public class FileSystemController extends HttpServlet {
 	private void getIndexData(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("FileSystemController.getIndexData called.");
 		
-		File indexFile = fileSystemModel != null ? fileSystemModel.requestIndexData(request.getRemoteAddr()) : null;
+		File indexFile = FileSystemModel.requestIndexData(request.getRemoteAddr());
 		if (indexFile != null) {
 			// Request is valid and allowed
-			sendFile(response, indexFile, true);
+			sendFile(response, indexFile);
 		}
 		else {
 			// Request is invalid or not allowed
-			response.setContentType("JSONObject");		// TODO: what content type to set for JSONObject?
-			
+			response.setContentType("JSONObject");
 			JSONObject jso = new JSONObject();
 			jso.put("indexRequestFailed", "true");
 			response.getWriter().write(jso.toString());
@@ -153,7 +118,7 @@ public class FileSystemController extends HttpServlet {
 	 * Writes the file to the response's output stream; this sends the file through
 	 * browser file transfer.
 	 */
-	private void sendFile(HttpServletResponse response, File file, boolean http) throws IOException {
+	private void sendFile(HttpServletResponse response, File file) throws IOException {
 		// Set response of "file transfer" type
 		String fileName = file.getName();
 		// Determine file type (file extension)

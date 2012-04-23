@@ -13,26 +13,15 @@ import java.io.File;
  * @version 2012-02-28
  */
 public class FileSystemModel {
-	public static final String FILEPATH_INDEXDATA = "src/IndexData.xml";	// TODO: place this field somewhere else
-	
-	private UserModel userModel;
-	private SettingsModel settingsModel;
-	
-	/**
-	 * Creates a new FileSystemModel.
-	 * @param userModel The user model to use (for checking the white-list)
-	 * @param settingsModel The settings model to use (for checking the Starbox folder file path)
-	 */
-	public FileSystemModel(UserModel userModel, SettingsModel settingsModel) {
-		this.userModel = userModel;
-		this.settingsModel = settingsModel;
-	}
-	
 	/**
 	 * Checks if the specified ip is white-listed.
 	 */
-	protected boolean isRequestAllowed(String ip) {
-		return ip != null && userModel.getWhiteList().contains(ip);
+	protected static boolean isRequestAllowed(String ip) {
+		// TODO: UserModel.getWhiteList should be static? Or should be able to get current UserModel?
+		//return ip != null && UserModel.getWhiteList().contains(ip);
+		boolean ret = ip != null;
+		System.out.println("[" + ip + "] FileSystemModel.isRequestAllowed: " + ret);
+		return ret;
 	}
 	
 	/**
@@ -47,7 +36,7 @@ public class FileSystemModel {
 	 * @return The file requested to be download, or <code>null</code> if the request was declined
 	 * @see UserModel#getWhiteList()
 	 */
-	public File requestDownload(String relativeFilepath, String ip) {
+	public static File requestDownload(String relativeFilepath, String ip) {
 		// File path must be non-null, non-zero + Is accepted request IP?
 		if (relativeFilepath == null || relativeFilepath.length() == 0 || !isRequestAllowed(ip))
 			return null;
@@ -56,13 +45,28 @@ public class FileSystemModel {
 		for (int i = 0; i < relativeFilepath.length() - 1; i++)
 			if (relativeFilepath.charAt(i) == '.' && relativeFilepath.charAt(i + 1) == '.')
 				return null;
-		if (relativeFilepath.charAt(0) != '/')
-			relativeFilepath = "/" + relativeFilepath;
+		
+		// Get starbox folder/
+		String starboxFolder = new SettingsModel().getStarboxFolder();	// TODO: Should not create new SettinsModel just to get starbox folder?
+		if (starboxFolder.length() > 0) {
+			char last = starboxFolder.charAt(starboxFolder.length() - 1);
+			if (last != '/' && last != '\\') {
+				if (starboxFolder.contains("/"))
+					starboxFolder += '/';
+				else
+					starboxFolder += '\\';
+			}
+		}
 		
 		// File exists?
-		File file = new File(settingsModel.getStarboxFolder() + relativeFilepath);
-		if (!file.exists() || !file.canRead())
+		String filePath = starboxFolder + relativeFilepath;
+		System.out.println("[" + ip + "] FileSystemModel.requestDownload: Using file path: " + filePath);
+		File file = new File(filePath);
+		if (!file.exists() || !file.canRead()) {
+			System.out.println("[" + ip + "] FileSystemModel.requestDownload: File does not exist");
 			return null;
+		}
+		System.out.println("[" + ip + "] FileSystemModel.requestDownload: File exists");
 		return file;
 	}
 	
@@ -75,15 +79,29 @@ public class FileSystemModel {
 	 * @param ip The IP address of the person requesting the index
 	 * @return The local index file, or <code>null</code> if the request was declined
 	 */
-	public File requestIndexData(String ip) {
+	public static File requestIndexData(String ip) {
 		// Is accepted request IP?
 		if (!isRequestAllowed(ip))
 			return null;
 		
+		// Get index path
+		String indexPath = SettingsModel.getProjectRootPath();	// TODO: should be able to get index path instead, if it changes this line will no longer work!
+		char slash = indexPath.contains("/") ? '/' : '\\';
+		if (indexPath.length() > 0) {
+			char last = indexPath.charAt(indexPath.length() - 1);
+			if (last != '/' && last != '\\')
+				last += slash;
+		}
+		indexPath += "Index" + slash + "indexData.xml";
+		
 		// Index file exists?
-		File file = new File(FILEPATH_INDEXDATA);
-		if (!file.exists() || !file.canRead())
+		System.out.println("[" + ip + "] FileSystemModel.requestIndexData: Using index path: " + indexPath);
+		File file = new File(indexPath);
+		if (!file.exists() || !file.canRead()) {
+			System.out.println("[" + ip + "] FileSystemModel.requestIndexData: File does not exist");
 			return null;
+		}
+		System.out.println("[" + ip + "] FileSystemModel.requestIndexData: File exists");
 		return file;
 	}
 }
