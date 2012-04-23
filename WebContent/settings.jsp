@@ -13,14 +13,16 @@
 					<div class="left">
 						<table>
 							<tr>
+								<h2>Controllers</h2>
+							<tr>
 								<td>
-									<button class="control-button" id="update-index"
+									<button class="button-small button-blue" id="update-index"
 									data-param="updateindex">Update index</button>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<button class="control-button" id="shut-down"
+									<button class="button-small button-blue" id="shut-down"
 									data-param="shutdown" >Shut down</button>
 								</td>
 							</tr>
@@ -29,28 +31,31 @@
 					<div class="right">
 						<table>
 							<tr>
+								<h2>Settings</h2>
+							<tr>
+							<tr>
 								<td><label for="path">Path</label></td>
 								<td><input type="text" name="path" id="path"
 									value="<%= request.getAttribute("starboxFolder") %>" />
-									<button class="save-setting">Save</button></td>
+									<button class="save-setting button-small button-green">Save</button></td>
 							</tr>
 							<tr>
 								<td><label for="interval">Interval</label></td>
 								<td><input type="text" name="interval" id="interval"
 									value="<%= request.getAttribute("indexUpdateInterval") %>" />
-									<button class="save-setting">Save</button></td>
+									<button class="save-setting button-small button-green">Save</button></td>
 							</tr>
 							<tr>
 								<td><label for="displayname">Displayname</label></td>
 								<td><input type="text" name="displayname" id="displayname"
 									value="<%= request.getAttribute("displayName") %>" />
-									<button class="save-setting">Save</button></td>
+									<button class="save-setting button-small button-green">Save</button></td>
 							</tr>
 							<tr>
 								<td><label for="email">Email</label></td>
 								<td><input type="text" name="email" id="email"
 									value="<%= request.getAttribute("email") %>" />
-									<button class="save-setting">Save</button></td>
+									<button class="save-setting button-small button-green">Save</button></td>
 							</tr>
 						</table>
 					</div>

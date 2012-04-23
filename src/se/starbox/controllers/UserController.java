@@ -28,7 +28,7 @@ import se.starbox.util.JSONUtils;
 @WebServlet(description = "handles user request from the interwebs.", urlPatterns = { "/users/", "/users" })
 public class UserController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static String LIST_JSP = "/usersTEST.jsp";
+	private static String LIST_JSP = "/users.jsp";
 	private static String ADD_JSP = "/newuser.jsp";
 	private static String EMPTY_JSP = "/empty.jsp";
 	private static String TEST_JSP = "/JSONTests.jsp";
@@ -83,7 +83,7 @@ public class UserController extends HttpServlet {
 
 		if (action == null) {
 			//error?
-			request.setAttribute("errorMessage", "Du kan inte göra en post till users controllen utan en action. Tänk över ditt beteende.");
+			request.setAttribute("errorMessage", "Du kan inte gï¿½ra en post till users controllen utan en action. Tï¿½nk ï¿½ver ditt beteende.");
 			request = getUserlistRequest(request);
 			forward = LIST_JSP;
 		} else if (action.equals(ACTION_ADD_USER)){

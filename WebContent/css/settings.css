@@ -1,0 +1,21 @@
+input {
+	height: 32px;
+	width: 350px;
+	border: 1px solid #999;
+	color: #666;
+	font-size: 14px;
+	padding: 0 5px;
+	margin: 0px 10px;
+}
+
+label {
+	font-size: 18px;
+}
+
+td {
+	padding: 0px 0px 7px 0px;
+}
+
+.left, .right{
+	padding-top: 50px;
+}

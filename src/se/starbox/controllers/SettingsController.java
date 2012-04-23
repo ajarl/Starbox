@@ -80,10 +80,10 @@ public class SettingsController extends HttpServlet {
 			sm.setEmail(params.get("email")[0]);
 
 		if (params.containsKey("updateindex"))
-			sm.updateIndex();
+			SettingsModel.updateIndex();
 
 		if (params.containsKey("shutdown"))
-			sm.shutDown();
+			SettingsModel.shutDown();
 
 		
 		request.setAttribute("displayName", sm.getDisplayName());

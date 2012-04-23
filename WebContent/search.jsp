@@ -29,17 +29,20 @@
 				</div>
 				<div class="right">
 					<div class="search-inputs">
-						<input type="text" name="query" id="search-query" />
+						<input type="text" name="query" id="search-query">
+						<div class="match-highlight">
+							Match
+						</div>
 					</div>
 					<div class="search-results">
 						<table>
 							<thead>
 								<tr>
-									<th width="30%">Name</th>
-									<th width="10%">Size</th>
-									<th width="15%">Changed</th>
-									<th width="15%">User</th>
-									<td></td>
+									<th width="330px">Name</th>
+									<th width="70px">Size</th>
+									<th width="140px">Changed</th>
+									<th width="135px">User</th>
+									<td width="25px"></td>
 								</tr>
 							</thead>
 							<tbody>
@@ -48,21 +51,21 @@
 									<td>15 Mb</td>
 									<td>2012-02-31</td>
 									<td>Otto</td>
-									<td>Ladda hem</td>
+									<td>DL</td>
 								</tr>
 								<tr data-user="Kim" data-format="image">
 									<td>profil.jpeg</td>
 									<td>1 Mb</td>
 									<td>2012-01-25</td>
 									<td>Kim</td>
-									<td>Ladda hem</td>
+									<td>DL</td>
 								</tr>
 								<tr data-user="Lukas" data-format="document">
 									<td>kex.pdf</td>
 									<td>356 Kb</td>
 									<td>2012-03-10</td>
 									<td>Lukas</td>
-									<td>Ladda hem</td>
+									<td>DL</td>
 								</tr>
 							</tbody>
 						</table>

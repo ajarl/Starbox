@@ -4,6 +4,27 @@ function applyFilters(data) {
 	$('.search-results tr[data-' + $(data).attr('data-type') + '=' + $(data).attr('data-value') + ']').toggle();
 }
 
+function renderResults(data) {
+	var tbody = $('.search-results tbody');
+	var table = $('.search-results table');
+	
+	$(tbody).empty();
+	
+	$(data).each(function(index, value) {
+		$(tbody).append(
+				'<tr data-user="' + 'Otto' + '" data-format="' + value.doctype + '">' +
+				'<td>' + value.name + '</td>' +
+				'<td>' + value.filesize + '</td>' +
+				'<td>' + value.timestamp + '</td>' +
+				'<td>Username</td>' +
+				'<td><a href="' + value.url + '" class="button-small button-green button-dl">DL</a></td>' +
+				'</tr>');	
+	});
+	
+	$(table).trigger('update');
+	$('.match-highlight').show().fadeOut(500);
+}
+
 $(document).ready(function() {
 	$('#search-query').focus();
 	
@@ -13,7 +34,9 @@ $(document).ready(function() {
 		$.get('/starbox/search/', {
 			query : $(this).val()
 		}, function(data) {
-
+			if(data.length > 0) {
+				renderResults(data);
+			}
 		});
 	});
 

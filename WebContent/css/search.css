@@ -106,4 +106,17 @@
 	background: #fefefe;
 }
 
+.match-highlight {
+	display: none;
+	color: green;
+	font-size: 14px;
+	font-weight: bold;
+	position: absolute;
+	right: 11px;
+	top: 11px;
+}
+
+.left {
+	border-right: 1px solid #999;
+}
 

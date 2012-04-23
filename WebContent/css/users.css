@@ -1,0 +1,25 @@
+input {
+	height: 32px;
+	width: 200px;
+	border: 1px solid #999;
+	color: #666;
+	font-size: 14px;
+	padding: 0 5px;
+	margin: 7px 0px 7px 0px;
+}
+
+label {
+	font-size: 18px;
+}
+
+td {
+	padding: 0px 0px 7px 0px;
+}
+
+.layout .left, .layout .right {
+	padding-top: 50px;
+}
+
+.add-user-form {
+	display: none;
+}

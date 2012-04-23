@@ -1,6 +1,7 @@
 package se.starbox.controllers;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import se.starbox.models.SearchModel;
 import se.starbox.util.SearchResult;
@@ -39,6 +41,9 @@ public class SearchController extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
+	 */
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request,
@@ -91,9 +96,24 @@ public class SearchController extends HttpServlet {
 				LinkedList<SearchResult> searchResults;
 				searchResults = sm.query(query, params);
 				
-				for(SearchResult res : searchResults) {
-					response.getWriter().write(res.toJSON().toJSONString());
+				// Iterate through the results and print the JSON representation of the results.
+				Iterator<SearchResult> it = searchResults.iterator();
+			
+				// Begin JSON array.
+				response.setContentType("application/json");
+				response.getWriter().println("[");
+				
+				while(it.hasNext()) {
+					SearchResult res = (SearchResult) it.next();
+					response.getWriter().println(res.toJSON().toJSONString());
+					
+					// If there's more. Print a comma so the array will be correctly formatted.
+					if (it.hasNext())
+						response.getWriter().println(",");
 				}
+				
+				// End JSON array.
+				response.getWriter().print("]");
 			}
 		}
 	}

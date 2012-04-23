@@ -25,8 +25,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
 import org.openpipeline.scheduler.JobInfo;
 import org.openpipeline.scheduler.PipelineScheduler;
 
@@ -187,7 +185,7 @@ public class SettingsModel {
 	/**
 	 * Starts the OpenPipeline job to begin indexing the local Starbox folder.
 	 */
-	public void updateIndex() {
+	public static void updateIndex() {
 		// TODO: delete index data, start the OpenPipeline job?
 		try {
 			/*// Get project path
@@ -230,7 +228,7 @@ public class SettingsModel {
 	/**
 	 * Shuts down program cleanly
 	 */
-	public void shutDown() {
+	public static void shutDown() {
 		// TODO: Before shutting down, make sure all changes have been saved, check current downloads are done etc.
 		try {
 			// Send shutdown command to shutdown port on Catalina

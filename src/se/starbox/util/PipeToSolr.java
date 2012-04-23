@@ -1,6 +1,8 @@
 package se.starbox.util;
 
 import java.net.MalformedURLException;
+import java.util.List;
+import java.util.UUID;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -9,7 +11,7 @@ import java.io.IOException;
 
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
-import org.apache.solr.client.solrj.request.DirectXmlRequest;
+import org.apache.solr.common.SolrInputDocument;
 
 import org.openpipeline.pipeline.item.DocBinary;
 import org.openpipeline.pipeline.item.Item;
@@ -23,6 +25,8 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
+import se.starbox.models.SettingsModel;
+
 /**
  * A class made as a bridge between OpenPipeline and Solr. PipeToSolr takes the
  * output from OpenPipeline and sends it to Solr.
@@ -34,7 +38,7 @@ public class PipeToSolr extends Stage{
 	CommonsHttpSolrServer solrServer;
 	String solrURL;
 	String indexDataPath;
-	
+	boolean first;
 	public PipeToSolr(){
 		initialize();
 	}
@@ -43,10 +47,13 @@ public class PipeToSolr extends Stage{
 	 * Initializes.
 	 */
 	public void initialize() {
-		solrURL = "http://localhost:8983/solr";
-		indexDataPath = "path till en mapp där allas indexData ligger"; //TODO kirra pathen
+		solrURL = "http://localhost:8080/starbox-solr-server";
+		indexDataPath = SettingsModel.getProjectRootPath() + "/Index";
+		first = true;
+
 		try {
 			solrServer = new CommonsHttpSolrServer(solrURL);
+			
 		} catch (MalformedURLException e) {
 			System.err.println("PipeToSolr - Caught an exception when trying " +
 								"to instantiate the solrServer.");
@@ -59,87 +66,111 @@ public class PipeToSolr extends Stage{
 	/**
 	 * Takes input from OpenPipeline, one file at a time as an item. 
 	 * ProcessItem takes each item and adds it to IndexData.xml in the format: 
-	 * <add>
-	 * 		<doc>
-	 * 			<field name="name">"filename"</field>
-	 * 			<field name="url">"url"</field>
-	 * 			..
-	 * 		</doc>
-	 * 		<doc>
-	 * 		</doc>
+	 * <documents>
+	 * 	<doc>
+	 * 		<id> .. </id>
+	 * 		<name> .. </name>
 	 * 		..
-	 * </add>
+	 * 	</doc>
+	 * 	<doc>
+	 * 		..
+	 * 		..
+	 * 	</doc>
+	 * </documents>
+	 * 
 	 * 
 	 * @param item Input from SimpleTokenizer
 	 */
+	@SuppressWarnings("static-access")
 	public void processItem(Item item) throws PipelineException{
 		String name = "";
 		String url = "";
 		String doctype = "";
 		long size = 0;
 		long timeStamp = 0;
+		UUID uuid = null;
+		byte[] nameByteArray;
+		
 		DocBinary docBinary = item.getDocBinary();
+		if(first){
+			clearIndexData();
+			try {
+				solrServer.deleteByQuery( "*:*" );
+			} catch (SolrServerException | IOException e) {
+				System.err.println("Error while trying to delete the Solr index.");
+				e.printStackTrace();
+			}
+			Thread t = new toSolr();
+			t.start();
+			first = false;
+		}
 		
 		if (docBinary != null && docBinary.getBinary().size() > 0) {
 			url 		= docBinary.getName();
 			doctype		= docBinary.getExtension();
 			size 		= docBinary.getSize();
 			timeStamp 	= docBinary.getTimestamp();
-			name = new File(url).getName();
-		
+			name 		= new File(url).getName();
+			nameByteArray = name.getBytes();
+			uuid 		= uuid.nameUUIDFromBytes(nameByteArray);
+			
+			
 		
 			boolean exists = (new File(indexDataPath + "/indexData.xml")).exists();
+			System.out.println(indexDataPath);
 			if (exists) {
 				SAXBuilder builder = new SAXBuilder();
 				File indexData = new File(indexDataPath + "/indexData.xml");
 		 
-				Document document = null;
+				Document indexDataDocument = null;
 				try {
-					document = (Document) builder.build(indexData);
+					indexDataDocument = (Document) builder.build(indexData);
 				} catch (JDOMException | IOException e) {
 					System.err.println("PipeToSolr - Error when trying to read IndexData for update.");
 					e.printStackTrace();
 				}
 		 
-				Element doc = new Element("doc");
-				doc.addContent(new Element("field").setText(name).setAttribute("name", "name"));
-				doc.addContent(new Element("field").setText(url).setAttribute("name", "url"));
-				doc.addContent(new Element("field").setText(doctype).setAttribute("name", "docType"));
-				doc.addContent(new Element("field").setText("" + timeStamp).setAttribute("name", "timeStamp"));
-				doc.addContent(new Element("field").setText("" + size).setAttribute("name", "fileSize"));
+				Element indexItem = new Element("item");
+				indexItem.addContent(new Element("id").setText("" + uuid));
+				indexItem.addContent(new Element("name").setText(name));
+				indexItem.addContent(new Element("url").setText(url));
+				indexItem.addContent(new Element("docType").setText(doctype));
+				indexItem.addContent(new Element("timeStamp").setText("" + timeStamp));
+				indexItem.addContent(new Element("fileSize").setText("" + size));
 				
 	
-				document.getRootElement().addContent(doc);
+				indexDataDocument.getRootElement().addContent(indexItem);
 		 
 				
 				XMLOutputter xmlOutput = new XMLOutputter();
 				xmlOutput.setFormat(Format.getPrettyFormat());
 				try {
-					xmlOutput.output(document, new FileWriter(indexDataPath + "/indexData.xml"));
+					xmlOutput.output(indexDataDocument, new FileWriter(indexDataPath + "/indexData.xml"));
 				} catch (IOException e) {
 					System.err.println("PipeToSolr - Error when trying to save update to IndexData.xml");
 					e.printStackTrace();
 				}
 				
 			} else {
-				Element add = new Element("add");
-				Document document = new Document(add);
-				document.setRootElement(add);
+				Element indexItems = new Element("items");
+				Document indexDataDocument = new Document(indexItems);
+				indexDataDocument.setRootElement(indexItems);
 				
-				Element doc = new Element("doc");
-				doc.addContent(new Element("field").setText(name).setAttribute("name", "name"));
-				doc.addContent(new Element("field").setText(url).setAttribute("name", "url"));
-				doc.addContent(new Element("field").setText(doctype).setAttribute("name", "docType"));
-				doc.addContent(new Element("field").setText("" + timeStamp).setAttribute("name", "timeStamp"));
-				doc.addContent(new Element("field").setText("" + size).setAttribute("name", "fileSize"));
+				Element indexItem = new Element("item");
+				indexItem.addContent(new Element("id").setText("" + uuid));
+				indexItem.addContent(new Element("name").setText(name));
+				indexItem.addContent(new Element("url").setText(url));
+				indexItem.addContent(new Element("docType").setText(doctype));
+				indexItem.addContent(new Element("timeStamp").setText("" + timeStamp));
+				indexItem.addContent(new Element("fileSize").setText("" + size));
 		
 				
-				document.getRootElement().addContent(doc);
+				indexDataDocument.getRootElement().addContent(indexItem);
 				
 				XMLOutputter xmlOutput = new XMLOutputter();
 				xmlOutput.setFormat(Format.getPrettyFormat());
 				try {
-					xmlOutput.output(document, new FileWriter(indexDataPath + "/indexData.xml"));
+					xmlOutput.output(indexDataDocument, new FileWriter(indexDataPath + "/indexData.xml"));
 				} catch (IOException e) {
 					System.err.println("PipeToSolr - Error while trying to create IndexData.xml");
 					e.printStackTrace();
@@ -147,7 +178,7 @@ public class PipeToSolr extends Stage{
 	
 			}	
 		}
-	
+
 	}
 
 	/**
@@ -156,32 +187,66 @@ public class PipeToSolr extends Stage{
 	 * 
 	 */
 
-	public void toSolr(){
-		SAXBuilder builder = new SAXBuilder();
-
-		try {
-			File dir = new File(indexDataPath);
-			 
-			for (File child : dir.listFiles()) {
-			    if (".".equals(child.getName()) || "..".equals(child.getName())) {
-			      continue;  
-			    }
-			    
-			    Document doc = builder.build(child);
-			    Element root = doc.getRootElement();
-			    String s = root.toString();
-			    DirectXmlRequest xmlreq = new DirectXmlRequest( "/update", s); 
-			    solrServer.request(xmlreq);
-			  }
-		} catch (SolrServerException e) {
-			System.err.println("PipeToSolr caught a SolrServerException");
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.err.println("PipeToSolr caught an IOException");
-			e.printStackTrace();
-		}catch (JDOMException e) {
-			System.err.println("PipeToSolr caught an JDOMException");
-			e.printStackTrace();
+	@SuppressWarnings("rawtypes")
+	private class toSolr extends Thread{
+		public void run(){
+	        
+			//TODO Kolla om OP är klar istället för att vänta.
+			long t0,t1;
+	        t0=System.currentTimeMillis();
+	        t1=System.currentTimeMillis();
+	        while (t1-t0<10000){
+	            t1=System.currentTimeMillis();
+	        }
+	        
+			try {
+				File dir = new File(indexDataPath);
+				 
+				for (File child : dir.listFiles()) {
+				    if (".".equals(child.getName()) || "..".equals(child.getName())) {
+				      continue;  
+				    }
+				    
+				    SolrInputDocument input = new SolrInputDocument();
+					SAXBuilder builder = new SAXBuilder();
+					
+					Document document = null;
+					try {
+						document = builder.build(child);
+					} catch (JDOMException e1) {
+						System.err.println("Error while building a document in toSolr()");
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						System.err.println("Error while reading file in toSolr()");
+						e1.printStackTrace();
+					}
+					Element root = document.getRootElement();
+					List row = root.getChildren("item"); //Lista med item
+					
+					for(int i = 0; i < row.size(); i++){
+						Element docs = (Element) row.get(i);
+						List column = docs.getChildren(); //Lista med field
+						
+						for(int j = 0; j < column.size(); j++){
+							Element e = (Element) column.get(j);
+			
+							String name = e.getName();
+							String value = e.getText();
+	
+							input.addField(name, value);			
+						}
+						solrServer.add(input);
+						solrServer.commit();
+						input.clear();
+					}
+				  }
+			} catch (SolrServerException e) {
+				System.err.println("PipeToSolr caught a SolrServerException");
+				e.printStackTrace();
+			} catch (IOException e) {
+				System.err.println("PipeToSolr caught an IOException");
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -192,23 +257,23 @@ public class PipeToSolr extends Stage{
 	 */
 	public void clearIndexData (){
 		
-		    try {
-		    	
-		      File target = new File(indexDataPath + "/indexData.xml");
+	    try {
+	    	
+	      File target = new File(indexDataPath + "/indexData.xml");
 
-		      if (!target.exists()) {
-		        System.err.println("IndexData.xml doesn't exist.");
-		        return;
-		      }
+	      if (!target.exists()) {
+	        System.err.println("IndexData.xml doesn't exist.");
+	        return;
+	      }
 
-		      if (target.delete())
-		        System.out.println("** Deleted IndexData.xml **");
-		      else
-		        System.err.println("Failed to delete IndexData.xml");
-		    } catch (SecurityException e) {
-		      System.err.println("Unable to delete IndexData.xml ("
-		          + e.getMessage() + ")");
-		    }
+	      if (target.delete())
+	        System.out.println("** Deleted IndexData.xml **");
+	      else
+	        System.err.println("Failed to delete IndexData.xml");
+	    } catch (SecurityException e) {
+	      System.err.println("Unable to delete IndexData.xml ("
+	          + e.getMessage() + ")");
+	    }
 		  
 	}
 	
