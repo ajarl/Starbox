@@ -4,15 +4,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,21 +36,32 @@ public class UserModel {
 	private static final String USER_APP_PATH = "/users/";
 	private static final String USERS_URL = "/starbox/users";
 
-	private ArrayList<User> userList;
+	protected ArrayList<User> userList;
 
 	/**
 	 * Initiate the model instance. Parses the users.xml file on startup.
 	 * @param context 
 	 */
 	public UserModel(ServletContext context){
-		String fileDivider = System.getProperty("file.separator");
-		APP_PATH = context.getRealPath(USER_APP_PATH)+fileDivider;
+		APP_PATH = SettingsModel.getProjectRootPath()+USER_APP_PATH;
 		File appDir = new File(APP_PATH);
 		if(!appDir.exists()){
 			appDir.mkdir();
 		}
 		XML_PATH = APP_PATH+XML_FILE;
 		initModel();
+	}
+
+	public static List<String> getWhitelistStatic(){
+		String path = SettingsModel.getProjectRootPath()+USER_APP_PATH+XML_FILE;
+		List<User> users = (ArrayList<User>) (new UserParser(path)).getAll();
+		ArrayList<String> ipList = new ArrayList<String>();
+		for(User u: users){
+			if(u.getStatus().equals(STATE_ACCEPTED)){
+				ipList.add(u.getIp());
+			}
+		}
+		return ipList;
 	}
 	private void initModel(){
 		userList = (ArrayList<User>) (new UserParser(XML_PATH)).getAll();
@@ -192,27 +200,11 @@ public class UserModel {
 	}
 
 	private void sendRequest(String IP,String request){
-		IP = IP.trim();
-		String url = "http://"+IP+":"+TOMCAT_PORT+USERS_URL;
-		try {
-			String requestString = url+"?"+request;
-			System.out.println("Requeststring: "+requestString);
-			HttpURLConnection connection = (HttpURLConnection) new URL(requestString).openConnection();
-			int responseCode = connection.getResponseCode();
-			if(responseCode != 200){
-				//FUCK, FEL
-				System.out.println("FUCK,FEL. Response:\n"+connection.getResponseMessage());
-			} else{
-				//Rätt
-				System.out.println("SHU");
-			}
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		RequestSender sender = new RequestSender(IP,request);
+		new Thread(sender).run();
 	}
+
+
 	/**
 	 * Get a list of the IP addresses which are whitelisted, 
 	 * that is, their status is set to accepted.
@@ -227,7 +219,7 @@ public class UserModel {
 		}
 		return ipList;
 	}
-	private void writeToFile(){
+	protected void writeToFile(){
 		synchronized(this){
 			BufferedWriter out = null;
 			try {
@@ -260,4 +252,54 @@ public class UserModel {
 		return block;
 	}
 
+	private class RequestSender implements Runnable{
+		private String IP;
+		private String request;
+
+		public RequestSender(String ip, String req) {
+			IP=ip;
+			request=req;
+		}
+		@Override
+		public void run() {
+			sendRequest();
+		}
+		private void sendRequest(){
+			IP = IP.trim();
+			String url = "http://"+IP+":"+TOMCAT_PORT+USERS_URL;
+			try {
+				String requestString = url+"?"+request;
+				System.out.println("Requeststring: "+requestString);
+				HttpURLConnection connection = (HttpURLConnection) new URL(requestString).openConnection();
+				int responseCode = connection.getResponseCode();
+				if(responseCode != 200){
+					requestError(connection.getResponseMessage());
+				} else{
+					//Rätt
+					System.out.println("SHU");
+				}
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+				requestError(e.getMessage());
+			} catch (IOException e) {
+				e.printStackTrace();
+				requestError(e.getMessage());
+			}
+		}
+		private void requestError(String error){
+			synchronized(this){
+				int userIndex = 0;
+				for(User u: userList){
+					if(u.getIp().equals(IP)){
+						break;
+					}
+					userIndex++;
+				}
+				userList.remove(userIndex);
+				writeToFile();
+			}
+			System.out.println("FUCK,FEL. Response:\n"+error);
+		}
+
+	}
 }
