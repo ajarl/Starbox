@@ -83,9 +83,12 @@ public class PipeToSolr extends Stage{
 	 */
 	@SuppressWarnings("static-access")
 	public void processItem(Item item) throws PipelineException{
-		String name = "";
+		SettingsModel sm = new SettingsModel();
+		String userName = "";
+		String fileName = "";
 		String url = "";
 		String doctype = "";
+		String ip = "";
 		long size = 0;
 		long timeStamp = 0;
 		UUID uuid = null;
@@ -106,15 +109,18 @@ public class PipeToSolr extends Stage{
 		}
 		
 		if (docBinary != null && docBinary.getBinary().size() > 0) {
+			userName 	= sm.getDisplayName();
+			ip 			= sm.getIP();
 			url 		= docBinary.getName();
 			doctype		= docBinary.getExtension();
 			size 		= docBinary.getSize();
 			timeStamp 	= docBinary.getTimestamp();
-			name 		= new File(url).getName();
-			nameByteArray = name.getBytes();
+			fileName 	= new File(url).getName();
+			nameByteArray = fileName.getBytes();
 			uuid 		= uuid.nameUUIDFromBytes(nameByteArray);
 			
-			
+			int i = url.indexOf("WebContent");
+			url = url.substring(i);
 		
 			boolean exists = (new File(indexDataPath + "/indexData.xml")).exists();
 			System.out.println(indexDataPath);
@@ -132,7 +138,8 @@ public class PipeToSolr extends Stage{
 		 
 				Element indexItem = new Element("item");
 				indexItem.addContent(new Element("id").setText("" + uuid));
-				indexItem.addContent(new Element("name").setText(name));
+				indexItem.addContent(new Element("userName").setText(userName));
+				indexItem.addContent(new Element("name").setText(fileName));
 				indexItem.addContent(new Element("url").setText(url));
 				indexItem.addContent(new Element("docType").setText(doctype));
 				indexItem.addContent(new Element("timeStamp").setText("" + timeStamp));
@@ -158,7 +165,8 @@ public class PipeToSolr extends Stage{
 				
 				Element indexItem = new Element("item");
 				indexItem.addContent(new Element("id").setText("" + uuid));
-				indexItem.addContent(new Element("name").setText(name));
+				indexItem.addContent(new Element("userName").setText(userName));
+				indexItem.addContent(new Element("name").setText(fileName));
 				indexItem.addContent(new Element("url").setText(url));
 				indexItem.addContent(new Element("docType").setText(doctype));
 				indexItem.addContent(new Element("timeStamp").setText("" + timeStamp));
@@ -275,6 +283,45 @@ public class PipeToSolr extends Stage{
 	          + e.getMessage() + ")");
 	    }
 		  
+	}
+	
+	/**
+	 * Adds a specified IP-address to a specific indecData.xml-file. 
+	 * 
+	 * @param ip The IP address to add.
+	 * @param indexFile The file to add the IP to.
+	 */
+	public static void addIp(String ip, String indexFile){
+		SAXBuilder builder = new SAXBuilder();
+		String indexFilePath = SettingsModel.getProjectRootPath() + "/Index";
+
+		File indexData = new File(indexFilePath + "/indexFile");
+		Document indexDataDocument = null;
+		try {
+			indexDataDocument = (Document) builder.build(indexData);
+		} catch (JDOMException | IOException e) {
+			System.err.println("PipeToSolr - Error when trying to read IndexData for update.");
+			e.printStackTrace();
+		}
+		
+		Element root = indexDataDocument.getRootElement();
+		List row = root.getChildren("item"); //Lista med item
+		
+		for(int i = 0; i < row.size(); i++){
+			Element docs = (Element) row.get(i);
+			List column = docs.getChildren(); //Lista med field
+			
+			for(int j = 0; j < column.size(); j++){
+				Element e = (Element) column.get(j);
+
+				String name = e.getName();
+				if(name.equals("url")){
+					String value = e.getText();
+					e.setText(ip + ":" + value);
+				}	
+			}
+		}
+
 	}
 	
 	@Override
