@@ -88,7 +88,6 @@ public class PipeToSolr extends Stage{
 		String fileName = "";
 		String url = "";
 		String doctype = "";
-		String ip = "";
 		long size = 0;
 		long timeStamp = 0;
 		UUID uuid = null;
@@ -110,7 +109,6 @@ public class PipeToSolr extends Stage{
 		
 		if (docBinary != null && docBinary.getBinary().size() > 0) {
 			userName 	= sm.getDisplayName();
-			ip 			= sm.getIP();
 			url 		= docBinary.getName();
 			doctype		= docBinary.getExtension();
 			size 		= docBinary.getSize();
@@ -291,6 +289,7 @@ public class PipeToSolr extends Stage{
 	 * @param ip The IP address to add.
 	 * @param indexFile The file to add the IP to.
 	 */
+	@SuppressWarnings("rawtypes")
 	public static void addIp(String ip, String indexFile){
 		SAXBuilder builder = new SAXBuilder();
 		String indexFilePath = SettingsModel.getProjectRootPath() + "/Index";
