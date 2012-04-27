@@ -38,6 +38,8 @@ public class UserModel {
 	private static final String USER_APP_PATH = "/users/";
 	private static final String USERS_URL = "/starbox/users";
 
+	private static final int REQUEST_TIMEOUT = 5000;
+
 	protected ArrayList<User> userList;
 
 	/**
@@ -216,11 +218,15 @@ public class UserModel {
 			String requestString = url+"?"+request;
 			System.out.println("Requeststring: "+requestString);
 			HttpURLConnection connection = (HttpURLConnection) new URL(requestString).openConnection();
+			connection.setConnectTimeout(REQUEST_TIMEOUT);
 			responseCode = connection.getResponseCode();
 			responseCodeHeader = "HTTP/1.1 "+responseCode+" "+connection.getResponseMessage();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			responseCodeHeader = "HTTP/1.1 "+HttpStatus.SC_BAD_REQUEST+" bad request";
+			return responseCodeHeader;
+		} catch(java.net.SocketTimeoutException e){
+			responseCodeHeader = "HTTP/1.1 "+HttpStatus.SC_REQUEST_TIMEOUT+" timeout";
 			return responseCodeHeader;
 		} catch (IOException e) {
 			e.printStackTrace();
