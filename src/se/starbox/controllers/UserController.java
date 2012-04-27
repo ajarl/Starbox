@@ -16,7 +16,6 @@ import se.starbox.models.Requests;
 import se.starbox.models.SettingsModel;
 import se.starbox.models.User;
 import se.starbox.models.UserModel;
-import se.starbox.util.JSONUtils;
 
 /**
  * Servlet implementation class UsersController
@@ -85,7 +84,11 @@ public class UserController extends HttpServlet {
 			forward = LIST_JSP;
 		} else if (action.equals(ACTION_ADD_USER)){
 			String ip = (String) request.getParameter("ip");
-			userModel.addUser(ip, settingsModel.getEmail(), settingsModel.getDisplayName(),"");
+			String responseHeader = userModel.addUser(ip, settingsModel.getEmail(), settingsModel.getDisplayName(),"");
+			if(responseHeader.contains("200")){
+				request.setAttribute("addedUser", ip);
+			}
+			request.setAttribute("response", responseHeader);
 			request.setAttribute("addedUser", ip);
 			forward = ADD_JSP;
 		} else if (action.equals(ACTION_UPDATE)){

@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.ServletContext;
+
+import org.apache.commons.httpclient.HttpStatus;
 /**
  * A Model class for executing tasks related to the contact list.
  * Keeps an internal list of current users in the contact list, aswell
@@ -74,18 +76,24 @@ public class UserModel {
 	 * @param name the name of the contact
 	 * @param group the group the contact belongs to
 	 * @param status the status of the contact(pending,accepted,denied)
+	 * @return status code header
 	 */
-	public void addUser(String ip, String email, String name, String group){
+	public String addUser(String ip, String email, String name, String group){
+		String responseHeader = "HTTP/1.1 "+HttpStatus.SC_NOT_FOUND+" not found";
 		try {
 			String ownIP = InetAddress.getLocalHost().getHostAddress().toString();
 			String request = Requests.addRequest(ownIP, email, name);
-			sendRequest(ip,request);
+			responseHeader = sendRequest(ip,request);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return responseHeader;
 		}
-		userList.add(new User(ip,STATE_SENT));
-		writeToFile();
+		if(responseHeader.contains("200")){
+			userList.add(new User(ip,STATE_SENT));
+			writeToFile();
+		}
+		return responseHeader;
 	}
 
 	public void addIncomingUser(String ip, String email, String name){
@@ -199,9 +207,27 @@ public class UserModel {
 		}
 	}
 
-	private void sendRequest(String IP,String request){
-		RequestSender sender = new RequestSender(IP,request);
-		new Thread(sender).run();
+	private String sendRequest(String IP,String request){
+		IP = IP.trim();
+		String responseCodeHeader = "";
+		int responseCode = HttpStatus.SC_NOT_FOUND;
+		String url = "http://"+IP+":"+TOMCAT_PORT+USERS_URL;
+		try {
+			String requestString = url+"?"+request;
+			System.out.println("Requeststring: "+requestString);
+			HttpURLConnection connection = (HttpURLConnection) new URL(requestString).openConnection();
+			responseCode = connection.getResponseCode();
+			responseCodeHeader = "HTTP/1.1 "+responseCode+" "+connection.getResponseMessage();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			responseCodeHeader = "HTTP/1.1 "+HttpStatus.SC_BAD_REQUEST+" bad request";
+			return responseCodeHeader;
+		} catch (IOException e) {
+			e.printStackTrace();
+			responseCodeHeader = "HTTP/1.1 "+HttpStatus.SC_INTERNAL_SERVER_ERROR+" internal server error";
+			return responseCodeHeader;
+		}
+		return responseCodeHeader;
 	}
 
 
@@ -250,56 +276,5 @@ public class UserModel {
 				"\t\t<Status>"+u.getStatus()+"</Status>\n"+
 				"\t</User>\n";
 		return block;
-	}
-
-	private class RequestSender implements Runnable{
-		private String IP;
-		private String request;
-
-		public RequestSender(String ip, String req) {
-			IP=ip;
-			request=req;
-		}
-		@Override
-		public void run() {
-			sendRequest();
-		}
-		private void sendRequest(){
-			IP = IP.trim();
-			String url = "http://"+IP+":"+TOMCAT_PORT+USERS_URL;
-			try {
-				String requestString = url+"?"+request;
-				System.out.println("Requeststring: "+requestString);
-				HttpURLConnection connection = (HttpURLConnection) new URL(requestString).openConnection();
-				int responseCode = connection.getResponseCode();
-				if(responseCode != 200){
-					requestError(connection.getResponseMessage());
-				} else{
-					//Rätt
-					System.out.println("SHU");
-				}
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-				requestError(e.getMessage());
-			} catch (IOException e) {
-				e.printStackTrace();
-				requestError(e.getMessage());
-			}
-		}
-		private void requestError(String error){
-			synchronized(this){
-				int userIndex = 0;
-				for(User u: userList){
-					if(u.getIp().equals(IP)){
-						break;
-					}
-					userIndex++;
-				}
-				userList.remove(userIndex);
-				writeToFile();
-			}
-			System.out.println("FUCK,FEL. Response:\n"+error);
-		}
-
 	}
 }
