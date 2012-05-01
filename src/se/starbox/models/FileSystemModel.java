@@ -66,7 +66,7 @@ public class FileSystemModel {
 			System.out.println("[" + ip + "] FileSystemModel.requestDownload: File does not exist");
 			return null;
 		}
-		System.out.println("[" + ip + "] FileSystemModel.requestDownload: File exists");
+		//System.out.println("[" + ip + "] FileSystemModel.requestDownload: File exists");
 		return file;
 	}
 	
@@ -101,7 +101,7 @@ public class FileSystemModel {
 			System.out.println("[" + ip + "] FileSystemModel.requestIndexData: File does not exist");
 			return null;
 		}
-		System.out.println("[" + ip + "] FileSystemModel.requestIndexData: File exists");
+		//System.out.println("[" + ip + "] FileSystemModel.requestIndexData: File exists");
 		return file;
 	}
 }

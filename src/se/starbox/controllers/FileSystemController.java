@@ -40,7 +40,7 @@ public class FileSystemController extends HttpServlet {
 	 * Handle web get request, it should either be a get file request or a get index request.
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("FileSystemController.doGet called.");
+		//System.out.println("FileSystemController.doGet called.");
 		
 		// Is get file reqeust?
 		String file = request.getParameter("file");
@@ -136,13 +136,11 @@ public class FileSystemController extends HttpServlet {
 		OutputStream out = response.getOutputStream();
 		
 		// Transfer file - Write file to output stream
-		//System.out.println("BEGIN TRANSFER");
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
 		byte[] buffer = new byte[4096];
 		int bytesRead;
 		while ((bytesRead = in.read(buffer)) != -1)
 			out.write(buffer, 0, bytesRead);
-		//System.out.println("END TRANSFER");
 		
 		in.close();
 		out.flush();
