@@ -17,9 +17,8 @@ public class FileSystemModel {
 	 * Checks if the specified ip is white-listed.
 	 */
 	protected static boolean isRequestAllowed(String ip) {
-		// TODO: UserModel.getWhiteList should be static? Or should be able to get current UserModel?
-		//return ip != null && UserModel.getWhiteList().contains(ip);
-		boolean ret = ip != null;
+		// TODO: Use UserModel.getWhitelistStatic() in determining if request is allowed (at time of writing the method causes crash)
+		boolean ret = ip != null;// && UserModel.getWhitelistStatic().contains(ip);
 		System.out.println("[" + ip + "] FileSystemModel.isRequestAllowed: " + ret);
 		return ret;
 	}
@@ -47,16 +46,11 @@ public class FileSystemModel {
 				return null;
 		
 		// Get starbox folder/
-		String starboxFolder = new SettingsModel().getStarboxFolder();	// TODO: Should not create new SettinsModel just to get starbox folder?
-		if (starboxFolder.length() > 0) {
-			char last = starboxFolder.charAt(starboxFolder.length() - 1);
-			if (last != '/' && last != '\\') {
-				if (starboxFolder.contains("/"))
-					starboxFolder += '/';
-				else
-					starboxFolder += '\\';
-			}
-		}
+		// TODO: Should not create new SettinsModel just to get starbox folder?
+		String starboxFolder = new SettingsModel().getStarboxFolder();
+		starboxFolder = starboxFolder.replace('\\', '/');
+		if (starboxFolder.length() > 0 && starboxFolder.charAt(starboxFolder.length() - 1) != '/')
+			starboxFolder += '/';
 		
 		// File exists?
 		String filePath = starboxFolder + relativeFilepath;
@@ -86,13 +80,10 @@ public class FileSystemModel {
 		
 		// Get index path
 		String indexPath = SettingsModel.getProjectRootPath();	// TODO: should be able to get index path instead, if it changes this line will no longer work!
-		char slash = indexPath.contains("/") ? '/' : '\\';
-		if (indexPath.length() > 0) {
-			char last = indexPath.charAt(indexPath.length() - 1);
-			if (last != '/' && last != '\\')
-				last += slash;
-		}
-		indexPath += "Index" + slash + "indexData.xml";
+		indexPath = indexPath.replace('\\', '/');
+		if (indexPath.length() > 0 && indexPath.charAt(indexPath.length() - 1) != '/')
+			indexPath += '/';
+		indexPath += "Index/indexData.xml";
 		
 		// Index file exists?
 		System.out.println("[" + ip + "] FileSystemModel.requestIndexData: Using index path: " + indexPath);

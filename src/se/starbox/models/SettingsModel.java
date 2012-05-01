@@ -41,7 +41,7 @@ public class SettingsModel {
 	
 	private static final String PATH_TO_OPENPIPELINE_JOB = SettingsModel.getProjectRootPath() + "/config/jobs/StarboxJob.xml";
 	
-	private static final String DEFAULT_STARBOX_FOLDER = "C:\\Documents\\";
+	private static final String DEFAULT_STARBOX_FOLDER = "C:/Documents/";
 	private static final String DEFAULT_DISPLAY_NAME = "default display name";
 	private static final String DEFAULT_EMAIL = "";
 	private static final int DEFAULT_INDEX_UPDATE_INTERVAL = 900;
@@ -87,7 +87,7 @@ public class SettingsModel {
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document d = db.parse(xml);
 			
-			starboxFolder = (d.getElementsByTagName("StarboxFolder")).item(0).getTextContent();
+			starboxFolder = (d.getElementsByTagName("StarboxFolder")).item(0).getTextContent();//.replace('\\', '/');
 			displayName = (d.getElementsByTagName("DisplayName")).item(0).getTextContent();
 			email = (d.getElementsByTagName("Email")).item(0).getTextContent();
 			// If something other than a number is stored, just take the default value
@@ -167,8 +167,9 @@ public class SettingsModel {
 		try {
 			String thisClassPath = SettingsModel.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 			projectPath = URLDecoder.decode(thisClassPath, "UTF-8");
+			projectPath.replace('\\', '/');
 			for (int i = projectPath.length() - 1, slashCount = 0; i >= 0; i--) {
-				if (projectPath.charAt(i) == '\\' || projectPath.charAt(i) == '/') {
+				if (projectPath.charAt(i) == '/') {
 					slashCount++;
 					if (slashCount == 6) {
 						projectPath = projectPath.substring(0, i);
@@ -188,18 +189,6 @@ public class SettingsModel {
 	public static void updateIndex() {
 		// TODO: delete index data, start the OpenPipeline job?
 		try {
-			/*// Get project path
-			String thisClassPath = SettingsModel.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-			String projectPath = URLDecoder.decode(thisClassPath, "UTF-8");
-			for (int i = projectPath.length() - 1, slashCount = 0; i >= 0; i--) {
-				if (projectPath.charAt(i) == '\\' || projectPath.charAt(i) == '/') {
-					slashCount++;
-					if (slashCount == 6) {
-						projectPath = projectPath.substring(0, i);
-						break;
-					}
-				}
-			}*/
 			String projectPath = SettingsModel.getProjectRootPath();
 			System.out.println("Project path: " + projectPath);
 			
