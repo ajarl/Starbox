@@ -4,19 +4,18 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.ServletContext;
+
+import org.apache.commons.httpclient.HttpStatus;
 /**
  * A Model class for executing tasks related to the contact list.
  * Keeps an internal list of current users in the contact list, aswell
@@ -39,21 +38,34 @@ public class UserModel {
 	private static final String USER_APP_PATH = "/users/";
 	private static final String USERS_URL = "/starbox/users";
 
-	private ArrayList<User> userList;
+	private static final int REQUEST_TIMEOUT = 5000;
+
+	protected ArrayList<User> userList;
 
 	/**
 	 * Initiate the model instance. Parses the users.xml file on startup.
 	 * @param context 
 	 */
 	public UserModel(ServletContext context){
-		String fileDivider = System.getProperty("file.separator");
-		APP_PATH = context.getRealPath(USER_APP_PATH)+fileDivider;
+		APP_PATH = SettingsModel.getProjectRootPath()+USER_APP_PATH;
 		File appDir = new File(APP_PATH);
 		if(!appDir.exists()){
 			appDir.mkdir();
 		}
 		XML_PATH = APP_PATH+XML_FILE;
 		initModel();
+	}
+
+	public static List<String> getWhitelistStatic(){
+		String path = SettingsModel.getProjectRootPath()+USER_APP_PATH+XML_FILE;
+		List<User> users = (ArrayList<User>) (new UserParser(path)).getAll();
+		ArrayList<String> ipList = new ArrayList<String>();
+		for(User u: users){
+			if(u.getStatus().equals(STATE_ACCEPTED)){
+				ipList.add(u.getIp());
+			}
+		}
+		return ipList;
 	}
 	private void initModel(){
 		userList = (ArrayList<User>) (new UserParser(XML_PATH)).getAll();
@@ -66,18 +78,24 @@ public class UserModel {
 	 * @param name the name of the contact
 	 * @param group the group the contact belongs to
 	 * @param status the status of the contact(pending,accepted,denied)
+	 * @return status code header
 	 */
-	public void addUser(String ip, String email, String name, String group){
+	public String addUser(String ip, String email, String name, String group){
+		String responseHeader = "HTTP/1.1 "+HttpStatus.SC_NOT_FOUND+" not found";
 		try {
 			String ownIP = InetAddress.getLocalHost().getHostAddress().toString();
 			String request = Requests.addRequest(ownIP, email, name);
-			sendRequest(ip,request);
+			responseHeader = sendRequest(ip,request);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return responseHeader;
 		}
-		userList.add(new User(ip,STATE_SENT));
-		writeToFile();
+		if(responseHeader.contains("200")){
+			userList.add(new User(ip,STATE_SENT));
+			writeToFile();
+		}
+		return responseHeader;
 	}
 
 	public void addIncomingUser(String ip, String email, String name){
@@ -191,28 +209,34 @@ public class UserModel {
 		}
 	}
 
-	private void sendRequest(String IP,String request){
+	private String sendRequest(String IP,String request){
 		IP = IP.trim();
+		String responseCodeHeader = "";
+		int responseCode = HttpStatus.SC_NOT_FOUND;
 		String url = "http://"+IP+":"+TOMCAT_PORT+USERS_URL;
 		try {
 			String requestString = url+"?"+request;
 			System.out.println("Requeststring: "+requestString);
 			HttpURLConnection connection = (HttpURLConnection) new URL(requestString).openConnection();
-			int responseCode = connection.getResponseCode();
-			if(responseCode != 200){
-				//FUCK, FEL
-				System.out.println("FUCK,FEL. Response:\n"+connection.getResponseMessage());
-			} else{
-				//Rätt
-				System.out.println("SHU");
-			}
-
+			connection.setConnectTimeout(REQUEST_TIMEOUT);
+			responseCode = connection.getResponseCode();
+			responseCodeHeader = "HTTP/1.1 "+responseCode+" "+connection.getResponseMessage();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
+			responseCodeHeader = "HTTP/1.1 "+HttpStatus.SC_BAD_REQUEST+" bad request";
+			return responseCodeHeader;
+		} catch(java.net.SocketTimeoutException e){
+			responseCodeHeader = "HTTP/1.1 "+HttpStatus.SC_REQUEST_TIMEOUT+" timeout";
+			return responseCodeHeader;
 		} catch (IOException e) {
 			e.printStackTrace();
+			responseCodeHeader = "HTTP/1.1 "+HttpStatus.SC_INTERNAL_SERVER_ERROR+" internal server error";
+			return responseCodeHeader;
 		}
+		return responseCodeHeader;
 	}
+
+
 	/**
 	 * Get a list of the IP addresses which are whitelisted, 
 	 * that is, their status is set to accepted.
@@ -227,7 +251,7 @@ public class UserModel {
 		}
 		return ipList;
 	}
-	private void writeToFile(){
+	protected void writeToFile(){
 		synchronized(this){
 			BufferedWriter out = null;
 			try {
@@ -259,5 +283,4 @@ public class UserModel {
 				"\t</User>\n";
 		return block;
 	}
-
 }

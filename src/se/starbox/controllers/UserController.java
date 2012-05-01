@@ -1,10 +1,8 @@
 package se.starbox.controllers;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -14,13 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JSONObject;
-
 import se.starbox.models.Requests;
 import se.starbox.models.SettingsModel;
 import se.starbox.models.User;
 import se.starbox.models.UserModel;
-import se.starbox.util.JSONUtils;
 
 /**
  * Servlet implementation class UsersController
@@ -38,6 +33,7 @@ public class UserController extends HttpServlet {
 	private static final String ACTION_ADD_USER = "create";
 	private static final String ACTION_UPDATE = "update";
 	private static final String ACTION_REMOVE = "remove";
+	private static final String ACTION_ANSWER = "friendrequest";
 
 	private static final String ACTION_GO_TO_ADD = "gotoadd";
 
@@ -88,7 +84,8 @@ public class UserController extends HttpServlet {
 			forward = LIST_JSP;
 		} else if (action.equals(ACTION_ADD_USER)){
 			String ip = (String) request.getParameter("ip");
-			userModel.addUser(ip, settingsModel.getEmail(), settingsModel.getDisplayName(),"");
+			String responseHeader = userModel.addUser(ip, settingsModel.getEmail(), settingsModel.getDisplayName(),"");
+			request.setAttribute("response", responseHeader);
 			request.setAttribute("addedUser", ip);
 			forward = ADD_JSP;
 		} else if (action.equals(ACTION_UPDATE)){
@@ -108,6 +105,18 @@ public class UserController extends HttpServlet {
 			userModel.removeUser(ip);
 			request = getUserlistRequest(request);
 			forward = LIST_JSP;
+		} else if(action.equals(ACTION_ANSWER)){
+			String answer = request.getParameter(Requests.ATTRIBUTE_RESPONSE);
+			String IP = request.getParameter(Requests.ATTRIBUTE_IP);
+			boolean doAccept = answer.equals(UserModel.STATE_ACCEPTED);
+			if(doAccept){
+				String email = request.getParameter(Requests.ATTRIBUTE_EMAIL);
+				String name = request.getParameter(Requests.ATTRIBUTE_NAME);
+				userModel.acceptRequest(IP, email, name);
+			}
+			else
+				userModel.denyRequest(IP);
+			
 		} else {
 			request.setAttribute("errorMessage", "Nu har du valt en knasig action. Felaktigt beteende igen.");
 			request = getUserlistRequest(request);
@@ -129,26 +138,6 @@ public class UserController extends HttpServlet {
 		ServletContext context = request.getServletContext();
 		userModel = new UserModel(context);
 		settingsModel = new SettingsModel();
-	}
-
-	private String userlistToJSON(List<User> users){
-		StringBuilder json = new StringBuilder();
-		json.append(JSONUtils.getJSONUserHeader());
-		for(User u : users){
-			json.append(JSONUtils.userToJSON(u));
-		}
-		json.append(JSONUtils.getJSONUserFooter());
-		return json.toString();
-
-	}
-	private String userlistToJSONFormatted(List<User> users){
-		StringBuilder json = new StringBuilder();
-		json.append(JSONUtils.getJSONUserHeaderFormatted());
-		for(User u : users){
-			json.append(JSONUtils.userToJSONFormatted(u));
-		}
-		json.append(JSONUtils.getJSONUserFooterFormatted());
-		return json.toString();
 	}
 	
 	private List<User> getPendingUsers(List<User> list){
