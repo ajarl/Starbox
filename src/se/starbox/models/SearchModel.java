@@ -141,11 +141,18 @@ public class SearchModel {
 	* @return Returns a LinkedList<SearchResult> with the matches.
 	*/
 	public LinkedList<SearchResult> query(String searchString, String params){
+		// If search string is empty, simply return an empty serachresult array.
+		if (searchString == "") 
+			searchString = "*:*";
+		
 		SolrQuery solrQuery = null;
 	    
 	    // Update the search query with the chosen parameters
-	    if(params != null)
+	    if(params != null && searchString != null) {
 	    	solrQuery = buildQuery(searchString, params);
+	    } else {
+	    	return null;
+	    }
 	    
 	    QueryResponse rsp;
 	    SolrDocumentList results;
@@ -189,9 +196,14 @@ public class SearchModel {
 		// Fix the paramters such as doctype:avi,exe
 		String[] ps = params.split(";");
 		
-		System.out.println("Pre regexp: " + searchString);
-		searchString = searchString.replaceAll("[^A-Za-z0-9 ]","");
-		System.out.println("Post regexp: " + searchString);
+		System.out.println("Pre regexp:" + searchString);
+		if (!searchString.equals("*:*")){
+			System.out.println("Removing illegal characters from searchString.");
+			searchString = searchString.replaceAll("[^A-Za-z0-9 ]","");
+		}
+		System.out.println("Post regexp:" + searchString);
+		
+		// Create query with main search string
 		SolrQuery solrQuery = new SolrQuery(searchString);
 		solrQuery.setSortField("id", SolrQuery.ORDER.asc); 
 		
