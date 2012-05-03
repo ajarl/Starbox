@@ -4,9 +4,7 @@ import org.json.simple.JSONObject;
 
 public class SearchResult {
 	
-	private String name, url, doctype, timestamp;
-	
-	private int filesize;
+	private String name, url, filetype, timestamp, filesize;
 
 	/**
 	 * Default constructor.
@@ -27,7 +25,7 @@ public class SearchResult {
 		
 		json.put("name", this.getName());
 		json.put("url", this.getUrl());
-		json.put("doctype", this.getDoctype());
+		json.put("filetype", this.getFiletype());
 		json.put("timestamp", this.getTimestamp());
 		json.put("filesize", this.getFilesize());
 		
@@ -70,17 +68,17 @@ public class SearchResult {
 	 * Get the doctype of this search result.
 	 * @return String - The doctype of this search result.
 	 */
-	public String getDoctype() {
-		return doctype;
+	public String getFiletype() {
+		return filetype;
 	}
 
 	/**
-	 * Set the doctype of this search result.
-	 * @param doctype - The doctype of this search result.
-	 * @param doctype - The doctype of this search result.
+	 * Set the filetype of this search result.
+	 * @param filetype - The filetype of this search result.
+	 * @param filetype - The filetype of this search result.
 	 */
-	public void setDoctype(String doctype) {
-		this.doctype = doctype;
+	public void setFiletype(String filetype) {
+		this.filetype = filetype;
 	}
 	
 	/**
@@ -103,7 +101,7 @@ public class SearchResult {
 	 * Get the filesize of this search result.
 	 * @return String - The filesize of this search result.
 	 */
-	public int getFilesize() {
+	public String getFilesize() {
 		return filesize;
 	}
 
@@ -111,7 +109,7 @@ public class SearchResult {
 	 * Set the filesize of this search result.
 	 * @param filesize - The filesize of this search result.
 	 */
-	public void setFilesize(int filesize) {
+	public void setFilesize(String filesize) {
 		this.filesize = filesize;
 	}
 }

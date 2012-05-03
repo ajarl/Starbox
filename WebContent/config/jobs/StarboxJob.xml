@@ -2,8 +2,8 @@
 <job>
   <jobname>StarboxJob</jobname>
   <max-file-size>100</max-file-size>
-  <fileroots>D:\Linus\KTH\Starbox\Starbox\WebContent\Testfiler</fileroots>
-  <!-- <fileroots>C:/Users/Kim/workspace/Starbox/WebContent/Testfiler</fileroots> -->
+  <!-- <fileroots>D:\Linus\KTH\Starbox\Starbox\WebContent\Testfiler</fileroots> -->
+  <fileroots>C:/Users/Kim/workspace/Starbox/WebContent/Testfiler</fileroots>
   <subdirs>Y</subdirs>
   <compressed-files>Y</compressed-files>
   <jobclass>org.openpipeline.pipeline.connector.FileScanner</jobclass>

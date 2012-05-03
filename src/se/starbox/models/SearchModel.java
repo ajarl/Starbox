@@ -55,12 +55,13 @@ public class SearchModel {
 		if (solr == null)
 			getSolr();
 		
-
 		//checkConnection();
 		//testFill();
 	}
 
-	// Fill the db with test data.
+	/**
+	 * This is a test function for development purposes. It fills Solr with data in a local index.
+	 */
 	public void testFill() {
 		File testIndexData = new File("C:/Users/Kim/workspace/Starbox/exempelIndexData.xml");
 		
@@ -158,10 +159,13 @@ public class SearchModel {
 	    		SearchResult sr = new SearchResult();
 	    		sr.setName((String)res.getFieldValue("name"));
 	    		sr.setUrl((String)res.getFieldValue("url"));
+	    		sr.setFiletype((String)res.getFieldValue("filetype"));
+	    		sr.setFilesize((String)res.getFieldValue("filesize"));
+	    		sr.setTimestamp((String)res.getFieldValue("timestamp"));
 	    		searchResults.add(sr);
 	    	}
 	    } catch (SolrServerException sse) {
-			System.err.println("SearchModel() - Caught a SolrServerException" +
+			System.out.println("SearchModel() - Caught a SolrServerException" +
 								"\ninputQuery was " + searchString + 
 								"\nparams was " + params);
 			sse.printStackTrace();	    	
@@ -170,7 +174,8 @@ public class SearchModel {
 	    return searchResults;
 	}
 	
-	/**  NEW METHOD - Not defined in ADD  
+	/**  
+	 * TODO - NEW METHOD - Not defined in ADD  
 	 *
 	 * Parses the params string and sets parameters for the Solr-query based
 	 * on that string.
@@ -181,8 +186,40 @@ public class SearchModel {
 	 * @return returns a SolrQuery with the set parameters
 	 */
 	private SolrQuery buildQuery(String searchString, String params){
+		// Fix the paramters such as doctype:avi,exe
+		String[] ps = params.split(";");
+		
+		System.out.println("Pre regexp: " + searchString);
+		searchString = searchString.replaceAll("[^A-Za-z0-9 ]","");
+		System.out.println("Post regexp: " + searchString);
 		SolrQuery solrQuery = new SolrQuery(searchString);
 		solrQuery.setSortField("id", SolrQuery.ORDER.asc); 
+		
+		for (String param: ps) {
+			System.out.println("Current param: " + param);
+			
+			if(!param.contains(":"))
+				continue;
+			String[] values = param.split(":");
+			
+			if(values.length < 2)
+				continue;
+			
+			// Eg. paramName = doctype
+			String paramName = values[0];
+			// Eg. paramValues = { "avi", "exe" }
+			if (values[1].contains(",")) {
+				String[] paramValues = values[1].split(",");
+				
+				for (String v : paramValues) {
+					solrQuery.addFilterQuery(paramName + ":" + v);
+				}
+			} else {
+				String paramValue = values[1];
+				solrQuery.addFilterQuery(paramName + ":" + paramValue);
+			}
+		}
+	
 		return solrQuery;
 	}
 

@@ -87,7 +87,7 @@ public class PipeToSolr extends Stage{
 		String userName = "";
 		String fileName = "";
 		String url = "";
-		String doctype = "";
+		String filetype = "";
 		long size = 0;
 		long timeStamp = 0;
 		UUID uuid = null;
@@ -110,7 +110,7 @@ public class PipeToSolr extends Stage{
 		if (docBinary != null && docBinary.getBinary().size() > 0) {
 			userName 	= sm.getDisplayName();
 			url 		= docBinary.getName();
-			doctype		= docBinary.getExtension();
+			filetype 	= docBinary.getExtension();
 			size 		= docBinary.getSize();
 			timeStamp 	= docBinary.getTimestamp();
 			fileName 	= new File(url).getName();
@@ -136,12 +136,12 @@ public class PipeToSolr extends Stage{
 		 
 				Element indexItem = new Element("item");
 				indexItem.addContent(new Element("id").setText("" + uuid));
-				indexItem.addContent(new Element("userName").setText(userName));
+				indexItem.addContent(new Element("username").setText(userName));
 				indexItem.addContent(new Element("name").setText(fileName));
 				indexItem.addContent(new Element("url").setText(url));
-				indexItem.addContent(new Element("docType").setText(doctype));
-				indexItem.addContent(new Element("timeStamp").setText("" + timeStamp));
-				indexItem.addContent(new Element("fileSize").setText("" + size));
+				indexItem.addContent(new Element("filetype").setText(filetype));
+				indexItem.addContent(new Element("timestamp").setText("" + timeStamp));
+				indexItem.addContent(new Element("filesize").setText("" + size));
 				
 	
 				indexDataDocument.getRootElement().addContent(indexItem);
@@ -163,12 +163,12 @@ public class PipeToSolr extends Stage{
 				
 				Element indexItem = new Element("item");
 				indexItem.addContent(new Element("id").setText("" + uuid));
-				indexItem.addContent(new Element("userName").setText(userName));
+				indexItem.addContent(new Element("username").setText(userName));
 				indexItem.addContent(new Element("name").setText(fileName));
 				indexItem.addContent(new Element("url").setText(url));
-				indexItem.addContent(new Element("docType").setText(doctype));
-				indexItem.addContent(new Element("timeStamp").setText("" + timeStamp));
-				indexItem.addContent(new Element("fileSize").setText("" + size));
+				indexItem.addContent(new Element("filetype").setText(filetype));
+				indexItem.addContent(new Element("timestamp").setText("" + timeStamp));
+				indexItem.addContent(new Element("filesize").setText("" + size));
 		
 				
 				indexDataDocument.getRootElement().addContent(indexItem);
