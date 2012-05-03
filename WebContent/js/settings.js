@@ -1,17 +1,15 @@
 $(document).ready(function() {
 	
-	$('button.save-setting').click(function() {
-		var data = $(this).prev('input').serialize();
+	$('.save-setting').click(function() {
+		var button = $(this);
+		var data = $(this).parent().prev('td').children('input').serialize();
+		$(this).next('span').css('color', '#666').text('Saving');
 
 		$.post("/starbox/settings", data, function(){
-			$(this).prev('input');
-			alert("success");
+			$(button).next('span').css('color', 'green').text('Saved');
 	    })
 	    .error(function() { 
-	    	alert("error"); 
-	    })
-	    .complete(function() { 
-	    	alert("complete"); 
+	    	$(button).next('span').css('color', 'red').text('Error');
 	    });
 	});
 });

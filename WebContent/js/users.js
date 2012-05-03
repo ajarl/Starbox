@@ -3,6 +3,74 @@ $(document).ready(function() {
 	var button_add = $('.button-add-user');
 	var add_user_form = $('.add-user-form');
 	var status_add_user = $('.status-add-user');
+	var button_accept_request = $('.button-accept-request');
+	var button_deny_request = $('.button-deny-request');
+	var button_remove_user = $('.button-remove-user');
+	
+	$('.users-container h3').click(function(event) {
+		$(this).next('table').toggle();
+		$(this).toggleClass('open');
+
+		if ($(this).hasClass('open')) {
+			$(this).find('span').html('[');
+		} else {
+			$(this).find('span').html(']');
+		}
+	});
+	
+	$(button_accept_request).click(function(event) {
+		$.post(
+			"/starbox/users/?action=friendrequest", 
+			{ 
+				response: "accepted", 
+				ip: $(this).attr('data-IP'),
+				email: $(this).attr('data-email'),
+				name: $(this).attr('data-name')
+			}, 
+			function(){
+				alert('sent');
+			}
+		)
+		.error(function() { 
+				alert('error');
+		});
+		
+	});
+	
+	$(button_deny_request).click(function(event) {
+		
+		$.post(
+			"/starbox/users/?action=friendrequest", 
+			{ 
+				response: "denied", 
+				ip: $(this).attr('data-IP')
+			}, 
+			function(){
+				alert('denied');
+			}
+		)
+		.error(function() { 
+				alert('error');
+		});
+		
+	});
+	
+	$(button_remove_user).click(function(event) {
+		
+		$.post(
+			"/starbox/users/?action=remove", 
+			{ 
+				ip: $(this).attr('data-IP')
+			}, 
+			function(){
+				alert('removed');
+			}
+		)
+		.error(function() { 
+				alert('error');
+		});
+		
+	});
 	
 	$(button_add).click(function(event) {
 		$(add_user_form).show();

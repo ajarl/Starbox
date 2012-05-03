@@ -26,11 +26,6 @@
 	cursor: pointer;
 }
 
-.search-filters h2 .websymbol {
-	font-size: 18px;
-	margin-left: 10px;
-}
-
 .search-filters ul {
 	display: none;
 }

@@ -12,12 +12,12 @@ function renderResults(data) {
 	
 	$(data).each(function(index, value) {
 		$(tbody).append(
-				'<tr data-user="' + 'Otto' + '" data-format="' + value.doctype + '">' +
+				'<tr data-user="' + 'Otto' + '" data-format="' + value.filetype + '">' +
 				'<td>' + value.name + '</td>' +
 				'<td>' + value.filesize + '</td>' +
 				'<td>' + value.timestamp + '</td>' +
 				'<td>Username</td>' +
-				'<td><a href="' + value.url + '" class="button-small button-green button-dl">DL</a></td>' +
+				'<td><a href="' + value.url + '" class="button-green button-tiny">DL</a></td>' +
 				'</tr>');	
 	});
 	

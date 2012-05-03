@@ -32,3 +32,45 @@ td {
 .cancel-add-user:hover {
 	color: #999;
 }
+
+.users-container h3 {
+	margin-top: 5px;
+}
+
+.users-container h3:hover {
+	color: #666;
+	cursor: pointer;
+}
+
+.users-container h3 .websymbol {
+	font-size: 18px;
+	margin-left: 10px;
+}
+
+.users-container div {
+	margin-bottom: 25px;
+}
+
+.users-container table {
+	width: 80%;
+}
+
+td.name, td.ip {
+	width: 25%;
+}
+
+td.email {
+	width: 30%;
+}
+
+td.group {
+	width: 5%;
+}
+
+td.buttons {
+	width: 15%;
+}
+
+.button-tiny {
+	float: right;
+}

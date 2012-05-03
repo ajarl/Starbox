@@ -35,27 +35,45 @@
 							<tr>
 							<tr>
 								<td><label for="path">Path</label></td>
-								<td><input type="text" name="path" id="path"
+								<td>
+									<input type="text" name="path" id="path"
 									value="<%= request.getAttribute("starboxFolder") %>" />
-									<button class="save-setting button-small button-green">Save</button></td>
+								<td>
+									<button class="save-setting button-small button-green">Save</button>
+									<span class="status"></span>
+								</td>
 							</tr>
 							<tr>
 								<td><label for="interval">Interval</label></td>
-								<td><input type="text" name="interval" id="interval"
+								<td>
+									<input type="text" name="interval" id="interval"
 									value="<%= request.getAttribute("indexUpdateInterval") %>" />
-									<button class="save-setting button-small button-green">Save</button></td>
+								<td>
+									<button class="save-setting button-small button-green">Save</button>
+									<span class="status"></span>
+								</td>
 							</tr>
 							<tr>
 								<td><label for="displayname">Displayname</label></td>
-								<td><input type="text" name="displayname" id="displayname"
+								<td>
+									<input type="text" name="displayname" id="displayname"
 									value="<%= request.getAttribute("displayName") %>" />
-									<button class="save-setting button-small button-green">Save</button></td>
+								</td>
+								<td>
+									<button class="save-setting button-small button-green">Save</button>
+									<span class="status"></span>
+								</td>
 							</tr>
 							<tr>
 								<td><label for="email">Email</label></td>
-								<td><input type="text" name="email" id="email"
+								<td>
+									<input type="text" name="email" id="email"
 									value="<%= request.getAttribute("email") %>" />
-									<button class="save-setting button-small button-green">Save</button></td>
+								</td>
+								<td>
+									<button class="save-setting button-small button-green">Save</button>
+									<span class="status"></span>
+								</td>
 							</tr>
 						</table>
 					</div>
