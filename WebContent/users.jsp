@@ -14,13 +14,15 @@
 				<div class="left">	
 					<h2>Controllers</h2>	
 					<form name="add-user-form" class="add-user-form">
-						<input type="textfield" name="name" placeholder="Name"/> 
-		          		<input type="textfield" name="ip" placeholder="IP"/>  
+						<input type="textfield" name="name" id="name" placeholder="Name"/> 
+		          		<input type="textfield" name="ip" id="ip" placeholder="IP"/>  
 		          		<input type="textfield" name="email" placeholder="Email-adress"/> 
 		          		<input type="textfield" name="group" placeholder="Group"/>  		
 		          	</form>		
 					<div class="add-users">
-						<a class="button button-blue button-add-user">Add user</a><br>
+						<a class="button button-blue button-add-user">Add user</a>
+						<a class="cancel-add-user">Cancel</a>
+						<span class="status-add-user" style="display:none;"></span>
 					</div>
 				</div>
 				
@@ -72,5 +74,6 @@
 	</div>
 	<script src="/starbox/js/jquery-1.7.1.min.js"></script>
 	<script src="/starbox/js/users.js"></script>
+	<script src="/starbox/js/spinner.js"></script>
 </body>
 </html>

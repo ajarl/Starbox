@@ -23,3 +23,12 @@ td {
 .add-user-form {
 	display: none;
 }
+
+.cancel-add-user {
+	cursor: pointer;
+	display: none;
+}
+
+.cancel-add-user:hover {
+	color: #999;
+}
