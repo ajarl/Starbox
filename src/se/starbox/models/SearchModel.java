@@ -167,7 +167,7 @@ public class SearchModel {
 	    		sr.setName((String)res.getFieldValue("name"));
 	    		sr.setUrl((String)res.getFieldValue("url"));
 	    		sr.setFiletype((String)res.getFieldValue("filetype"));
-	    		sr.setFilesize((String)res.getFieldValue("filesize"));
+	    		sr.setFilesize((int)res.getFieldValue("filesize"));
 	    		sr.setTimestamp((String)res.getFieldValue("timestamp"));
 	    		searchResults.add(sr);
 	    	}
