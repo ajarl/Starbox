@@ -4,7 +4,8 @@ import org.json.simple.JSONObject;
 
 public class SearchResult {
 	
-	private String name, url, filetype, timestamp, filesize;
+	private String name, url, filetype, timestamp;
+	private int filesize;
 
 	/**
 	 * Default constructor.
@@ -99,9 +100,9 @@ public class SearchResult {
 
 	/**
 	 * Get the filesize of this search result.
-	 * @return String - The filesize of this search result.
+	 * @return int - The filesize of this search result.
 	 */
-	public String getFilesize() {
+	public int getFilesize() {
 		return filesize;
 	}
 
@@ -109,7 +110,7 @@ public class SearchResult {
 	 * Set the filesize of this search result.
 	 * @param filesize - The filesize of this search result.
 	 */
-	public void setFilesize(String filesize) {
+	public void setFilesize(int filesize) {
 		this.filesize = filesize;
 	}
 }
