@@ -126,15 +126,13 @@ public class UserController extends HttpServlet {
 			IP = format(IP);
 			boolean doAccept = answer.equals(UserModel.STATE_ACCEPTED);
 			if(doAccept){
-				String email = request.getParameter(Requests.ATTRIBUTE_EMAIL);
-				email = format(email);
-				String name = request.getParameter(Requests.ATTRIBUTE_NAME);
-				name = format(name);
+				SettingsModel ownSettings = new SettingsModel();
+				String email = ownSettings.getEmail();
+				String name = ownSettings.getDisplayName();
 				userModel.acceptRequest(IP, email, name);
-			}
-			else
+			}else
 				userModel.denyRequest(IP);
-			
+			forward = LIST_JSP;
 		} else {
 			request.setAttribute("errorMessage", "Nu har du valt en knasig action. Felaktigt beteende igen.");
 			request = getUserlistRequest(request);
