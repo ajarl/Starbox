@@ -42,6 +42,9 @@ public class SettingsController extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// Initializes background processes if necessary
+		new InitBackgroundProcessesServlet().doGet(request, response);
+		
 		request.setAttribute("displayName", sm.getDisplayName());
 		request.setAttribute("email", sm.getEmail());
 		request.setAttribute("starboxFolder", sm.getStarboxFolder());

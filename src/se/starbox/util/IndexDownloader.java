@@ -23,9 +23,9 @@ public class IndexDownloader implements Runnable {
 	 * Starts the IndexDownloader in the background, if not already started.
 	 */
 	public static synchronized void start() {
-		System.out.println("IndexDownloader.start called.");
 		if (singleton == null) {
 			singleton = new IndexDownloader();
+			System.out.println("IndexDownloader.start: Starting.");
 			new Thread(singleton).start();
 		}
 	}
@@ -54,8 +54,8 @@ public class IndexDownloader implements Runnable {
 	 * Stops the IndexDownloader if currently running.
 	 */
 	public static synchronized void stop() {
-		System.out.println("IndexDownloader.stop called.");
 		if (singleton == null) {
+			System.out.println("IndexDownloader.stop: Stopping.");
 			synchronized (singleton) {
 				singleton.doStop = true;
 			}
