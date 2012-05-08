@@ -12,6 +12,7 @@ import java.net.ProtocolException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.List;
 
 /**
  * Handles requests to get files of the file system from the outside,
@@ -31,7 +32,11 @@ public class FileSystemModel {
 		boolean ret = ip != null;
 		if (ret) {
 			ret = false;
-			for (User user : UserModel.getWhitelistStatic()) {
+			List<User> users;
+			synchronized (UserModel.class) {
+				users = UserModel.getWhitelistStatic();
+			}
+			for (User user : users) {
 				if (user.getIp().equals(ip)) {
 					ret = true;
 					break;
@@ -166,11 +171,11 @@ public class FileSystemModel {
 		} catch (IOException e) {
 		}
 		
-		/*try {
-			System.out.println("FileSystemModel.downloadFile: Response Code:  " + conn.getResponseCode() + " (200 = OK)");
-		} catch (IOException e) { e.printStackTrace(); }
-		System.out.println("FileSystemModel.downloadFile: Content type:   " + conn.getContentType());
-		System.out.println("FileSystemModel.downloadFile: Content length: " + conn.getContentLength());*/
+		//try {
+		//	System.out.println("FileSystemModel.downloadFile: Response Code:  " + conn.getResponseCode() + " (200 = OK)");
+		//} catch (IOException e) { e.printStackTrace(); }
+		System.out.println("FileSystemModel.downloadFile: Content type: " + conn.getContentType());
+		//System.out.println("FileSystemModel.downloadFile: Content length: " + conn.getContentLength());
 		
 		InputStream in;
 		try {
@@ -196,7 +201,7 @@ public class FileSystemModel {
 			return false;
 		}
 		
-		System.out.println("Read from input stream...");
+		//System.out.println("FileSystemModel.downloadFile: Read from input stream...");
 		byte[] buffer = new byte[4096];
 		int bytesRead;
 		int totalNumBytes = 0;
@@ -205,6 +210,8 @@ public class FileSystemModel {
 				out.write(buffer, 0, bytesRead);
 				totalNumBytes += bytesRead;
 			}
+			
+			// TODO: thinks response {"indexRequestFailed":"true"} is successful... check content type?
 		}
 		catch (SocketTimeoutException e) {
 			System.out.println("FileSystemModel.downloadFile: InputStream.read Timeout! (Timeout during file transfer)");
@@ -221,7 +228,7 @@ public class FileSystemModel {
 			}
 		}
 		
-		System.out.println("FileSystemModel.downloadFile: Done (" + totalNumBytes + " bytes transferred).");
+		//System.out.println("FileSystemModel.downloadFile: Done (" + totalNumBytes + " bytes transferred).");
 		conn.disconnect();
 		return true;
 	}

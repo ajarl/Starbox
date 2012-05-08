@@ -21,5 +21,9 @@ td {
 }
 
 table {
-	width: 550px;
+	width: 700px;
+}
+
+table td + td + td{
+	width: 180px;
 }

@@ -14,10 +14,10 @@
 				<div class="left">	
 					<h2>Controllers</h2>	
 					<form name="add-user-form" class="add-user-form">
-						<input type="textfield" name="name" id="name" placeholder="Name"/> 
-		          		<input type="textfield" name="ip" id="ip" placeholder="IP"/>  
-		          		<input type="textfield" name="email" placeholder="Email-adress"/> 
-		          		<input type="textfield" name="group" placeholder="Group"/>  		
+						<input type="text" name="name" id="name" placeholder="Name"/> 
+		          		<input type="text" name="ip" id="ip" placeholder="IP (Required)" required="required"/>  
+		          		<input type="email" name="email" placeholder="Email-adress"/> 
+		          		<input type="text" name="group" placeholder="Group"/>  		
 		          	</form>		
 					<div class="add-users">
 						<a class="button button-blue button-add-user">Add user</a>
