@@ -12,6 +12,7 @@ import java.net.ProtocolException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.List;
 
 /**
  * Handles requests to get files of the file system from the outside,
@@ -31,7 +32,11 @@ public class FileSystemModel {
 		boolean ret = ip != null;
 		if (ret) {
 			ret = false;
-			for (User user : UserModel.getWhitelistStatic()) {
+			List<User> users;
+			synchronized (UserModel.class) {
+				users = UserModel.getWhitelistStatic();
+			}
+			for (User user : users) {
 				if (user.getIp().equals(ip)) {
 					ret = true;
 					break;

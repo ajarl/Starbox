@@ -63,13 +63,22 @@ public class IndexDownloader implements Runnable {
 			long ticks = System.currentTimeMillis();
 			if (ticks >= nextUpdateTicks) {
 				// Time to download indices
-				synchronized (IndexDownloader.this) {
+				synchronized (IndexDownloader.class) {
 					nextUpdateTicks = ticks + IndexDownloader.downloadInterval;
 				}
 				
-				//List<User> users = UserModel.getWhitelistStatic();
-				
+				// Get users
+				List<User> users;
+				synchronized (UserModel.class) {
+					users = UserModel.getWhitelistStatic();
+				}
+
 				System.out.println("IndexDownloader.run: TODO: Download indices...");
+				
+				for (User user : users) {
+					// Download from user
+					System.out.println("IndexDownloader.run:      User: " + user.getIp());
+				}
 			}
 			else {
 				// Sleep until time to download indices
