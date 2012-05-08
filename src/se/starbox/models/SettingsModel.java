@@ -238,7 +238,7 @@ public class SettingsModel {
 	 * @return The user's starbox folder as a String
 	 */
 	public String getStarboxFolder() {
-		return starboxFolder;
+		return starboxFolder.replace('\\', '/') + ((starboxFolder.replace('\\', '/').charAt(starboxFolder.length() - 1) != '/') ? "/" : "");
 	}
 	
 	/**
