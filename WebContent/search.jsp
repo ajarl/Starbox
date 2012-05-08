@@ -20,10 +20,11 @@
 						</ul>
 						<h2>Formats<span class="websymbol">]</span></h2>
 						<ul>
-							<li class="selected" data-type="format" data-value="executable">Executeable<span></span></li>
-							<li class="selected" data-type="format" data-value="document">Document<span></span></li>
-							<li class="selected" data-type="format" data-value="movie">Movie<span></span></li>
-							<li class="selected" data-type="format" data-value="image">Image<span></span></li>
+							<li class="selected" data-type="format" data-value="exe,dmg,out">Executeable<span></span></li>
+							<li class="selected" data-type="format" data-value="doc,pdf,docx,odf,txt">Document<span></span></li>
+							<li class="selected" data-type="format" data-value="rar,zip,gzip,tar,bz2,gz,bz,7zip">Archives<span></span></li>
+							<li class="selected" data-type="format" data-value="avi,mkv,mov,wmv">Movie<span></span></li>
+							<li class="selected" data-type="format" data-value="jpg,jpeg,png,gif,psd">Image<span></span></li>
 						</ul>
 					</div>
 				</div>
@@ -49,21 +50,21 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr data-user="Otto" data-format="executable">
+								<tr data-user="Otto" data-format="exe">
 									<td>Testfil.exe</td>
 									<td>15 Mb</td>
 									<td>2012-02-31</td>
 									<td>Otto</td>
 									<td>DL</td>
 								</tr>
-								<tr data-user="Kim" data-format="image">
+								<tr data-user="Kim" data-format="jpg">
 									<td>profil.jpeg</td>
 									<td>1 Mb</td>
 									<td>2012-01-25</td>
 									<td>Kim</td>
 									<td>DL</td>
 								</tr>
-								<tr data-user="Lukas" data-format="document">
+								<tr data-user="Lukas" data-format="pdf">
 									<td>kex.pdf</td>
 									<td>356 Kb</td>
 									<td>2012-03-10</td>
