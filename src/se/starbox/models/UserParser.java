@@ -27,6 +27,13 @@ public class UserParser {
 	private static final String STATUS_TAG = "</*Status>";
 
 	public UserParser(String path){
+		String sep = System.getProperty("file.separator");
+		boolean windows = sep.equals("\\");
+		if(windows)
+			path = path.replaceAll("/", "\\\\");
+		String fileDirPath = path.substring(0, path.lastIndexOf(sep))+sep;
+		File fileDir = new File(fileDirPath);
+		fileDir.mkdirs();
 		File xmlFile = new File(path);
 		try {
 			xmlFile.createNewFile();
