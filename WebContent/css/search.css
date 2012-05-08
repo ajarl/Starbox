@@ -21,6 +21,11 @@
 	margin-top: 5px;
 }
 
+.search-filters h2 .websymbol {
+	font-size: 18px;
+	margin-left: 10px;
+}
+
 .search-filters h2:hover {
 	color: #666;
 	cursor: pointer;

@@ -44,10 +44,10 @@
 								</td>
 							</tr>
 							<tr>
-								<td><label for="interval">Interval</label></td>
+								<td><label for="interval">Interval (minutes)</label></td>
 								<td>
-									<input type="text" name="interval" id="interval"
-									value="<%= request.getAttribute("indexUpdateInterval") %>" />
+									<input type="number" name="interval" id="interval"
+									value="<%= Integer.parseInt(request.getAttribute("indexUpdateInterval").toString()) / 60 %>" />
 								<td>
 									<button class="save-setting button-small button-green">Save</button>
 									<span class="status"></span>
@@ -67,7 +67,7 @@
 							<tr>
 								<td><label for="email">Email</label></td>
 								<td>
-									<input type="text" name="email" id="email"
+									<input type="email" name="email" id="email"
 									value="<%= request.getAttribute("email") %>" />
 								</td>
 								<td>
