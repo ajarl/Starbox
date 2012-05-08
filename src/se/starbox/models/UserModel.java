@@ -92,7 +92,7 @@ public class UserModel {
 			return responseHeader;
 		}
 		if(responseHeader.contains("200")){
-			userList.add(new User(ip,STATE_SENT));
+			userList.add(new User(ip,STATE_SENT,email,name,group));
 			writeToFile();
 		}
 		return responseHeader;
