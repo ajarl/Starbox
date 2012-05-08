@@ -159,6 +159,7 @@ public class PipeToSolr extends Stage{
 				xmlOutput.setFormat(Format.getPrettyFormat());
 				try {
 					xmlOutput.output(indexDataDocument, new FileWriter(indexDataPath + "/indexData.xml"));
+					System.out.println("ska skriva indexDATA ==E=#%=%)#¤(=!#=%)#¤&?¤#&)¤%");
 				} catch (IOException e) {
 					System.err.println("PipeToSolr - Error when trying to save update to IndexData.xml");
 					e.printStackTrace();
@@ -329,7 +330,7 @@ public class PipeToSolr extends Stage{
 		SAXBuilder builder = new SAXBuilder();
 		String indexFilePath = SettingsModel.getProjectRootPath() + "/Index";
 
-		File indexData = new File(indexFilePath + "/indexFile");
+		File indexData = new File(indexFilePath + "/" + indexFile);
 		Document indexDataDocument = null;
 		try {
 			indexDataDocument = (Document) builder.build(indexData);
