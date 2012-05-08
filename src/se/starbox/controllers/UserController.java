@@ -94,6 +94,8 @@ public class UserController extends HttpServlet {
 			ip = format(ip);
 			String responseHeader = userModel.addUser(ip, settingsModel.getEmail(), settingsModel.getDisplayName(),"");
 			request.setAttribute("response", responseHeader);
+			if(!responseHeader.contains("200"))
+				response.setStatus(404);
 			request.setAttribute("addedUser", ip);
 			forward = ADD_JSP;
 		} else if (action.equals(ACTION_UPDATE)){
