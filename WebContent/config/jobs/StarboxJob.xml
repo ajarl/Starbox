@@ -59,8 +59,8 @@
   <trigger>
 
   	<starttime>2012-05-08 02:37:00 em</starttime>
-    <period>minutes</period>
     <period-interval>30</period-interval>
+    <period>minutes</period>
     <schedtype>periodic</schedtype>
   </trigger>
 </job>
