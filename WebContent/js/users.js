@@ -27,8 +27,10 @@ $(document).ready(function() {
 				email: $(this).attr('data-email'),
 				name: $(this).attr('data-name')
 			}, 
-			function(){
-				alert('sent');
+			function(data){
+				//$(button_accept_request).closest('tr').hide();
+				//alert('sent');
+				location.href = "/starbox/users/"; 
 			}
 		)
 		.error(function() { 
@@ -46,7 +48,9 @@ $(document).ready(function() {
 				ip: $(this).attr('data-IP')
 			}, 
 			function(){
-				alert('denied');
+				//$(button_deny_request).closest('tr').hide();
+				//alert('denied');
+				location.href = "/starbox/users/"; 
 			}
 		)
 		.error(function() { 
@@ -63,7 +67,7 @@ $(document).ready(function() {
 				ip: $(this).attr('data-IP')
 			}, 
 			function(){
-				alert('removed');
+				location.href = "/starbox/users/"; 
 			}
 		)
 		.error(function() { 
@@ -87,19 +91,22 @@ $(document).ready(function() {
 	});
 	
 	$(button_add).click(function() {
-						
-		if($('#ip').val().length > 0 && $(this).hasClass('submit')) {
-			$(cancel_add).hide();
-			$(status_add_user).text('Sending').show();
-			
-			var data = $(add_user_form).serialize();
-
-			$.post("/starbox/users/?action=create", data, function(){
-				$(status_add_user).css('color', 'green').text('Accepted');
-		    })
-		    .error(function() { 
-		    	$(status_add_user).css('color', 'red').text('Error');
-		    });
+		
+		if($(this).hasClass('submit')) {
+			if($('#ip').val().length > 0) {
+				$(cancel_add).hide();
+				$(status_add_user).css('color', 'green').text('Sending').show();
+				
+				var data = $(add_user_form).serialize();
+	
+				$.post("/starbox/users/?action=create", data, function(data){
+					//$(status_add_user).css('color', 'green').text('Accepted');
+					location.href = "/starbox/users/";
+			    })
+			    .error(function() { 
+			    	$(status_add_user).css('color', 'red').text('IP not found');
+			    });
+			}
 		}
 		
 	});
