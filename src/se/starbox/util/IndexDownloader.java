@@ -1,5 +1,10 @@
 package se.starbox.util;
 
+import java.util.List;
+
+import se.starbox.models.User;
+import se.starbox.models.UserModel;
+
 /**
  * Downloads indices from friends as a runnable, running in the background.
  * Operates as a singleton.
@@ -33,7 +38,7 @@ public class IndexDownloader implements Runnable {
 	 * Stops the IndexDownloader if currently running.
 	 */
 	public static synchronized void stop() {
-		System.out.println("IndexDownloader.start stop.");
+		System.out.println("IndexDownloader.stop called.");
 		if (singleton == null) {
 			synchronized (singleton) {
 				singleton.doStop = true;
@@ -61,6 +66,8 @@ public class IndexDownloader implements Runnable {
 				synchronized (IndexDownloader.this) {
 					nextUpdateTicks = ticks + IndexDownloader.downloadInterval;
 				}
+				
+				//List<User> users = UserModel.getWhitelistStatic();
 				
 				System.out.println("IndexDownloader.run: TODO: Download indices...");
 			}
