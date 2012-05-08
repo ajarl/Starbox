@@ -271,8 +271,11 @@ public class SettingsModel {
 	/**
 	 * Updates user's starbox folder setting and writes to UserSettings.xml and StarboxJob.xml
 	 * @param path The new starbox folder as a String
+	 * @return true if valid path
 	 */
-	public void setStarboxFolder(String path) {
+	public boolean setStarboxFolder(String path) {
+		if (!new File(path).isDirectory())
+			return false;
 		starboxFolder = path;
 		writeToFile();
 		
@@ -292,10 +295,11 @@ public class SettingsModel {
 			StreamResult sr = new StreamResult(new File(PATH_TO_OPENPIPELINE_JOB));
 			
 			t.transform(s, sr);
+			return true;
 		} catch (Exception e) {
 			System.err.println("SettingsModel - could not update StarboxJob.xml");
 		}
-			
+		return false;
 	}
 	
 	/**
