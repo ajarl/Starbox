@@ -101,7 +101,10 @@ public class PipeToSolr extends Stage{
 			clearIndexData();
 			try {
 				solrServer.deleteByQuery( "*:*" );
-			} catch (SolrServerException | IOException e) {
+			} catch (SolrServerException e) {
+				System.err.println("Error while trying to delete the Solr index.");
+				e.printStackTrace();
+			} catch (IOException e) {
 				System.err.println("Error while trying to delete the Solr index.");
 				e.printStackTrace();
 			}
@@ -132,7 +135,10 @@ public class PipeToSolr extends Stage{
 				Document indexDataDocument = null;
 				try {
 					indexDataDocument = (Document) builder.build(indexData);
-				} catch (JDOMException | IOException e) {
+				} catch (JDOMException e) {
+					System.err.println("PipeToSolr - Error when trying to read IndexData for update.");
+					e.printStackTrace();
+				} catch (IOException e) {
 					System.err.println("PipeToSolr - Error when trying to read IndexData for update.");
 					e.printStackTrace();
 				}
@@ -325,7 +331,10 @@ public class PipeToSolr extends Stage{
 		Document indexDataDocument = null;
 		try {
 			indexDataDocument = (Document) builder.build(indexData);
-		} catch (JDOMException | IOException e) {
+		} catch (JDOMException e) {
+			System.err.println("PipeToSolr - Error when trying to read IndexData for update.");
+			e.printStackTrace();
+		} catch (IOException e) {
 			System.err.println("PipeToSolr - Error when trying to read IndexData for update.");
 			e.printStackTrace();
 		}
