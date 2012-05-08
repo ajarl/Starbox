@@ -29,13 +29,13 @@ import se.starbox.models.FileSystemModel;
 )
 public class FileSystemController extends HttpServlet {
 	private static final long serialVersionUID = 5338560270728801227L;
-
+	
 	/**
 	 * Constructs a new FileSystemController.
 	 */
 	public FileSystemController() {
 	}
-	   
+	
 	/**
 	 * Handle web get request, it should either be a get file request or a get index request.
 	 */
