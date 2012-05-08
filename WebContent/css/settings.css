@@ -19,3 +19,7 @@ td {
 .left, .right{
 	padding-top: 50px;
 }
+
+table {
+	width: 550px;
+}

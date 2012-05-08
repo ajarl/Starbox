@@ -52,7 +52,7 @@ td {
 }
 
 .users-container table {
-	width: 80%;
+	width: 550px;
 }
 
 td.name, td.ip {
