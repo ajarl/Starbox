@@ -123,7 +123,7 @@ public class PipeToSolr extends Stage{
 			nameByteArray = fileName.getBytes();
 			uuid 		= uuid.nameUUIDFromBytes(nameByteArray);
 			
-			url = url.replaceAll("\\", "/");
+			url = url.replace("\\", "/");
 		
 			boolean exists = (new File(indexDataPath + "/indexData.xml")).exists();
 			System.out.println(indexDataPath);
