@@ -3,7 +3,9 @@
   <jobname>StarboxJob</jobname>
   <max-file-size>100</max-file-size>
   <!-- <fileroots>D:\Linus\KTH\Starbox\Starbox\WebContent\Testfiler</fileroots> -->
-  <fileroots>C:/Users/Kim/workspace/Starbox/WebContent/Testfiler</fileroots>
+  <!--<fileroots>C:/Users/Kim/workspace/Starbox/WebContent/Testfiler</fileroots>-->
+  <fileroots>C:/Users/Anders/workspace/starbox/WebContent/Testfiler/</fileroots> -->
+  
   <subdirs>Y</subdirs>
   <compressed-files>Y</compressed-files>
   <jobclass>org.openpipeline.pipeline.connector.FileScanner</jobclass>
@@ -53,8 +55,9 @@
     </stage>
   </stages>
   <trigger>
+  	<starttime>2012-05-08T11:00:00</starttime>
     <period>minutes</period>
-    <period-interval>10</period-interval>
-    <schedtype>ondemand</schedtype>
+    <period-interval>30</period-interval>
+    <schedtype>periodic</schedtype>
   </trigger>
 </job>

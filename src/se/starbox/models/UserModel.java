@@ -56,13 +56,13 @@ public class UserModel {
 		initModel();
 	}
 
-	public static List<String> getWhitelistStatic(){
+	public static List<User> getWhitelistStatic(){
 		String path = SettingsModel.getProjectRootPath()+USER_APP_PATH+XML_FILE;
 		List<User> users = (ArrayList<User>) (new UserParser(path)).getAll();
-		ArrayList<String> ipList = new ArrayList<String>();
+		ArrayList<User> ipList = new ArrayList<User>();
 		for(User u: users){
 			if(u.getStatus().equals(STATE_ACCEPTED)){
-				ipList.add(u.getIp());
+				ipList.add(u);
 			}
 		}
 		return ipList;
@@ -221,6 +221,7 @@ public class UserModel {
 			connection.setConnectTimeout(REQUEST_TIMEOUT);
 			responseCode = connection.getResponseCode();
 			responseCodeHeader = "HTTP/1.1 "+responseCode+" "+connection.getResponseMessage();
+			connection.disconnect();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			responseCodeHeader = "HTTP/1.1 "+HttpStatus.SC_BAD_REQUEST+" bad request";
