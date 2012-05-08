@@ -28,7 +28,16 @@ public class FileSystemModel {
 	 * Checks if the specified ip is white-listed.
 	 */
 	protected static boolean isRequestAllowed(String ip) {
-		boolean ret = ip != null && UserModel.getWhitelistStatic().contains(ip);
+		boolean ret = ip != null;
+		if (ret) {
+			ret = false;
+			for (User user : UserModel.getWhitelistStatic()) {
+				if (user.getIp().equals(ip)) {
+					ret = true;
+					break;
+				}
+			}
+		}
 		System.out.println("[" + ip + "] FileSystemModel.isRequestAllowed: " + ret);
 		return ret;
 	}

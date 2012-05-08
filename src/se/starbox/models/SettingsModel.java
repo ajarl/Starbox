@@ -167,7 +167,7 @@ public class SettingsModel {
 		try {
 			String thisClassPath = SettingsModel.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 			projectPath = URLDecoder.decode(thisClassPath, "UTF-8");
-			projectPath.replace('\\', '/');
+			projectPath = projectPath.replace('\\', '/');
 			for (int i = projectPath.length() - 1, slashCount = 0; i >= 0; i--) {
 				if (projectPath.charAt(i) == '/') {
 					slashCount++;
@@ -180,7 +180,7 @@ public class SettingsModel {
 		} catch (Exception e) {
 			return null;
 		}
-		return projectPath;
+		return projectPath + ((projectPath.charAt(projectPath.length() - 1) != '/') ? "/" : "");
 	}
 	
 	/**
@@ -197,6 +197,7 @@ public class SettingsModel {
 			
 			// Test: List all jobs
 			PipelineScheduler scheduler = PipelineScheduler.getInstance();
+			
 			@SuppressWarnings("unchecked")
 			List<JobInfo> jobs = scheduler.getJobs();
 			System.out.println("# of existing jobs: " + jobs.size());

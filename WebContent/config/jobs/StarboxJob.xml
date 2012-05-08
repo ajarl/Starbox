@@ -55,7 +55,7 @@
     </stage>
   </stages>
   <trigger>
-  	<starttime>2012-05-08T11:00:00</starttime>
+  	<starttime>2012-05-08 11:00:00</starttime>
     <period>minutes</period>
     <period-interval>30</period-interval>
     <schedtype>periodic</schedtype>
