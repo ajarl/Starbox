@@ -60,8 +60,10 @@ public class SettingsController extends HttpServlet {
 		Map<String, String[]> params = request.getParameterMap();
 
 		
-		if (params.containsKey("path"))
-			sm.setStarboxFolder(params.get("path")[0]);
+		if (params.containsKey("path")) {
+			if (!sm.setStarboxFolder(params.get("path")[0]))
+				response.sendError(404, "Invalid path");
+		}
 		
 		if (params.containsKey("interval")) {
 			try {

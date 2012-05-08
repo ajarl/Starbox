@@ -34,6 +34,7 @@ public class UserController extends HttpServlet {
 	private static final String ACTION_UPDATE = "update";
 	private static final String ACTION_REMOVE = "remove";
 	private static final String ACTION_ANSWER = "friendrequest";
+	private static final String ACTION_DELETE_XML = "deletexml";
 
 	private static final String ACTION_GO_TO_ADD = "gotoadd";
 
@@ -138,6 +139,10 @@ public class UserController extends HttpServlet {
 				userModel.acceptRequest(IP, email, name);
 			}else
 				userModel.denyRequest(IP);
+			request = getUserlistRequest(request);
+			forward = LIST_JSP;
+		} else if(action.equals(ACTION_DELETE_XML)){
+			userModel.removeUsersXML();
 			request = getUserlistRequest(request);
 			forward = LIST_JSP;
 		} else {

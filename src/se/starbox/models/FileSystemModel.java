@@ -118,21 +118,42 @@ public class FileSystemModel {
 		//System.out.println("[" + ip + "] FileSystemModel.requestIndexData: File exists");
 		return file;
 	}
-
+	
+	/**
+	 * The result of {@link FileSystemModel#downloadFile(String, File)}.
+	 */
+	public enum DownloadFileResult {
+		/**
+		 * Download completed successfully.
+		 */
+		SUCCESS,
+		
+		/**
+		 * Download failed but before the destination file was written to.
+		 * If the file already existed it is still intact.
+		 */
+		EARLY_FAIL,
+		
+		/**
+		 * Download failed during transfer. The destination file is expected to be corrupted.
+		 */
+		INTERRUPTED_FAIL
+	};
+	
 	/**
 	 * Downloads a file over HTTP of the specified url to the destination file specified.
 	 * @param url A url to a file (http)
 	 * @param destinationFile The file to store the download in
 	 * @return True on success, false otherwise
 	 */
-	public static boolean downloadFile(String fileUrl, File destinationFile) {
+	public static DownloadFileResult downloadFile(String fileUrl, File destinationFile) {
 		//fileUrl = "http://213.65.122.202:8080/starbox/file?file=u.png";
 		URL url = null;
 		try {
 			url = new URL(fileUrl);
 		} catch (MalformedURLException e1) {
 			System.out.println("FileSystemModel.downloadFile: Malformed url: " + fileUrl);
-			return false;
+			return DownloadFileResult.EARLY_FAIL;
 		}
 		
 		//System.out.println("FileSystemModel.downloadFile: Connecting...");
@@ -141,10 +162,10 @@ public class FileSystemModel {
 			conn = (HttpURLConnection)url.openConnection();
 		} catch (IOException e) {
 			System.out.println("FileSystemModel.downloadFile: IOException occurred when opening url-connection");
-			return false;
+			return DownloadFileResult.EARLY_FAIL;
 		} catch (ClassCastException e) {
 			System.out.println("FileSystemModel.downloadFile: url => not http");
-			return false;
+			return DownloadFileResult.EARLY_FAIL;
 		}
 		
 		try {
@@ -152,7 +173,7 @@ public class FileSystemModel {
 		} catch (ProtocolException e) {
 			// surely this will never happen
 			System.out.println("FileSystemModel.downloadFile: request method get => protocol exception");
-			return false;
+			return DownloadFileResult.EARLY_FAIL;
 		}
 		conn.setUseCaches(false);
 		conn.setDoInput(true);
@@ -164,18 +185,25 @@ public class FileSystemModel {
 			conn.connect();
 		} catch (UnknownHostException e) {
 			System.out.println("FileSystemModel.downloadFile: Unknown Host!");
-			return false;
+			return DownloadFileResult.EARLY_FAIL;
 		} catch (SocketTimeoutException e) {
 			System.out.println("FileSystemModel.downloadFile: Timeout!");
-			return false;
+			return DownloadFileResult.EARLY_FAIL;
 		} catch (IOException e) {
+			System.out.println("FileSystemModel.downloadFile: connect => IOException");
+			return DownloadFileResult.EARLY_FAIL;
 		}
 		
 		//try {
 		//	System.out.println("FileSystemModel.downloadFile: Response Code:  " + conn.getResponseCode() + " (200 = OK)");
 		//} catch (IOException e) { e.printStackTrace(); }
-		System.out.println("FileSystemModel.downloadFile: Content type: " + conn.getContentType());
+		//System.out.println("FileSystemModel.downloadFile: Content type: " + conn.getContentType());
 		//System.out.println("FileSystemModel.downloadFile: Content length: " + conn.getContentLength());
+		
+		if (conn.getContentType().equals("JSONObject;charset=ISO-8859-1")) {
+			System.out.println("FileSystemModel.downloadFile: Download request was rejected (either you do not have permissions or the file does not exist).");
+			return DownloadFileResult.EARLY_FAIL;
+		}
 		
 		InputStream in;
 		try {
@@ -183,10 +211,10 @@ public class FileSystemModel {
 		}
 		catch (FileNotFoundException e) {
 			System.out.println("FileSystemModel.downloadFile: getInputStream => FileNotFoundException");
-			return false;
+			return DownloadFileResult.EARLY_FAIL;
 		} catch (IOException e) {
 			System.out.println("FileSystemModel.downloadFile: getInputStream => IOException");
-			return false;
+			return DownloadFileResult.EARLY_FAIL;
 		}
 		
 		OutputStream out;
@@ -198,38 +226,41 @@ public class FileSystemModel {
 			try {
 				in.close();
 			} catch (IOException e2) { }
-			return false;
+			return DownloadFileResult.EARLY_FAIL;
 		}
 		
 		//System.out.println("FileSystemModel.downloadFile: Read from input stream...");
 		byte[] buffer = new byte[4096];
 		int bytesRead;
 		int totalNumBytes = 0;
+		boolean success = false;
 		try {
 			while ((bytesRead = in.read(buffer)) != -1) {
 				out.write(buffer, 0, bytesRead);
 				totalNumBytes += bytesRead;
 			}
-			
-			// TODO: thinks response {"indexRequestFailed":"true"} is successful... check content type?
+			success = true;
 		}
 		catch (SocketTimeoutException e) {
-			System.out.println("FileSystemModel.downloadFile: InputStream.read Timeout! (Timeout during file transfer)");
+			System.out.println("FileSystemModel.downloadFile: InputStream.read Timeout (during file transfer)!");
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("FileSystemModel.downloadFile: InputStream.read IOException (during file transfer)!");
 		}
 		finally {
-			//System.out.println("FileSystemModel.downloadFile: Bytes read: " + totalNumBytes);
 			try {
 				out.close();
 				in.close();
 			}
 			catch (IOException e) {
 			}
+			if (!success) {
+				System.out.println("FileSystemModel.downloadFile: Bytes read before fail: " + totalNumBytes);
+				return DownloadFileResult.INTERRUPTED_FAIL;
+			}
 		}
 		
 		//System.out.println("FileSystemModel.downloadFile: Done (" + totalNumBytes + " bytes transferred).");
 		conn.disconnect();
-		return true;
+		return DownloadFileResult.SUCCESS;
 	}
 }
