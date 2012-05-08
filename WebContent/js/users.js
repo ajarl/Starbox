@@ -107,9 +107,6 @@ $(document).ready(function() {
 			    	$(status_add_user).css('color', 'red').text('IP not found');
 			    });
 			}
-			else {
-				$(status_add_user).css('color', 'red').text('IP is null');
-			}
 		}
 		
 	});
