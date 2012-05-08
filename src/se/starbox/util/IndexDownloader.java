@@ -101,7 +101,10 @@ public class IndexDownloader implements Runnable {
 		}
 	}
 	
-	private static class DownloadFile implements Runnable {
+	/**
+	 * A runnable for downloading a file from a URL (over HTTP).
+	 */
+	public static class DownloadFile implements Runnable {
 		private String sourceUrl;
 		private File destinationFile;
 		
@@ -112,11 +115,15 @@ public class IndexDownloader implements Runnable {
 		
 		@Override
 		public void run() {
-			if (FileSystemModel.downloadFile(sourceUrl, destinationFile)) {
-				System.out.println("DownloadFile (" + sourceUrl + "): File downloaded and saved at " + destinationFile.getAbsolutePath());
+			FileSystemModel.DownloadFileResult result = FileSystemModel.downloadFile(sourceUrl, destinationFile);
+			if (result == FileSystemModel.DownloadFileResult.SUCCESS) {
+				System.out.println("DownloadFile (" + sourceUrl + "): File downloaded successfully and saved at " + destinationFile.getAbsolutePath());
+			}
+			else if (result == FileSystemModel.DownloadFileResult.EARLY_FAIL) {
+				System.out.println("DownloadFile (" + sourceUrl + "): File downloaded 'early' fail, " + destinationFile.getAbsolutePath() + " was untouched.");
 			}
 			else {
-				System.out.println("DownloadFile (" + sourceUrl + "): Failed.");
+				System.out.println("DownloadFile (" + sourceUrl + "): File downloaded interrupted. Corrupted file to be deleted (" + destinationFile.getAbsolutePath() + ").");
 				if (destinationFile.exists()) {
 					if (!destinationFile.delete())
 						System.out.println("DownloadFile (" + sourceUrl + "): Unable to delete " + destinationFile.getAbsolutePath());
