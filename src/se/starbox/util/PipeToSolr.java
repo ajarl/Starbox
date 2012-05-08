@@ -123,8 +123,7 @@ public class PipeToSolr extends Stage{
 			nameByteArray = fileName.getBytes();
 			uuid 		= uuid.nameUUIDFromBytes(nameByteArray);
 			
-			int i = url.indexOf("WebContent");
-			url = url.substring(i);
+			url = url.replace("\\", "/");
 		
 			boolean exists = (new File(indexDataPath + "/indexData.xml")).exists();
 			System.out.println(indexDataPath);
@@ -207,39 +206,39 @@ public class PipeToSolr extends Stage{
 		public void run(){
 	        
 			//TODO Kolla om OP är klar istället för att vänta.
-//			long t0,t1;
-//	        t0=System.currentTimeMillis();
-//	        t1=System.currentTimeMillis();
-//	        while (t1-t0<10000){
-//	            t1=System.currentTimeMillis();
-//	        }
-			PipelineScheduler scheduler = null;
-			List jobs = null;
-			try {
-				scheduler = PipelineScheduler.getInstance();
-				jobs = scheduler.getJobs();
-			} catch (SchedulerException e2) {
-				System.err.println("Could not get instance from PipelineScheduler");
-				e2.printStackTrace();
-			} catch (Exception e) {
-				System.err.println("Could not get a list of jobs");
-				e.printStackTrace();
-			}
+			long t0,t1;
+	        t0=System.currentTimeMillis();
+	        t1=System.currentTimeMillis();
+	        while (t1-t0<10000){
+	            t1=System.currentTimeMillis();
+	        }
+//			PipelineScheduler scheduler = null;
+//			List jobs = null;
+//			try {
+//				scheduler = PipelineScheduler.getInstance();
+//				jobs = scheduler.getJobs();
+//			} catch (SchedulerException e2) {
+//				System.err.println("Could not get instance from PipelineScheduler");
+//				e2.printStackTrace();
+//			} catch (Exception e) {
+//				System.err.println("Could not get a list of jobs");
+//				e.printStackTrace();
+//			}
+//			
+//			JobInfo jobInfo = (JobInfo) jobs.get(0);
+//			String jobName = jobInfo.getJobName();
+//			
+//			boolean isRunning = true;
+//			while(isRunning){
+//				try {
+//					isRunning = scheduler.isJobRunning(jobName);
+//				} catch (SchedulerException e2) {
+//					System.err.println("Error while checking if job was running");
+//					e2.printStackTrace();
+//				}
+//			}
 			
-			JobInfo jobInfo = (JobInfo) jobs.get(0);
-			String jobName = jobInfo.getJobName();
-			
-			boolean isRunning = true;
-			while(isRunning){
-				try {
-					isRunning = scheduler.isJobRunning(jobName);
-				} catch (SchedulerException e2) {
-					System.err.println("Error while checking if job was running");
-					e2.printStackTrace();
-				}
-			}
-			
-			if(!isRunning){
+//			if(!isRunning){
 				try {
 					File dir = new File(indexDataPath);
 					 
@@ -288,7 +287,7 @@ public class PipeToSolr extends Stage{
 					System.err.println("PipeToSolr caught an IOException");
 					e.printStackTrace();
 				}
-			}
+//			}
 		}
 	}
 

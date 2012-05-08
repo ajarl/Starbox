@@ -34,6 +34,7 @@ public class UserController extends HttpServlet {
 	private static final String ACTION_UPDATE = "update";
 	private static final String ACTION_REMOVE = "remove";
 	private static final String ACTION_ANSWER = "friendrequest";
+	private static final String ACTION_DELETE_XML = "deletexml";
 
 	private static final String ACTION_GO_TO_ADD = "gotoadd";
 
@@ -90,15 +91,20 @@ public class UserController extends HttpServlet {
 			request = getUserlistRequest(request);
 			forward = LIST_JSP;
 		} else if (action.equals(ACTION_ADD_USER)){
-			String ip = (String) request.getParameter("ip");
+			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
 			ip = format(ip);
-			String responseHeader = userModel.addUser(ip, settingsModel.getEmail(), settingsModel.getDisplayName(),"");
+			String email = (String) request.getParameter(Requests.ATTRIBUTE_EMAIL);
+			email = format(email);
+			String name = (String) request.getParameter(Requests.ATTRIBUTE_NAME);
+			name = format(name);
+			String group = (String) request.getParameter(Requests.ATTRIBUTE_GROUP);
+			group = format(group);
+			String responseHeader = userModel.addUser(ip, email, name,group);
 			request.setAttribute("response", responseHeader);
 			if(!responseHeader.contains("200"))
 				response.setStatus(404);
 			request.setAttribute("addedUser", ip);
-			request = getUserlistRequest(request);
-			forward = LIST_JSP;
+			forward = ADD_JSP;
 		} else if (action.equals(ACTION_UPDATE)){
 			String newName = (String) request.getParameter(Requests.ATTRIBUTE_NAME);
 			newName = format(newName);
@@ -133,6 +139,10 @@ public class UserController extends HttpServlet {
 				userModel.acceptRequest(IP, email, name);
 			}else
 				userModel.denyRequest(IP);
+			request = getUserlistRequest(request);
+			forward = LIST_JSP;
+		} else if(action.equals(ACTION_DELETE_XML)){
+			userModel.removeUsersXML();
 			request = getUserlistRequest(request);
 			forward = LIST_JSP;
 		} else {

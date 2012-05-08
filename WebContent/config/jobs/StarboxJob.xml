@@ -4,7 +4,9 @@
   <max-file-size>100</max-file-size>
   <!-- <fileroots>D:\Linus\KTH\Starbox\Starbox\WebContent\Testfiler</fileroots> -->
   <!--<fileroots>C:/Users/Kim/workspace/Starbox/WebContent/Testfiler</fileroots>-->
-  <fileroots>C:/Users/Anders/workspace/starbox/WebContent/Testfiler/</fileroots> -->
+
+  <fileroots>E:/KTH/Starbox/WebContent/Testfiler</fileroots>
+
   
   <subdirs>Y</subdirs>
   <compressed-files>Y</compressed-files>
@@ -55,9 +57,10 @@
     </stage>
   </stages>
   <trigger>
-  	<starttime>2012-05-08 11:00:00</starttime>
-    <period>minutes</period>
+
+  	<starttime>2012-05-08 02:37:00 em</starttime>
     <period-interval>30</period-interval>
+    <period>minutes</period>
     <schedtype>periodic</schedtype>
   </trigger>
 </job>

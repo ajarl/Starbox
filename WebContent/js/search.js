@@ -1,7 +1,10 @@
 function applyFilters(data) {
-	//alert($(data).attr('data-type') + ' ' + $(data).attr('data-value'));
+	var formats = $(data).attr('data-value');
 	
-	$('.search-results tr[data-' + $(data).attr('data-type') + '=' + $(data).attr('data-value') + ']').toggle();
+	$.each(formats.split(','), function(i, val) {
+		//alert(val);
+		$('.search-results tr[data-' + $(data).attr('data-type') + '=' + val + ']').toggle();
+	});	
 }
 
 function renderResults(data) {

@@ -12,6 +12,8 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,12 +46,12 @@ public class SettingsModel {
 	private static final String DEFAULT_STARBOX_FOLDER = "C:/Documents/";
 	private static final String DEFAULT_DISPLAY_NAME = "default display name";
 	private static final String DEFAULT_EMAIL = "";
-	private static final int DEFAULT_INDEX_UPDATE_INTERVAL = 900;
+	private static final int DEFAULT_INDEX_UPDATE_INTERVAL = 30;
 	
 	private String starboxFolder;
 	private String displayName;
 	private String email;
-	private int indexUpdateInterval; // in seconds
+	private int indexUpdateInterval; // in minutes
 	
 	/**
 	 * Creates a new SettingsModel that immediately attempts to read from UserSettings.xml and populate local fields.
@@ -259,8 +261,8 @@ public class SettingsModel {
 	}
 	
 	/**
-	 * Gets user's index update interval (in seconds) from UserSettings.xml
-	 * @return The number of seconds between each interval as an integer value
+	 * Gets user's index update interval (in minutes) from UserSettings.xml
+	 * @return The number of minutes between each interval as an integer value
 	 */
 	public int getIndexUpdateInterval() {
 		return indexUpdateInterval;
@@ -269,8 +271,11 @@ public class SettingsModel {
 	/**
 	 * Updates user's starbox folder setting and writes to UserSettings.xml and StarboxJob.xml
 	 * @param path The new starbox folder as a String
+	 * @return true if valid path
 	 */
-	public void setStarboxFolder(String path) {
+	public boolean setStarboxFolder(String path) {
+		if (!new File(path).isDirectory())
+			return false;
 		starboxFolder = path;
 		writeToFile();
 		
@@ -290,10 +295,11 @@ public class SettingsModel {
 			StreamResult sr = new StreamResult(new File(PATH_TO_OPENPIPELINE_JOB));
 			
 			t.transform(s, sr);
+			return true;
 		} catch (Exception e) {
 			System.err.println("SettingsModel - could not update StarboxJob.xml");
 		}
-			
+		return false;
 	}
 	
 	/**
@@ -316,10 +322,10 @@ public class SettingsModel {
 	
 	/**
 	 * Update's user's index update interval and writes to UserSettings.xml, also updates OpenPipeline job to use the new interval (not implemented yet)
-	 * @param seconds The new interval in seconds as an integer
+	 * @param minutes The new interval in minutes as an integer
 	 */
-	public void setIndexUpdateInterval(int seconds) {
-		indexUpdateInterval = seconds;
+	public void setIndexUpdateInterval(int minutes) {
+		indexUpdateInterval = minutes;
 		writeToFile();
 		
 		// Write to StarboxJob.xml
@@ -328,8 +334,10 @@ public class SettingsModel {
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document d = db.parse(PATH_TO_OPENPIPELINE_JOB);
 			
-			d.getElementsByTagName("period").item(0).setTextContent("seconds");
-			d.getElementsByTagName("period-interval").item(0).setTextContent(Integer.toString(seconds));
+			d.getElementsByTagName("period").item(0).setTextContent("minutes");
+			d.getElementsByTagName("period-interval").item(0).setTextContent(Integer.toString(minutes));
+			d.getElementsByTagName("starttime").item(0).setTextContent(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a").format(new Date()));
+			
 			
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer t = tf.newTransformer();
