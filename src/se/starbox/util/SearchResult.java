@@ -4,7 +4,8 @@ import org.json.simple.JSONObject;
 
 public class SearchResult {
 	
-	private String name, url, filetype, timestamp;
+	private String name, url, filetype, timestamp, username;
+	
 	private int filesize;
 
 	/**
@@ -112,5 +113,21 @@ public class SearchResult {
 	 */
 	public void setFilesize(int filesize) {
 		this.filesize = filesize;
+	}
+	
+	/** 
+	 * Return the username 
+	 * @return the username that owns this file
+	 */
+	public String getUsername() {
+		return username;
+	}
+
+	/**
+	 * Set the username 
+	 * @param username
+	 */
+	public void setUsername(String username) {
+		this.username = username;
 	}
 }

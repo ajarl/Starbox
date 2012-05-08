@@ -102,7 +102,8 @@ public class UserModel {
 	}
 
 	public void addIncomingUser(String ip, String email, String name){
-		userList.add(new User(ip,STATE_PENDING, email,name));
+		if(!hasThisUser(ip))
+			userList.add(new User(ip,STATE_PENDING, email,name));
 		writeToFile();
 	}
 

@@ -47,7 +47,7 @@
 								<td><label for="interval">Interval (minutes)</label></td>
 								<td>
 									<input type="number" name="interval" id="interval"
-									value="<%= Integer.parseInt(request.getAttribute("indexUpdateInterval").toString()) / 60 %>" />
+									value="<%= Integer.parseInt(request.getAttribute("indexUpdateInterval").toString())  %>" />
 								<td>
 									<button class="save-setting button-small button-green">Save</button>
 									<span class="status"></span>

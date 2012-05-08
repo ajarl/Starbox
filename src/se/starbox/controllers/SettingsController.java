@@ -65,7 +65,7 @@ public class SettingsController extends HttpServlet {
 		
 		if (params.containsKey("interval")) {
 			try {
-				int interval = Integer.parseInt(params.get("interval")[0]);
+				int interval = Integer.parseInt(params.get("interval")[0]); //in minutes
 				if (interval > 0)
 					sm.setIndexUpdateInterval(interval);
 				
