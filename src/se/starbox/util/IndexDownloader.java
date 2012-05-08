@@ -51,7 +51,7 @@ public class IndexDownloader implements Runnable {
 	}
 	
 	private IndexDownloader() {
-		nextUpdateTicks = System.currentTimeMillis() + downloadInterval;
+		nextUpdateTicks = System.currentTimeMillis()/* + downloadInterval*/;
 	}
 	
 	@Override
@@ -83,7 +83,7 @@ public class IndexDownloader implements Runnable {
 				for (User user : users) {
 					// Download from user
 					String sourceUrl = "http://" + user.getIp() + ":8080/starbox/file?index";
-					File destinationFile = new File(indexFolder + "IndexFile_" + user.getIp() + ".xml");
+					File destinationFile = new File(indexFolder + "Index/IndexFile_" + user.getIp() + ".xml");
 					
 					new Thread(new DownloadFile(sourceUrl, destinationFile)).start();
 					

@@ -177,6 +177,11 @@ public class FileSystemModel {
 		System.out.println("FileSystemModel.downloadFile: Content type: " + conn.getContentType());
 		//System.out.println("FileSystemModel.downloadFile: Content length: " + conn.getContentLength());
 		
+		if (conn.getContentType().equals("JSONObject;charset=ISO-8859-1")) {
+			System.out.println("FileSystemModel.downloadFile: Download request was rejected (either you do not have permissions or the file does not exist).");
+			return false;
+		}
+		
 		InputStream in;
 		try {
 			in = conn.getInputStream();
@@ -210,8 +215,6 @@ public class FileSystemModel {
 				out.write(buffer, 0, bytesRead);
 				totalNumBytes += bytesRead;
 			}
-			
-			// TODO: thinks response {"indexRequestFailed":"true"} is successful... check content type?
 		}
 		catch (SocketTimeoutException e) {
 			System.out.println("FileSystemModel.downloadFile: InputStream.read Timeout! (Timeout during file transfer)");
