@@ -221,6 +221,7 @@ public class UserModel {
 			connection.setConnectTimeout(REQUEST_TIMEOUT);
 			responseCode = connection.getResponseCode();
 			responseCodeHeader = "HTTP/1.1 "+responseCode+" "+connection.getResponseMessage();
+			connection.disconnect();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			responseCodeHeader = "HTTP/1.1 "+HttpStatus.SC_BAD_REQUEST+" bad request";
