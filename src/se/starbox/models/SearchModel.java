@@ -72,7 +72,10 @@ public class SearchModel {
 		DirectXmlRequest xmlreq = new DirectXmlRequest("/update", doc);
 		try {
 			solr.request(xmlreq);
-		} catch (SolrServerException | IOException e) {
+		} catch (SolrServerException e) {
+			System.err.println("Error updating solr");
+			e.printStackTrace();
+		} catch (IOException e) {
 			System.err.println("Error updating solr");
 			e.printStackTrace();
 		}
