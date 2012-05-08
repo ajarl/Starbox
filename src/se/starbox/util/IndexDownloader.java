@@ -14,7 +14,7 @@ import se.starbox.models.UserModel;
  */
 public class IndexDownloader implements Runnable {
 	private static IndexDownloader singleton = null;
-	private static long downloadInterval = 60000;
+	private static long downloadInterval = 10 * 60000;
 	
 	private boolean doStop = false;
 	private long nextUpdateTicks;
@@ -31,10 +31,23 @@ public class IndexDownloader implements Runnable {
 	}
 	
 	/**
-	 * Sets the download interval of index files (in ms). Default is 60 s.
+	 * Sets the download interval of index files (in ms). Default is every 10 minutes.
 	 */
 	public static synchronized void setDownloadInterval(long downloadInterval) {
 		IndexDownloader.downloadInterval = downloadInterval;
+	}
+	
+	/**
+	 * Make the downloading of indices start as quickly as possible.
+	 */
+	public static synchronized void downloadNow() {
+		if (singleton == null)
+			start();
+		else {
+			synchronized (singleton) {
+				singleton.nextUpdateTicks = System.currentTimeMillis();
+			}
+		}
 	}
 	
 	/**
@@ -64,19 +77,25 @@ public class IndexDownloader implements Runnable {
 			}
 			
 			long ticks = System.currentTimeMillis();
-			if (ticks >= nextUpdateTicks) {
+			long nextTicks;
+			synchronized (this) {
+				nextTicks = nextUpdateTicks;
+			}
+			if (ticks >= nextTicks) {
 				// Time to download indices
-				synchronized (IndexDownloader.class) {
-					nextUpdateTicks = ticks + IndexDownloader.downloadInterval;
+				synchronized (this) {
+					synchronized (IndexDownloader.class) {
+						nextUpdateTicks = ticks + IndexDownloader.downloadInterval;
+					}
 				}
-
-				System.out.println("IndexDownloader.run: Time to download indices...");
 				
 				// Get users
 				List<User> users;
 				synchronized (UserModel.class) {
 					users = UserModel.getWhitelistStatic();
 				}
+
+				System.out.println("IndexDownloader.run: Download indices... (" + users.size() + " users)");
 				
 				String indexFolder = SettingsModel.getProjectRootPath();
 				
@@ -85,7 +104,7 @@ public class IndexDownloader implements Runnable {
 					String sourceUrl = "http://" + user.getIp() + ":8080/starbox/file?index";
 					File destinationFile = new File(indexFolder + "Index/IndexFile_" + user.getIp() + ".xml");
 					
-					new Thread(new DownloadFile(sourceUrl, destinationFile)).start();
+					new Thread(new DownloadFile(sourceUrl, destinationFile, true, user.getIp())).start();
 					
 					//System.out.println("IndexDownloader.run: Source: " + sourceUrl + ", Destination: " + destinationFile.getAbsolutePath());
 				}
@@ -93,7 +112,7 @@ public class IndexDownloader implements Runnable {
 			else {
 				// Sleep until time to download indices
 				try {
-					Thread.sleep(nextUpdateTicks - ticks);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					System.out.println("IndexDownloader.run: Thread.sleep => InterruptedException");
 				}
@@ -107,10 +126,21 @@ public class IndexDownloader implements Runnable {
 	public static class DownloadFile implements Runnable {
 		private String sourceUrl;
 		private File destinationFile;
+		private boolean indexAddIp;
+		private String sourceIp;
 		
-		public DownloadFile(String sourceUrl, File destinationFile) {
+		/**
+		 * 
+		 * @param sourceUrl
+		 * @param destinationFile
+		 * @param indexAddIp If true, this downloaded file will be subject to {@link PipeToSolr#addIp(String, String)}
+		 * @param sourceIp (Only needed if indexAddIp is true)
+		 */
+		public DownloadFile(String sourceUrl, File destinationFile, boolean indexAddIp, String sourceIp) {
 			this.sourceUrl       = sourceUrl;
 			this.destinationFile = destinationFile;
+			this.indexAddIp      = indexAddIp;
+			this.sourceIp        = sourceIp;
 		}
 		
 		@Override
@@ -118,6 +148,10 @@ public class IndexDownloader implements Runnable {
 			FileSystemModel.DownloadFileResult result = FileSystemModel.downloadFile(sourceUrl, destinationFile);
 			if (result == FileSystemModel.DownloadFileResult.SUCCESS) {
 				System.out.println("DownloadFile (" + sourceUrl + "): File downloaded successfully and saved at " + destinationFile.getAbsolutePath());
+				if (indexAddIp) {
+					System.out.println("DownloadFile (" + sourceUrl + "): " + destinationFile.getName() + " is now subject to PipeToSolr.addIp.");
+					PipeToSolr.addIp(sourceIp, destinationFile.getName());
+				}
 			}
 			else if (result == FileSystemModel.DownloadFileResult.EARLY_FAIL) {
 				System.out.println("DownloadFile (" + sourceUrl + "): File downloaded 'early' fail, " + destinationFile.getAbsolutePath() + " was untouched.");

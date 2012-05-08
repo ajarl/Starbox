@@ -70,6 +70,8 @@ public class SettingsController extends HttpServlet {
 				int interval = Integer.parseInt(params.get("interval")[0]); //in minutes
 				if (interval > 0)
 					sm.setIndexUpdateInterval(interval);
+				else
+					response.sendError(404, "Invalid interval");
 				
 				
 			} catch (NumberFormatException e) {
