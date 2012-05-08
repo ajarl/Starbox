@@ -130,7 +130,6 @@ public class PipeToSolr extends Stage{
 			if (exists) {
 				SAXBuilder builder = new SAXBuilder();
 				File indexData = new File(indexDataPath + "/indexData.xml");
-		 
 				Document indexDataDocument = null;
 				try {
 					indexDataDocument = (Document) builder.build(indexData);
@@ -206,40 +205,40 @@ public class PipeToSolr extends Stage{
 	private class toSolr extends Thread{
 		public void run(){
 	        
-			//TODO Kolla om OP är klar istället för att vänta.
-			long t0,t1;
-	        t0=System.currentTimeMillis();
-	        t1=System.currentTimeMillis();
-	        while (t1-t0<10000){
-	            t1=System.currentTimeMillis();
-	        }
-//			PipelineScheduler scheduler = null;
-//			List jobs = null;
-//			try {
-//				scheduler = PipelineScheduler.getInstance();
-//				jobs = scheduler.getJobs();
-//			} catch (SchedulerException e2) {
-//				System.err.println("Could not get instance from PipelineScheduler");
-//				e2.printStackTrace();
-//			} catch (Exception e) {
-//				System.err.println("Could not get a list of jobs");
-//				e.printStackTrace();
-//			}
-//			
-//			JobInfo jobInfo = (JobInfo) jobs.get(0);
-//			String jobName = jobInfo.getJobName();
-//			
-//			boolean isRunning = true;
-//			while(isRunning){
-//				try {
-//					isRunning = scheduler.isJobRunning(jobName);
-//				} catch (SchedulerException e2) {
-//					System.err.println("Error while checking if job was running");
-//					e2.printStackTrace();
-//				}
-//			}
+			//TODO Langar till Solr innan allt är klart :s
+//			long t0,t1;
+//	        t0=System.currentTimeMillis();
+//	        t1=System.currentTimeMillis();
+//	        while (t1-t0<10000){
+//	            t1=System.currentTimeMillis();
+//	        }
+			PipelineScheduler scheduler = null;
+			List jobs = null;
+			try {
+				scheduler = PipelineScheduler.getInstance();
+				jobs = scheduler.getJobs();
+			} catch (SchedulerException e2) {
+				System.err.println("Could not get instance from PipelineScheduler");
+				e2.printStackTrace();
+			} catch (Exception e) {
+				System.err.println("Could not get a list of jobs");
+				e.printStackTrace();
+			}
 			
-//			if(!isRunning){
+			JobInfo jobInfo = (JobInfo) jobs.get(0);
+			String jobName = jobInfo.getJobName();
+			
+			boolean isRunning = true;
+			while(isRunning){
+				try {
+					isRunning = scheduler.isJobRunning(jobName);
+				} catch (SchedulerException e2) {
+					System.err.println("Error while checking if job was running");
+					e2.printStackTrace();
+				}
+			}
+			
+			if(!isRunning){
 				try {
 					File dir = new File(indexDataPath);
 					 
@@ -288,7 +287,7 @@ public class PipeToSolr extends Stage{
 					System.err.println("PipeToSolr caught an IOException");
 					e.printStackTrace();
 				}
-//			}
+			}
 		}
 	}
 
