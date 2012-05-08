@@ -99,6 +99,9 @@ public class SettingsModel {
 				indexUpdateInterval = DEFAULT_INDEX_UPDATE_INTERVAL;
 			}
 			
+			setStarboxFolder(starboxFolder);
+			setIndexUpdateInterval(indexUpdateInterval);
+			
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

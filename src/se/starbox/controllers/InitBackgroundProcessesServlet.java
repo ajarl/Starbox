@@ -7,6 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.openpipeline.scheduler.PipelineScheduler;
+import org.quartz.SchedulerException;
+
+import se.starbox.models.SettingsModel;
 import se.starbox.util.IndexDownloader;
 
 /**
@@ -22,6 +26,16 @@ public class InitBackgroundProcessesServlet extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		IndexDownloader.start();
+
+		try {
+			System.setProperty("app.home", SettingsModel.getProjectRootPath());
+			PipelineScheduler scheduler = PipelineScheduler.getInstance();
+			if (!scheduler.isJobRunning("StarboxJob"))
+				scheduler.startJob("StarboxJob");
+		} catch (SchedulerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
