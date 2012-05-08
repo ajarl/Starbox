@@ -12,6 +12,9 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -329,6 +332,8 @@ public class SettingsModel {
 			
 			d.getElementsByTagName("period").item(0).setTextContent("seconds");
 			d.getElementsByTagName("period-interval").item(0).setTextContent(Integer.toString(seconds));
+			d.getElementsByTagName("starttime").item(0).setTextContent(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a").format(new Date()));
+			
 			
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer t = tf.newTransformer();
