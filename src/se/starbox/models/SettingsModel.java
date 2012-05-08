@@ -197,6 +197,7 @@ public class SettingsModel {
 			
 			// Test: List all jobs
 			PipelineScheduler scheduler = PipelineScheduler.getInstance();
+			
 			@SuppressWarnings("unchecked")
 			List<JobInfo> jobs = scheduler.getJobs();
 			System.out.println("# of existing jobs: " + jobs.size());
@@ -238,7 +239,7 @@ public class SettingsModel {
 	 * @return The user's starbox folder as a String
 	 */
 	public String getStarboxFolder() {
-		return starboxFolder.replace('\\', '/') + ((starboxFolder.replace('\\', '/').charAt(starboxFolder.length() - 1) != '/') ? "/" : "");
+		return starboxFolder;
 	}
 	
 	/**

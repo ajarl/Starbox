@@ -142,7 +142,7 @@ public class SearchModel {
 	* @param params - Parameters to filter the search, on this format:
 	* 		 "filetype:exe;minfilesize:20;maxfilesize:10"
 	* 
-	* @return Returns a LinkedList<SearchResult> with the matches.
+	* @return Returns a LinkedList<SearchResult> with the matches, null if empty.
 	*/
 	public LinkedList<SearchResult> query(String searchString, String params){
 		// If search string is empty, simply return an empty serachresult array.
@@ -154,6 +154,8 @@ public class SearchModel {
 	    // Update the search query with the chosen parameters
 	    if(params != null && searchString != null) {
 	    	solrQuery = buildQuery(searchString, params);
+	    	if (solrQuery == null)
+	    		return null;
 	    } else {
 	    	return null;
 	    }
@@ -211,11 +213,16 @@ public class SearchModel {
 			System.out.println("Removing illegal characters from searchString.");
 			searchString = searchString.replaceAll("[^A-Za-z0-9 ]","");
 		}
-		System.out.println("Result:" + searchString);
+		System.out.println("Result:" + searchString + " length:" + searchString.length());
 		
 		// Create query with main search string
-		SolrQuery solrQuery = new SolrQuery(searchString);
-		solrQuery.setSortField("id", SolrQuery.ORDER.asc); 
+		SolrQuery solrQuery = null;
+		if (searchString.length() > 0 && searchString.replace(" ", "").length() != 0) {
+			solrQuery = new SolrQuery(searchString);
+			solrQuery.setSortField("id", SolrQuery.ORDER.asc); 
+		} else {
+			return null;
+		}
 	
 		System.out.println("Traversing params.");
 		for (String param: ps) {
@@ -235,10 +242,12 @@ public class SearchModel {
 				String[] paramValues = values[1].split(",");
 				
 				for (String v : paramValues) {
+					System.out.println("Adding filter query: " + paramName + ":" + v);
 					solrQuery.addFilterQuery(paramName + ":" + v);
 				}
 			} else {
 				String paramValue = values[1];
+				System.out.println("Adding filter query: " + paramName + ":" + paramValue);
 				solrQuery.addFilterQuery(paramName + ":" + paramValue);
 			}
 		}

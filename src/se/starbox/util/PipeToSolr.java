@@ -230,12 +230,15 @@ public class PipeToSolr extends Stage{
 			String jobName = jobInfo.getJobName();
 			
 			boolean isRunning = true;
-			try {
-				isRunning = scheduler.isJobRunning(jobName);
-			} catch (SchedulerException e2) {
-				System.err.println("Error while checking if job was running");
-				e2.printStackTrace();
+			while(isRunning){
+				try {
+					isRunning = scheduler.isJobRunning(jobName);
+				} catch (SchedulerException e2) {
+					System.err.println("Error while checking if job was running");
+					e2.printStackTrace();
+				}
 			}
+			
 			if(!isRunning){
 				try {
 					File dir = new File(indexDataPath);
