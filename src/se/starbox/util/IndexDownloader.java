@@ -1,7 +1,10 @@
 package se.starbox.util;
 
+import java.io.File;
 import java.util.List;
 
+import se.starbox.models.FileSystemModel;
+import se.starbox.models.SettingsModel;
 import se.starbox.models.User;
 import se.starbox.models.UserModel;
 
@@ -11,7 +14,7 @@ import se.starbox.models.UserModel;
  */
 public class IndexDownloader implements Runnable {
 	private static IndexDownloader singleton = null;
-	private static long downloadInterval = 10000;
+	private static long downloadInterval = 60000;
 	
 	private boolean doStop = false;
 	private long nextUpdateTicks;
@@ -28,7 +31,7 @@ public class IndexDownloader implements Runnable {
 	}
 	
 	/**
-	 * Sets the download interval of index files (in ms). Default is 10 s.
+	 * Sets the download interval of index files (in ms). Default is 60 s.
 	 */
 	public static synchronized void setDownloadInterval(long downloadInterval) {
 		IndexDownloader.downloadInterval = downloadInterval;
@@ -66,18 +69,25 @@ public class IndexDownloader implements Runnable {
 				synchronized (IndexDownloader.class) {
 					nextUpdateTicks = ticks + IndexDownloader.downloadInterval;
 				}
+
+				System.out.println("IndexDownloader.run: Time to download indices...");
 				
 				// Get users
 				List<User> users;
 				synchronized (UserModel.class) {
 					users = UserModel.getWhitelistStatic();
 				}
-
-				System.out.println("IndexDownloader.run: TODO: Download indices...");
+				
+				String indexFolder = SettingsModel.getProjectRootPath();
 				
 				for (User user : users) {
 					// Download from user
-					System.out.println("IndexDownloader.run:      User: " + user.getIp());
+					String sourceUrl = "http://" + user.getIp() + ":8080/starbox/file?index";
+					File destinationFile = new File(indexFolder + "IndexFile_" + user.getIp() + ".xml");
+					
+					new Thread(new DownloadFile(sourceUrl, destinationFile)).start();
+					
+					//System.out.println("IndexDownloader.run: Source: " + sourceUrl + ", Destination: " + destinationFile.getAbsolutePath());
 				}
 			}
 			else {
@@ -86,6 +96,30 @@ public class IndexDownloader implements Runnable {
 					Thread.sleep(nextUpdateTicks - ticks);
 				} catch (InterruptedException e) {
 					System.out.println("IndexDownloader.run: Thread.sleep => InterruptedException");
+				}
+			}
+		}
+	}
+	
+	private static class DownloadFile implements Runnable {
+		private String sourceUrl;
+		private File destinationFile;
+		
+		public DownloadFile(String sourceUrl, File destinationFile) {
+			this.sourceUrl       = sourceUrl;
+			this.destinationFile = destinationFile;
+		}
+		
+		@Override
+		public void run() {
+			if (FileSystemModel.downloadFile(sourceUrl, destinationFile)) {
+				System.out.println("DownloadFile (" + sourceUrl + "): File downloaded and saved at " + destinationFile.getAbsolutePath());
+			}
+			else {
+				System.out.println("DownloadFile (" + sourceUrl + "): Failed.");
+				if (destinationFile.exists()) {
+					if (!destinationFile.delete())
+						System.out.println("DownloadFile (" + sourceUrl + "): Unable to delete " + destinationFile.getAbsolutePath());
 				}
 			}
 		}
