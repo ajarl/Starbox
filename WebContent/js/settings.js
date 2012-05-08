@@ -4,7 +4,7 @@ $(document).ready(function() {
 			
 		});
 	});
-	$('#shutdown').click(function() {
+	$('#shut-down').click(function() {
 		$.post('/starbox/settings', 'shutdown=true', function() {
 			
 		});
