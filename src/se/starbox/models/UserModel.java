@@ -201,7 +201,7 @@ public class UserModel {
 	private void sendRequestResponse(String response, String IP,String email, String name){
 		String ownIP;
 		try {
-			ownIP = InetAddress.getLocalHost().toString();
+			ownIP = InetAddress.getLocalHost().getHostAddress().toString();
 			String request = Requests.responseRequest(ownIP,response, email, name);
 			sendRequest(IP,request);
 		} catch (UnknownHostException e) {

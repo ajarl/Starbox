@@ -51,16 +51,23 @@ public class UserController extends HttpServlet {
 		}
 		else if(action.equals(Requests.REQUEST_ADD)){
 			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
+			ip = format(ip);
 			String email = (String) request.getParameter(Requests.ATTRIBUTE_EMAIL);
+			email = format(email);
 			String name = (String) request.getParameter(Requests.ATTRIBUTE_NAME);
+			name = format(name);
 			userModel.addIncomingUser(ip, email, name);
 			forward = EMPTY_JSP;
 
 		} else if(action.equals(Requests.REQUEST_RESPONSE)){
 			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
+			ip = format(ip);
 			String email = (String) request.getParameter(Requests.ATTRIBUTE_EMAIL);
+			email = format(email);
 			String name = (String) request.getParameter(Requests.ATTRIBUTE_NAME);
+			name = format(name);
 			String requestResponse = (String) request.getParameter("response");
+			requestResponse = format(requestResponse);
 			userModel.setRequestResponse(ip,requestResponse,email,name);
 			forward = EMPTY_JSP;
 
@@ -79,19 +86,23 @@ public class UserController extends HttpServlet {
 
 		if (action == null) {
 			//error?
-			request.setAttribute("errorMessage", "Du kan inte gï¿½ra en post till users controllen utan en action. Tï¿½nk ï¿½ver ditt beteende.");
+			request.setAttribute("errorMessage", "Du kan inte göra en post till users controllen utan en action. Tänk över ditt beteende.");
 			request = getUserlistRequest(request);
 			forward = LIST_JSP;
 		} else if (action.equals(ACTION_ADD_USER)){
 			String ip = (String) request.getParameter("ip");
+			ip = format(ip);
 			String responseHeader = userModel.addUser(ip, settingsModel.getEmail(), settingsModel.getDisplayName(),"");
 			request.setAttribute("response", responseHeader);
 			request.setAttribute("addedUser", ip);
 			forward = ADD_JSP;
 		} else if (action.equals(ACTION_UPDATE)){
 			String newName = (String) request.getParameter(Requests.ATTRIBUTE_NAME);
+			newName = format(newName);
 			String newGroup = (String) request.getParameter(Requests.ATTRIBUTE_GROUP);
+			newGroup = format(newGroup);
 			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
+			ip = format(ip);
 			if (newName != null){
 				userModel.changeName(ip, newName);
 			}
@@ -102,16 +113,21 @@ public class UserController extends HttpServlet {
 			forward = LIST_JSP;
 		} else if(action.equals(ACTION_REMOVE)){
 			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
+			ip = format(ip);
 			userModel.removeUser(ip);
 			request = getUserlistRequest(request);
 			forward = LIST_JSP;
 		} else if(action.equals(ACTION_ANSWER)){
 			String answer = request.getParameter(Requests.ATTRIBUTE_RESPONSE);
+			answer = format(answer);
 			String IP = request.getParameter(Requests.ATTRIBUTE_IP);
+			IP = format(IP);
 			boolean doAccept = answer.equals(UserModel.STATE_ACCEPTED);
 			if(doAccept){
 				String email = request.getParameter(Requests.ATTRIBUTE_EMAIL);
+				email = format(email);
 				String name = request.getParameter(Requests.ATTRIBUTE_NAME);
+				name = format(name);
 				userModel.acceptRequest(IP, email, name);
 			}
 			else
@@ -125,6 +141,11 @@ public class UserController extends HttpServlet {
 
 		RequestDispatcher view = request.getRequestDispatcher(forward);
 		view.forward(request, response);
+	}
+	private String format(String toTrim){
+		toTrim = toTrim.replaceAll("\n","");
+		toTrim = toTrim.replaceAll("\r","");
+		return toTrim;
 	}
 	private HttpServletRequest getUserlistRequest(HttpServletRequest request){
 		List<User> allUsers = userModel.getUsers();
