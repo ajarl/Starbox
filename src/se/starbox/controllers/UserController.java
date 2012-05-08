@@ -132,6 +132,7 @@ public class UserController extends HttpServlet {
 				userModel.acceptRequest(IP, email, name);
 			}else
 				userModel.denyRequest(IP);
+			request = getUserlistRequest(request);
 			forward = LIST_JSP;
 		} else {
 			request.setAttribute("errorMessage", "Nu har du valt en knasig action. Felaktigt beteende igen.");
