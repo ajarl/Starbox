@@ -40,6 +40,9 @@ public class UserController extends HttpServlet {
 
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// Initializes background processes if necessary
+		new InitBackgroundProcessesServlet().doGet(request, response);
+		
 		setFields(request);
 		String forward="";
 		String action = request.getParameter("action");
