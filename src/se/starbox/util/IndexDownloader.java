@@ -104,7 +104,7 @@ public class IndexDownloader implements Runnable {
 					String sourceUrl = "http://" + user.getIp() + ":8080/starbox/file?index";
 					File destinationFile = new File(indexFolder + "Index/IndexFile_" + user.getIp() + ".xml");
 					
-					new Thread(new DownloadFile(sourceUrl, destinationFile)).start();
+					new Thread(new DownloadFile(sourceUrl, destinationFile, true, user.getIp())).start();
 					
 					//System.out.println("IndexDownloader.run: Source: " + sourceUrl + ", Destination: " + destinationFile.getAbsolutePath());
 				}
@@ -126,10 +126,21 @@ public class IndexDownloader implements Runnable {
 	public static class DownloadFile implements Runnable {
 		private String sourceUrl;
 		private File destinationFile;
+		private boolean indexAddIp;
+		private String sourceIp;
 		
-		public DownloadFile(String sourceUrl, File destinationFile) {
+		/**
+		 * 
+		 * @param sourceUrl
+		 * @param destinationFile
+		 * @param indexAddIp If true, this downloaded file will be subject to {@link PipeToSolr#addIp(String, String)}
+		 * @param sourceIp (Only needed if indexAddIp is true)
+		 */
+		public DownloadFile(String sourceUrl, File destinationFile, boolean indexAddIp, String sourceIp) {
 			this.sourceUrl       = sourceUrl;
 			this.destinationFile = destinationFile;
+			this.indexAddIp      = indexAddIp;
+			this.sourceIp        = sourceIp;
 		}
 		
 		@Override
@@ -137,6 +148,10 @@ public class IndexDownloader implements Runnable {
 			FileSystemModel.DownloadFileResult result = FileSystemModel.downloadFile(sourceUrl, destinationFile);
 			if (result == FileSystemModel.DownloadFileResult.SUCCESS) {
 				System.out.println("DownloadFile (" + sourceUrl + "): File downloaded successfully and saved at " + destinationFile.getAbsolutePath());
+				if (indexAddIp) {
+					System.out.println("DownloadFile (" + sourceUrl + "): " + destinationFile.getName() + " is now subject to PipeToSolr.addIp.");
+					PipeToSolr.addIp(sourceIp, destinationFile.getName());
+				}
 			}
 			else if (result == FileSystemModel.DownloadFileResult.EARLY_FAIL) {
 				System.out.println("DownloadFile (" + sourceUrl + "): File downloaded 'early' fail, " + destinationFile.getAbsolutePath() + " was untouched.");
