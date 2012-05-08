@@ -90,9 +90,15 @@ public class UserController extends HttpServlet {
 			request = getUserlistRequest(request);
 			forward = LIST_JSP;
 		} else if (action.equals(ACTION_ADD_USER)){
-			String ip = (String) request.getParameter("ip");
+			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
 			ip = format(ip);
-			String responseHeader = userModel.addUser(ip, settingsModel.getEmail(), settingsModel.getDisplayName(),"");
+			String name = (String) request.getParameter(Requests.ATTRIBUTE_NAME);
+			name = format(name);
+			String group = (String) request.getParameter(Requests.ATTRIBUTE_GROUP);
+			group = format(group);
+			String email = (String) request.getParameter(Requests.ATTRIBUTE_EMAIL);
+			email = format(email);
+			String responseHeader = userModel.addUser(ip, email, name,group);
 			request.setAttribute("response", responseHeader);
 			if(!responseHeader.contains("200"))
 				response.setStatus(404);
