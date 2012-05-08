@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.text.Utilities;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.solr.client.solrj.SolrQuery;
@@ -167,15 +168,15 @@ public class SearchModel {
 	    		sr.setName((String)res.getFieldValue("name"));
 	    		sr.setUrl((String)res.getFieldValue("url"));
 	    		sr.setFiletype((String)res.getFieldValue("filetype"));
-	    		sr.setFilesize((int)res.getFieldValue("filesize"));
+	    		sr.setFilesize(Integer.valueOf((String)res.getFieldValue("filesize")));
 	    		sr.setTimestamp((String)res.getFieldValue("timestamp"));
 	    		searchResults.add(sr);
 	    	}
 	    } catch (SolrServerException sse) {
-			System.out.println("SearchModel() - Caught a SolrServerException" +
+			System.out.println("SearchModel() - Caught an exception while exeucting the solr query!" +
 								"\ninputQuery was " + searchString + 
 								"\nparams was " + params);
-			sse.printStackTrace();	    	
+			//sse.printStackTrace();	    	
 	    }
 	    
 	    return searchResults;
@@ -193,22 +194,29 @@ public class SearchModel {
 	 * @return returns a SolrQuery with the set parameters
 	 */
 	private SolrQuery buildQuery(String searchString, String params){
+		
+		// Debug output.
+		System.out.println("Entering buildQuery");
+		System.out.println("searchString:"+searchString);
+		System.out.println("params:"+params);
+		
 		// Fix the paramters such as doctype:avi,exe
 		String[] ps = params.split(";");
 		
-		System.out.println("Pre regexp:" + searchString);
+		System.out.println("Cleaning searchString");
 		if (!searchString.equals("*:*")){
 			System.out.println("Removing illegal characters from searchString.");
 			searchString = searchString.replaceAll("[^A-Za-z0-9 ]","");
 		}
-		System.out.println("Post regexp:" + searchString);
+		System.out.println("Result:" + searchString);
 		
 		// Create query with main search string
 		SolrQuery solrQuery = new SolrQuery(searchString);
 		solrQuery.setSortField("id", SolrQuery.ORDER.asc); 
-		
+	
+		System.out.println("Traversing params.");
 		for (String param: ps) {
-			System.out.println("Current param: " + param);
+			System.out.println("Current param:" + param);
 			
 			if(!param.contains(":"))
 				continue;
@@ -217,7 +225,7 @@ public class SearchModel {
 			if(values.length < 2)
 				continue;
 			
-			// Eg. paramName = doctype
+			// Eg. paramName = filetype
 			String paramName = values[0];
 			// Eg. paramValues = { "avi", "exe" }
 			if (values[1].contains(",")) {
