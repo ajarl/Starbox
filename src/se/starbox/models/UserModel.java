@@ -81,10 +81,13 @@ public class UserModel {
 	 * @return status code header
 	 */
 	public String addUser(String ip, String email, String name, String group){
+		SettingsModel settings = new SettingsModel();
 		String responseHeader = "HTTP/1.1 "+HttpStatus.SC_NOT_FOUND+" not found";
+		if(hasThisUser(ip))
+			return "404 duplicate user";
 		try {
 			String ownIP = InetAddress.getLocalHost().getHostAddress().toString();
-			String request = Requests.addRequest(ownIP, email, name);
+			String request = Requests.addRequest(ownIP, settings.getEmail(), settings.getDisplayName());
 			responseHeader = sendRequest(ip,request);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -92,7 +95,7 @@ public class UserModel {
 			return responseHeader;
 		}
 		if(responseHeader.contains("200")){
-			userList.add(new User(ip,STATE_SENT));
+			userList.add(new User(ip,STATE_SENT,email,name,group));
 			writeToFile();
 		}
 		return responseHeader;
@@ -283,5 +286,17 @@ public class UserModel {
 				"\t\t<Status>"+u.getStatus()+"</Status>\n"+
 				"\t</User>\n";
 		return block;
+	}
+	private boolean hasThisUser(String ip){
+		for(User u : userList){
+			if(u.getIp().equals(ip))
+				return true;
+		}
+		return false;
+	}
+	public void removeUsersXML(){
+		File xmlfile = new File(XML_PATH);
+		if(xmlfile.exists())
+			xmlfile.delete();
 	}
 }

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.text.Utilities;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.solr.client.solrj.SolrQuery;
@@ -71,7 +72,10 @@ public class SearchModel {
 		DirectXmlRequest xmlreq = new DirectXmlRequest("/update", doc);
 		try {
 			solr.request(xmlreq);
-		} catch (SolrServerException | IOException e) {
+		} catch (SolrServerException e) {
+			System.err.println("Error updating solr");
+			e.printStackTrace();
+		} catch (IOException e) {
 			System.err.println("Error updating solr");
 			e.printStackTrace();
 		}
@@ -138,7 +142,7 @@ public class SearchModel {
 	* @param params - Parameters to filter the search, on this format:
 	* 		 "filetype:exe;minfilesize:20;maxfilesize:10"
 	* 
-	* @return Returns a LinkedList<SearchResult> with the matches.
+	* @return Returns a LinkedList<SearchResult> with the matches, null if empty.
 	*/
 	public LinkedList<SearchResult> query(String searchString, String params){
 		// If search string is empty, simply return an empty serachresult array.
@@ -150,6 +154,8 @@ public class SearchModel {
 	    // Update the search query with the chosen parameters
 	    if(params != null && searchString != null) {
 	    	solrQuery = buildQuery(searchString, params);
+	    	if (solrQuery == null)
+	    		return null;
 	    } else {
 	    	return null;
 	    }
@@ -167,15 +173,15 @@ public class SearchModel {
 	    		sr.setName((String)res.getFieldValue("name"));
 	    		sr.setUrl((String)res.getFieldValue("url"));
 	    		sr.setFiletype((String)res.getFieldValue("filetype"));
-	    		sr.setFilesize((int)res.getFieldValue("filesize"));
+	    		sr.setFilesize(Integer.valueOf((String)res.getFieldValue("filesize")));
 	    		sr.setTimestamp((String)res.getFieldValue("timestamp"));
 	    		searchResults.add(sr);
 	    	}
 	    } catch (SolrServerException sse) {
-			System.out.println("SearchModel() - Caught a SolrServerException" +
+			System.out.println("SearchModel() - Caught an exception while exeucting the solr query!" +
 								"\ninputQuery was " + searchString + 
 								"\nparams was " + params);
-			sse.printStackTrace();	    	
+			//sse.printStackTrace();	    	
 	    }
 	    
 	    return searchResults;
@@ -193,22 +199,34 @@ public class SearchModel {
 	 * @return returns a SolrQuery with the set parameters
 	 */
 	private SolrQuery buildQuery(String searchString, String params){
+		
+		// Debug output.
+		System.out.println("Entering buildQuery");
+		System.out.println("searchString:"+searchString);
+		System.out.println("params:"+params);
+		
 		// Fix the paramters such as doctype:avi,exe
 		String[] ps = params.split(";");
 		
-		System.out.println("Pre regexp:" + searchString);
+		System.out.println("Cleaning searchString");
 		if (!searchString.equals("*:*")){
 			System.out.println("Removing illegal characters from searchString.");
 			searchString = searchString.replaceAll("[^A-Za-z0-9 ]","");
 		}
-		System.out.println("Post regexp:" + searchString);
+		System.out.println("Result:" + searchString + " length:" + searchString.length());
 		
 		// Create query with main search string
-		SolrQuery solrQuery = new SolrQuery(searchString);
-		solrQuery.setSortField("id", SolrQuery.ORDER.asc); 
-		
+		SolrQuery solrQuery = null;
+		if (searchString.length() > 0 && searchString.replace(" ", "").length() != 0) {
+			solrQuery = new SolrQuery(searchString);
+			solrQuery.setSortField("id", SolrQuery.ORDER.asc); 
+		} else {
+			return null;
+		}
+	
+		System.out.println("Traversing params.");
 		for (String param: ps) {
-			System.out.println("Current param: " + param);
+			System.out.println("Current param:" + param);
 			
 			if(!param.contains(":"))
 				continue;
@@ -217,17 +235,19 @@ public class SearchModel {
 			if(values.length < 2)
 				continue;
 			
-			// Eg. paramName = doctype
+			// Eg. paramName = filetype
 			String paramName = values[0];
 			// Eg. paramValues = { "avi", "exe" }
 			if (values[1].contains(",")) {
 				String[] paramValues = values[1].split(",");
 				
 				for (String v : paramValues) {
+					System.out.println("Adding filter query: " + paramName + ":" + v);
 					solrQuery.addFilterQuery(paramName + ":" + v);
 				}
 			} else {
 				String paramValue = values[1];
+				System.out.println("Adding filter query: " + paramName + ":" + paramValue);
 				solrQuery.addFilterQuery(paramName + ":" + paramValue);
 			}
 		}

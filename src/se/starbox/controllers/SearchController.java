@@ -95,23 +95,30 @@ public class SearchController extends HttpServlet {
 			// Fetch a list of SearchResult from the SearchModel and put them
 			// in the request.
 			if (query != "" || query != null) {
-				LinkedList<SearchResult> searchResults;
+				LinkedList<SearchResult> searchResults = null;
+				Iterator<SearchResult> it = null;
 				searchResults = sm.query(query, params);
+				boolean resultNotEmpty = false;
 				
 				// Iterate through the results and print the JSON representation of the results.
-				Iterator<SearchResult> it = searchResults.iterator();
+				if (searchResults != null) {
+					it = searchResults.iterator();
+					resultNotEmpty = true;
+				}
 			
 				// Begin JSON array.
 				response.setContentType("application/json");
 				response.getWriter().println("[");
-				
-				while(it.hasNext()) {
-					SearchResult res = (SearchResult) it.next();
-					response.getWriter().println(res.toJSON().toJSONString());
-					
-					// If there's more. Print a comma so the array will be correctly formatted.
-					if (it.hasNext())
-						response.getWriter().println(",");
+			
+				if (resultNotEmpty) {
+					while(it.hasNext()) {
+						SearchResult res = (SearchResult) it.next();
+						response.getWriter().println(res.toJSON().toJSONString());
+						
+						// If there's more. Print a comma so the array will be correctly formatted.
+						if (it.hasNext())
+							response.getWriter().println(",");
+					}
 				}
 				
 				// End JSON array.
