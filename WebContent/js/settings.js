@@ -1,12 +1,14 @@
 $(document).ready(function() {
 	$('#update-index').click(function() {
+		var button = $(this);
 		$.post('/starbox/settings', 'updateindex=true', function() {
-			
+			$(button).text('Updating...');
 		});
 	});
 	$('#shut-down').click(function() {
+		var button = $(this);
 		$.post('/starbox/settings', 'shutdown=true', function() {
-			
+			$(button).removeClass('button-blue').addClass('button-red').text('Server stopped');
 		});
 	});
 	$('.save-setting').click(function() {
