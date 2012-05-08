@@ -16,7 +16,10 @@ import org.apache.solr.common.SolrInputDocument;
 import org.openpipeline.pipeline.item.DocBinary;
 import org.openpipeline.pipeline.item.Item;
 import org.openpipeline.pipeline.stage.Stage;
+import org.openpipeline.scheduler.JobInfo;
 import org.openpipeline.scheduler.PipelineException;
+import org.openpipeline.scheduler.PipelineScheduler;
+import org.quartz.SchedulerException;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -198,60 +201,84 @@ public class PipeToSolr extends Stage{
 		public void run(){
 	        
 			//TODO Kolla om OP är klar istället för att vänta.
-			long t0,t1;
-	        t0=System.currentTimeMillis();
-	        t1=System.currentTimeMillis();
-	        while (t1-t0<10000){
-	            t1=System.currentTimeMillis();
-	        }
-	        
+//			long t0,t1;
+//	        t0=System.currentTimeMillis();
+//	        t1=System.currentTimeMillis();
+//	        while (t1-t0<10000){
+//	            t1=System.currentTimeMillis();
+//	        }
+			PipelineScheduler scheduler = null;
+			List jobs = null;
 			try {
-				File dir = new File(indexDataPath);
-				 
-				for (File child : dir.listFiles()) {
-				    if (".".equals(child.getName()) || "..".equals(child.getName())) {
-				      continue;  
-				    }
-				    
-				    SolrInputDocument input = new SolrInputDocument();
-					SAXBuilder builder = new SAXBuilder();
-					
-					Document document = null;
-					try {
-						document = builder.build(child);
-					} catch (JDOMException e1) {
-						System.err.println("Error while building a document in toSolr()");
-						e1.printStackTrace();
-					} catch (IOException e1) {
-						System.err.println("Error while reading file in toSolr()");
-						e1.printStackTrace();
-					}
-					Element root = document.getRootElement();
-					List row = root.getChildren("item"); //Lista med item
-					
-					for(int i = 0; i < row.size(); i++){
-						Element docs = (Element) row.get(i);
-						List column = docs.getChildren(); //Lista med field
-						
-						for(int j = 0; j < column.size(); j++){
-							Element e = (Element) column.get(j);
+				scheduler = PipelineScheduler.getInstance();
+				jobs = scheduler.getJobs();
+			} catch (SchedulerException e2) {
+				System.err.println("Could not get instance from PipelineScheduler");
+				e2.printStackTrace();
+			} catch (Exception e) {
+				System.err.println("Could not get a list of jobs");
+				e.printStackTrace();
+			}
 			
-							String name = e.getName();
-							String value = e.getText();
-	
-							input.addField(name, value);			
+			JobInfo jobInfo = (JobInfo) jobs.get(0);
+			String jobName = jobInfo.getJobName();
+			
+			boolean isRunning = true;
+			try {
+				isRunning = scheduler.isJobRunning(jobName);
+			} catch (SchedulerException e2) {
+				System.err.println("Error while checking if job was running");
+				e2.printStackTrace();
+			}
+			if(!isRunning){
+				try {
+					File dir = new File(indexDataPath);
+					 
+					for (File child : dir.listFiles()) {
+					    if (".".equals(child.getName()) || "..".equals(child.getName())) {
+					      continue;  
+					    }
+					    
+					    SolrInputDocument input = new SolrInputDocument();
+						SAXBuilder builder = new SAXBuilder();
+						
+						Document document = null;
+						try {
+							document = builder.build(child);
+						} catch (JDOMException e1) {
+							System.err.println("Error while building a document in toSolr()");
+							e1.printStackTrace();
+						} catch (IOException e1) {
+							System.err.println("Error while reading file in toSolr()");
+							e1.printStackTrace();
 						}
-						solrServer.add(input);
-						solrServer.commit();
-						input.clear();
-					}
-				  }
-			} catch (SolrServerException e) {
-				System.err.println("PipeToSolr caught a SolrServerException");
-				e.printStackTrace();
-			} catch (IOException e) {
-				System.err.println("PipeToSolr caught an IOException");
-				e.printStackTrace();
+						Element root = document.getRootElement();
+						List row = root.getChildren("item"); //Lista med item
+						
+						for(int i = 0; i < row.size(); i++){
+							Element docs = (Element) row.get(i);
+							List column = docs.getChildren(); //Lista med field
+							
+							for(int j = 0; j < column.size(); j++){
+								Element e = (Element) column.get(j);
+				
+								String name = e.getName();
+								String value = e.getText();
+		
+								input.addField(name, value);			
+							}
+							solrServer.add(input);
+							solrServer.commit();
+							input.clear();
+						}
+					  }
+				} catch (SolrServerException e) {
+					System.err.println("PipeToSolr caught a SolrServerException");
+					e.printStackTrace();
+				} catch (IOException e) {
+					System.err.println("PipeToSolr caught an IOException");
+					e.printStackTrace();
+				}
 			}
 		}
 	}
