@@ -82,6 +82,8 @@ public class UserModel {
 	 */
 	public String addUser(String ip, String email, String name, String group){
 		String responseHeader = "HTTP/1.1 "+HttpStatus.SC_NOT_FOUND+" not found";
+		if(hasThisUser(ip))
+			return "duplicate user";
 		try {
 			String ownIP = InetAddress.getLocalHost().getHostAddress().toString();
 			String request = Requests.addRequest(ownIP, email, name);
@@ -92,7 +94,7 @@ public class UserModel {
 			return responseHeader;
 		}
 		if(responseHeader.contains("200")){
-			userList.add(new User(ip,STATE_SENT));
+			userList.add(new User(ip,STATE_SENT,email,name,group));
 			writeToFile();
 		}
 		return responseHeader;
@@ -283,5 +285,12 @@ public class UserModel {
 				"\t\t<Status>"+u.getStatus()+"</Status>\n"+
 				"\t</User>\n";
 		return block;
+	}
+	private boolean hasThisUser(String ip){
+		for(User u : userList){
+			if(u.getIp().equals(ip))
+				return true;
+		}
+		return false;
 	}
 }
