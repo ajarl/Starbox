@@ -30,6 +30,9 @@
 				<div class="right">
 					<div class="search-inputs">
 						<input type="text" name="query" id="search-query">
+						<div id="search-help" class="websymbol">
+							L
+						</div>
 						<div class="match-highlight">
 							Match
 						</div>
@@ -77,5 +80,6 @@
 	<script src="/starbox/js/jquery-1.7.1.min.js"></script>
 	<script src="/starbox/js/search.js"></script>
 	<script src="/starbox/js/jquery.tablesorter.js"></script>
+	<script src="/starbox/js/jquery.qtip-1.0.0-rc3.min.js"></script>
 </body>
 </html>

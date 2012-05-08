@@ -111,6 +111,12 @@
 	top: 11px;
 }
 
+#search-help {
+	color: #999;
+	position: absolute;
+	right: -24px;
+	top: 9px;
+}
 .left {
 	border-right: 1px solid #999;
 }

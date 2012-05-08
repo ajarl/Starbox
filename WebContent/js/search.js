@@ -26,6 +26,29 @@ function renderResults(data) {
 }
 
 $(document).ready(function() {
+	$('#search-help').qtip({
+			content: 'Here are some tips & trix that you can use to filter you search!<br/><ul>	<li>Use filetype:avi,exe to filter out specific filetypes.</li></ul>',
+			position: {
+				corner: {
+					tooltip: 'bottomRight',
+					target: 'topLeft'
+				}
+			},
+            style: {
+				width: 700,
+				'font-size': 17,
+				'font-family': 'arial',
+                border: {
+                   width: 2,
+                   radius: 5 
+                },
+                padding: 5, 
+                textAlign: 'left',
+                tip: true, // Give it a speech bubble tip with automatic corner detection
+                name: 'cream' // Style it according to the preset 'cream' style
+	         }
+	});
+	
 	$('#search-query').focus();
 	
 	$('.search-results table').tablesorter();
