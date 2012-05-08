@@ -1,6 +1,17 @@
 package se.starbox.models;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.UnknownHostException;
 
 /**
  * Handles requests to get files of the file system from the outside,
@@ -17,8 +28,7 @@ public class FileSystemModel {
 	 * Checks if the specified ip is white-listed.
 	 */
 	protected static boolean isRequestAllowed(String ip) {
-		// TODO: Use UserModel.getWhitelistStatic() in determining if request is allowed (at time of writing the method causes crash)
-		boolean ret = ip != null;// && UserModel.getWhitelistStatic().contains(ip);
+		boolean ret = ip != null && UserModel.getWhitelistStatic().contains(ip);
 		System.out.println("[" + ip + "] FileSystemModel.isRequestAllowed: " + ret);
 		return ret;
 	}
@@ -46,8 +56,7 @@ public class FileSystemModel {
 				return null;
 		
 		// Get starbox folder/
-		// TODO: Should not create new SettinsModel just to get starbox folder?
-		String starboxFolder = new SettingsModel().getStarboxFolder();
+		String starboxFolder = new SettingsModel().getStarboxFolder();	// TODO: Should not create new SettingsModel just to get starbox folder?
 		starboxFolder = starboxFolder.replace('\\', '/');
 		if (starboxFolder.length() > 0 && starboxFolder.charAt(starboxFolder.length() - 1) != '/')
 			starboxFolder += '/';
@@ -94,5 +103,117 @@ public class FileSystemModel {
 		}
 		//System.out.println("[" + ip + "] FileSystemModel.requestIndexData: File exists");
 		return file;
+	}
+
+	/**
+	 * Downloads a file over HTTP of the specified url to the destination file specified.
+	 * @param url A url to a file (http)
+	 * @param destinationFile The file to store the download in
+	 * @return True on success, false otherwise
+	 */
+	public static boolean downloadFile(String fileUrl, File destinationFile) {
+		//fileUrl = "http://213.65.122.202:8080/starbox/file?file=u.png";
+		URL url = null;
+		try {
+			url = new URL(fileUrl);
+		} catch (MalformedURLException e1) {
+			System.out.println("FileSystemModel.downloadFile: Malformed url: " + fileUrl);
+			return false;
+		}
+		
+		//System.out.println("FileSystemModel.downloadFile: Connecting...");
+		HttpURLConnection conn = null;
+		try {
+			conn = (HttpURLConnection)url.openConnection();
+		} catch (IOException e) {
+			System.out.println("FileSystemModel.downloadFile: IOException occurred when opening url-connection");
+			return false;
+		} catch (ClassCastException e) {
+			System.out.println("FileSystemModel.downloadFile: url => not http");
+			return false;
+		}
+		
+		try {
+			conn.setRequestMethod("GET");
+		} catch (ProtocolException e) {
+			// surely this will never happen
+			System.out.println("FileSystemModel.downloadFile: request method get => protocol exception");
+			return false;
+		}
+		conn.setUseCaches(false);
+		conn.setDoInput(true);
+		conn.setDoOutput(false);
+		
+		conn.setConnectTimeout(5000);
+		conn.setReadTimeout(5000);
+		try {
+			conn.connect();
+		} catch (UnknownHostException e) {
+			System.out.println("FileSystemModel.downloadFile: Unknown Host!");
+			return false;
+		} catch (SocketTimeoutException e) {
+			System.out.println("FileSystemModel.downloadFile: Timeout!");
+			return false;
+		} catch (IOException e) {
+		}
+		
+		/*try {
+			System.out.println("FileSystemModel.downloadFile: Response Code:  " + conn.getResponseCode() + " (200 = OK)");
+		} catch (IOException e) { e.printStackTrace(); }
+		System.out.println("FileSystemModel.downloadFile: Content type:   " + conn.getContentType());
+		System.out.println("FileSystemModel.downloadFile: Content length: " + conn.getContentLength());*/
+		
+		InputStream in;
+		try {
+			in = conn.getInputStream();
+		}
+		catch (FileNotFoundException e) {
+			System.out.println("FileSystemModel.downloadFile: getInputStream => FileNotFoundException");
+			return false;
+		} catch (IOException e) {
+			System.out.println("FileSystemModel.downloadFile: getInputStream => IOException");
+			return false;
+		}
+		
+		OutputStream out;
+		try {
+			out = new FileOutputStream(destinationFile);
+		}
+		catch (FileNotFoundException e) {
+			System.out.println("FileSystemModel.downloadFile: FileOutputStream for destinationFile => IOException");
+			try {
+				in.close();
+			} catch (IOException e2) { }
+			return false;
+		}
+		
+		System.out.println("Read from input stream...");
+		byte[] buffer = new byte[4096];
+		int bytesRead;
+		int totalNumBytes = 0;
+		try {
+			while ((bytesRead = in.read(buffer)) != -1) {
+				out.write(buffer, 0, bytesRead);
+				totalNumBytes += bytesRead;
+			}
+		}
+		catch (SocketTimeoutException e) {
+			System.out.println("FileSystemModel.downloadFile: InputStream.read Timeout! (Timeout during file transfer)");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		finally {
+			//System.out.println("FileSystemModel.downloadFile: Bytes read: " + totalNumBytes);
+			try {
+				out.close();
+				in.close();
+			}
+			catch (IOException e) {
+			}
+		}
+		
+		System.out.println("FileSystemModel.downloadFile: Done (" + totalNumBytes + " bytes transferred).");
+		conn.disconnect();
+		return true;
 	}
 }
