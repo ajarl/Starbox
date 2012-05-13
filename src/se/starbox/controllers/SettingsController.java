@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import se.starbox.models.SettingsModel;
+import se.starbox.util.IndexDownloader;
 
 /**
  * Servlet implementation class SettingsController
@@ -85,8 +86,10 @@ public class SettingsController extends HttpServlet {
 		if (params.containsKey("email"))
 			sm.setEmail(params.get("email")[0]);
 
-		if (params.containsKey("updateindex"))
+		if (params.containsKey("updateindex")) {
 			SettingsModel.updateIndex();
+			IndexDownloader.downloadNow();
+		}
 
 		if (params.containsKey("shutdown"))
 			SettingsModel.shutDown();
