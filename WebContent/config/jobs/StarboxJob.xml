@@ -3,9 +3,9 @@
   <jobname>StarboxJob</jobname>
   <max-file-size>100</max-file-size>
   <!-- <fileroots>D:\Linus\KTH\Starbox\Starbox\WebContent\Testfiler</fileroots> -->
-  <!--<fileroots>C:/Users/Kim/workspace/Starbox/WebContent/Testfiler</fileroots>-->
+  <fileroots>C:/Users/Kim/workspace/Starbox/WebContent/Testfiler</fileroots>
 
-  <fileroots>E:/KTH/Starbox/WebContent/Testfiler</fileroots>
+  <!-- <fileroots>E:/KTH/Starbox/WebContent/Testfiler</fileroots> -->
 
   
   <subdirs>Y</subdirs>
