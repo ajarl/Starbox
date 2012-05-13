@@ -46,8 +46,10 @@ public class SearchController extends HttpServlet {
 	 *      response)
 	 */
 	@Override
-	protected void doGet(HttpServletRequest request,
-						 HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// Initializes background processes if necessary
+		new InitBackgroundProcessesServlet().doGet(request, response);
+		
 		String query = request.getParameter("query");
 		String params = "";
 		
