@@ -39,7 +39,7 @@ public class SearchResult {
 		
 		// Format timestamp
 		Date time = new Date(Integer.valueOf(this.getTimestamp())*1000); // s -> ms
-		json.put("timestamp", time.toLocaleString());
+		json.put("timestamp", "tempfix");
 		
 		// Format filesize.
 		int fileSize = this.getFilesize();
