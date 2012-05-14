@@ -30,7 +30,7 @@ public class FileSystemModel {
 	 */
 	protected static boolean isRequestAllowed(String ip) {
 		boolean ret = ip != null;
-		if (ret) {
+		if (ret && !ip.equals("127.0.0.1") && !ip.equals("localhost") && !ip.equals("0:0:0:0:0:0:0:1")) {
 			ret = false;
 			List<User> users;
 			synchronized (UserModel.class) {
@@ -63,6 +63,8 @@ public class FileSystemModel {
 		// File path must be non-null, non-zero + Is accepted request IP?
 		if (relativeFilepath == null || relativeFilepath.length() == 0 || !isRequestAllowed(ip))
 			return null;
+		if (relativeFilepath.charAt(0) == '/')
+			relativeFilepath = relativeFilepath.substring(1);
 		
 		// Do not allow ".." in path; could be used to locate files outside the Starbox folder
 		for (int i = 0; i < relativeFilepath.length() - 1; i++)
@@ -200,7 +202,12 @@ public class FileSystemModel {
 		//System.out.println("FileSystemModel.downloadFile: Content type: " + conn.getContentType());
 		//System.out.println("FileSystemModel.downloadFile: Content length: " + conn.getContentLength());
 		
+		if (conn.getContentType() == null) {
+			System.out.println("FileSystemModel.downloadFile: Content type null.");
+			return DownloadFileResult.EARLY_FAIL;
+		}
 		if (conn.getContentType().equals("JSONObject;charset=ISO-8859-1")) {
+			System.out.println("FileSystemModel.downloadFile: " + url.getHost());
 			System.out.println("FileSystemModel.downloadFile: Download request was rejected (either you do not have permissions or the file does not exist).");
 			return DownloadFileResult.EARLY_FAIL;
 		}

@@ -86,11 +86,13 @@ public class PipeToSolr extends Stage{
 	 */
 	@SuppressWarnings("static-access")
 	public void processItem(Item item) throws PipelineException{
+		System.out.println("PipeToSolr.processItem("+item.toString()+")");
 		SettingsModel sm = new SettingsModel();
 		String userName = "";
 		String fileName = "";
 		String url = "";
 		String filetype = "";
+		String id = "";
 		long size = 0;
 		long timeStamp = 0;
 		UUID uuid = null;
@@ -115,12 +117,14 @@ public class PipeToSolr extends Stage{
 		
 		if (docBinary != null && docBinary.getBinary().size() > 0) {
 			userName 	= sm.getDisplayName();
-			url 		= docBinary.getName();
+			url 		= docBinary.getName().replace('\\', '/').replace(sm.getStarboxFolder(), "");
+			//System.out.println("  !  docBinary.name= " + docBinary.getName() + ", Starbox folder: " + sm.getStarboxFolder());
 			filetype 	= docBinary.getExtension();
 			size 		= docBinary.getSize();
 			timeStamp 	= docBinary.getTimestamp();
 			fileName 	= new File(url).getName();
-			nameByteArray = fileName.getBytes();
+			id = userName + fileName;
+			nameByteArray = id.getBytes();
 			uuid 		= uuid.nameUUIDFromBytes(nameByteArray);
 			
 			url = url.replace("\\", "/");
@@ -164,6 +168,7 @@ public class PipeToSolr extends Stage{
 				}
 				
 			} else {
+				System.out.println("DEBUG1");
 				Element indexItems = new Element("items");
 				Document indexDataDocument = new Document(indexItems);
 				indexDataDocument.setRootElement(indexItems);
@@ -180,6 +185,7 @@ public class PipeToSolr extends Stage{
 				
 				indexDataDocument.getRootElement().addContent(indexItem);
 				
+				System.out.println("Should create new file here... IndexFile that is");
 				XMLOutputter xmlOutput = new XMLOutputter();
 				xmlOutput.setFormat(Format.getPrettyFormat());
 				try {
@@ -240,9 +246,7 @@ public class PipeToSolr extends Stage{
 			
 			
 			try {
-				File dir = new File(indexDataPath);
-				File dirs[] = dir.listFiles();
-				
+				File dir = new File(indexDataPath);				
 				
 				for (File child : dir.listFiles()) {
 //				    if (".".equals(child.getName()) || "..".equals(child.getName())) {
@@ -356,10 +360,19 @@ public class PipeToSolr extends Stage{
 				if(name.equals("url")){
 					String value = e.getText();
 					e.setText(ip + ":" + value);
+					//System.out.println("Url field changed to " + e.getText());
 				}	
 			}
 		}
-
+		
+		XMLOutputter xmlOutput = new XMLOutputter();
+		xmlOutput.setFormat(Format.getPrettyFormat());
+		try {
+			xmlOutput.output(indexDataDocument, new FileWriter(indexData));
+		} catch (IOException e) {
+			System.err.println("PipeToSolr - addIp error writing to file");
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
