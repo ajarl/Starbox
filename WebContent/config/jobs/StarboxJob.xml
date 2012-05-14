@@ -25,7 +25,9 @@
         </docfilter>
         <docfilter>
           <classname>org.openpipeline.pipeline.docfilter.MetadataOnlyFilter</classname>
-          <extensions>mp3,jpg,avi,exe,js,torrent,pdf</extensions>
+          <extensions>
+          	mp3,jpg,avi,exe,js,torrent,pdf,doc,docx,odf,zip,rar,bz,gz,bz2,7zip,dmg,out,mkv,wmv,mov,jpeg,png,gif,psd
+          </extensions>
           <enabled>Y</enabled>
         </docfilter>
         <docfilter>
