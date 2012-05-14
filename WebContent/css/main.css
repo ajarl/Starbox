@@ -277,6 +277,23 @@ h3 {
 	border: 1px solid #a9251c;
 }
 
+.logo {
+	cursor: pointer;
+	float: left;
+}
+
+.logo img {
+	float: left;
+	display: block;
+	width: 50px;
+}
+
+.logo span {
+	float: left;
+	font-size: 30px;
+	padding: 10px 0px 10px 15px;
+}
+
 @font-face{ 
   font-family: 'WebSymbolsRegular';
   src: url('./fonts/websymbols-regular-webfont.eot');
