@@ -14,7 +14,7 @@ import se.starbox.models.UserModel;
  */
 public class IndexDownloader implements Runnable {
 	private static IndexDownloader singleton = null;
-	private static long downloadInterval = 10 * 60000;
+	private static long downloadInterval = 60000;
 	
 	private boolean doStop = false;
 	private long nextUpdateTicks;

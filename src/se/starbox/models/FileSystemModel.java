@@ -200,6 +200,10 @@ public class FileSystemModel {
 		//System.out.println("FileSystemModel.downloadFile: Content type: " + conn.getContentType());
 		//System.out.println("FileSystemModel.downloadFile: Content length: " + conn.getContentLength());
 		
+		if (conn.getContentType() == null) {
+			System.out.println("FileSystemModel.downloadFile: Content type null.");
+			return DownloadFileResult.EARLY_FAIL;
+		}
 		if (conn.getContentType().equals("JSONObject;charset=ISO-8859-1")) {
 			System.out.println("FileSystemModel.downloadFile: " + url.getHost());
 			System.out.println("FileSystemModel.downloadFile: Download request was rejected (either you do not have permissions or the file does not exist).");
