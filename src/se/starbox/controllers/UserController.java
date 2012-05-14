@@ -77,7 +77,10 @@ public class UserController extends HttpServlet {
 			name = format(name);
 			String requestResponse = (String) request.getParameter("response");
 			requestResponse = format(requestResponse);
-			userModel.setRequestResponse(ip,requestResponse,email,name);
+			if(requestResponse.equals(UserModel.STATE_DENIED))
+				userModel.removeUser(ip);
+			else
+				userModel.setRequestResponse(ip,requestResponse,email,name);
 			forward = EMPTY_JSP;
 
 		} else {
