@@ -86,6 +86,7 @@ public class PipeToSolr extends Stage{
 	 */
 	@SuppressWarnings("static-access")
 	public void processItem(Item item) throws PipelineException{
+		System.out.println("PipeToSolr.processItem("+item.toString()+")");
 		SettingsModel sm = new SettingsModel();
 		String userName = "";
 		String fileName = "";
@@ -165,6 +166,7 @@ public class PipeToSolr extends Stage{
 				}
 				
 			} else {
+				System.out.println("DEBUG1");
 				Element indexItems = new Element("items");
 				Document indexDataDocument = new Document(indexItems);
 				indexDataDocument.setRootElement(indexItems);
@@ -181,6 +183,7 @@ public class PipeToSolr extends Stage{
 				
 				indexDataDocument.getRootElement().addContent(indexItem);
 				
+				System.out.println("Should create new file here... IndexFile that is");
 				XMLOutputter xmlOutput = new XMLOutputter();
 				xmlOutput.setFormat(Format.getPrettyFormat());
 				try {
