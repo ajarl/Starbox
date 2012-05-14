@@ -91,6 +91,7 @@ public class PipeToSolr extends Stage{
 		String fileName = "";
 		String url = "";
 		String filetype = "";
+		String id = "";
 		long size = 0;
 		long timeStamp = 0;
 		UUID uuid = null;
@@ -120,7 +121,8 @@ public class PipeToSolr extends Stage{
 			size 		= docBinary.getSize();
 			timeStamp 	= docBinary.getTimestamp();
 			fileName 	= new File(url).getName();
-			nameByteArray = fileName.getBytes();
+			id = userName + fileName;
+			nameByteArray = id.getBytes();
 			uuid 		= uuid.nameUUIDFromBytes(nameByteArray);
 			
 			url = url.replace("\\", "/");
@@ -240,9 +242,7 @@ public class PipeToSolr extends Stage{
 			
 			
 			try {
-				File dir = new File(indexDataPath);
-				File dirs[] = dir.listFiles();
-				
+				File dir = new File(indexDataPath);				
 				
 				for (File child : dir.listFiles()) {
 //				    if (".".equals(child.getName()) || "..".equals(child.getName())) {
