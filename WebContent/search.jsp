@@ -18,9 +18,9 @@
 						<% List<User> accepted = (List<User>) request.getAttribute("USERS_ACCEPTED"); %>
 						<ul>
 							<% for (User u : accepted) { %>
-							<li class="selected" data-type="user" data-value="<% out.println(u.getIp()); %>"><% out.println(u.getName()); %><span></span></li>
+							<li class="selected" data-type="ip" data-value="<% out.print(u.getIp().replaceAll("\\.", "")); %>"><% out.print(u.getName()); %><span></span></li>
 							<% } %>
-							<li class="selected" data-type="user" data-value="localhost"><% out.println(request.getAttribute("me")); %><span></span></li>
+							<li class="selected" data-type="ip" data-value="localhost"><% out.println(request.getAttribute("me")); %><span></span></li>
 						</ul>
 						<h2>Formats<span class="websymbol">]</span></h2>
 						<ul>

@@ -29,7 +29,7 @@ function renderResults(data) {
 			value.name = value.name.substring(0, 25) + '...' + value.name.substring(value.name.length - 7);
 		}
 		$(tbody).append(
-				'<tr class="' + qtip_class + '" data-qtip="' + qtip_data + '" data-ip="' + value.ip + '" data-format="' + value.filetype + '">' +
+				'<tr class="' + qtip_class + '" data-qtip="' + qtip_data + '" data-ip="' + value.ip.replace(/\./g, '') + '" data-format="' + value.filetype + '">' +
 				'<td>' + value.name + '</td>' +
 				'<td>' + value.filesize + '</td>' +
 				'<td>' + value.timestamp + '</td>' +
