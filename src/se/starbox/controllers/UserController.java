@@ -77,7 +77,7 @@ public class UserController extends HttpServlet {
 			name = format(name);
 			String requestResponse = (String) request.getParameter("response");
 			requestResponse = format(requestResponse);
-			if(requestResponse.equals(userModel.STATE_DENIED))
+			if(requestResponse.equals(UserModel.STATE_DENIED))
 				userModel.removeUser(ip);
 			else
 				userModel.setRequestResponse(ip,requestResponse,email,name);
