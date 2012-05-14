@@ -74,7 +74,28 @@ $(document).ready(function() {
 	
 	$('#search-query').focus();
 	
-	$('.search-results table').tablesorter();
+	$.tablesorter.addParser({
+		id: 'filesize',
+		is: function(s) {
+			return false;
+		},
+		format: function(s) {
+			var suff = s.match(/[A-Z]+/);
+			var rsuff = suff[0].replace(/KB/, 1000).replace(/MB/, 1000000).replace(/GB/, 1000000000).replace(/B/, 1);
+			var size = s.match(/\d+/);
+			return size * rsuff;
+		},
+		type: 'numeric'
+		
+	});
+	
+	$('.search-results table').tablesorter({
+		headers: { 
+            1: { 
+                sorter:'filesize' 
+            } 
+        }
+	});
 	
 	$('#search-query').keyup(function() {
 		if($(this).val().length > 0) {

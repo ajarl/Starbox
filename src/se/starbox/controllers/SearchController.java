@@ -3,6 +3,7 @@ package se.starbox.controllers;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import se.starbox.models.SearchModel;
+import se.starbox.models.SettingsModel;
+import se.starbox.models.User;
+import se.starbox.models.UserModel;
 import se.starbox.util.SearchResult;
 
 /**
@@ -53,10 +57,14 @@ public class SearchController extends HttpServlet {
 		
 		// If query is empty, return HTML view.
 		if (query == null) {
+			List<User> acceptedUsers = UserModel.getWhitelistStatic();
+			SettingsModel sm = new SettingsModel();
 			System.out.println("-----Rendering HTML-----");
 			RequestDispatcher view = request.getRequestDispatcher("/search.jsp");
 			request.setAttribute("query", query);
 			request.setAttribute("params", params);
+			request.setAttribute("USERS_ACCEPTED", acceptedUsers);
+			request.setAttribute("me", sm.getDisplayName());
 			view.forward(request, response);
 		} else {
 			// Else, return JSON data from SearchModel.
