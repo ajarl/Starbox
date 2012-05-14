@@ -29,7 +29,7 @@ function renderResults(data) {
 			value.name = value.name.substring(0, 25) + '...' + value.name.substring(value.name.length - 7);
 		}
 		$(tbody).append(
-				'<tr class="' + qtip_class + '" data-qtip="' + qtip_data + '" data-user="' + value.username + '" data-format="' + value.filetype + '">' +
+				'<tr class="' + qtip_class + '" data-qtip="' + qtip_data + '" data-ip="' + value.ip.replace(/\./g, '') + '" data-format="' + value.filetype + '">' +
 				'<td>' + value.name + '</td>' +
 				'<td>' + value.filesize + '</td>' +
 				'<td>' + value.timestamp + '</td>' +
@@ -50,7 +50,7 @@ function renderResults(data) {
 
 $(document).ready(function() {
 	$('#search-help').qtip({
-			content: 'Here are some tips & trix that you can use to filter you search!<br/><ul>	<li>Use filetype:avi,exe to filter out specific filetypes.</li></ul>',
+			content: 'Here are some tips & trix that you can use to filter you search!<br/><ul><li> Use minfilesize:1000 to filter out files smaller than 1000 bytes.</li> <li> User maxfilesize: to filter out files larger than 1000 bytes.</li>	<li>Use filetype:avi to filter out specific filetypes.</li></ul>',
 			position: {
 				corner: {
 					tooltip: 'bottomRight',
@@ -74,7 +74,28 @@ $(document).ready(function() {
 	
 	$('#search-query').focus();
 	
-	$('.search-results table').tablesorter();
+	$.tablesorter.addParser({
+		id: 'filesize',
+		is: function(s) {
+			return false;
+		},
+		format: function(s) {
+			var suff = s.match(/[A-Z]+/);
+			var rsuff = suff[0].replace(/KB/, 1000).replace(/MB/, 1000000).replace(/GB/, 1000000000).replace(/B/, 1);
+			var size = s.match(/\d+/);
+			return size * rsuff;
+		},
+		type: 'numeric'
+		
+	});
+	
+	$('.search-results table').tablesorter({
+		headers: { 
+            1: { 
+                sorter:'filesize' 
+            } 
+        }
+	});
 	
 	$('#search-query').keyup(function() {
 		if($(this).val().length > 0) {

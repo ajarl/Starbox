@@ -279,7 +279,7 @@ public class SettingsModel {
 	public boolean setStarboxFolder(String path) {
 		if (!new File(path).isDirectory())
 			return false;
-		starboxFolder = path;
+		starboxFolder = path.replace('\\', '/');
 		writeToFile();
 		
 		// Write to StarboxJob.xml

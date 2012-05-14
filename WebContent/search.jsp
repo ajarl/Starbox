@@ -3,6 +3,8 @@
 <title>StarBox</title>
 <link rel="stylesheet" href="/starbox/css/main.css" />
 <link rel="stylesheet" href="/starbox/css/search.css" />
+<%@ page import="java.util.*"%>
+<%@ page import="se.starbox.models.User"%>
 </head>
 <body>
 	<jsp:include page="_header.jsp" />
@@ -13,10 +15,12 @@
 					<div class="search-filters">
 						<h1>Filters</h1>
 						<h2>Users<span class="websymbol">]</span></h2>
+						<% List<User> accepted = (List<User>) request.getAttribute("USERS_ACCEPTED"); %>
 						<ul>
-							<li class="selected" data-type="user" data-value="Otto">Otto<span></span></li>
-							<li class="selected" data-type="user" data-value="Kim">Kim<span></span></li>
-							<li class="selected" data-type="user" data-value="Lukas">Lukas<span></span></li>
+							<% for (User u : accepted) { %>
+							<li class="selected" data-type="ip" data-value="<% out.print(u.getIp().replaceAll("\\.", "")); %>"><% out.print(u.getName()); %><span></span></li>
+							<% } %>
+							<li class="selected" data-type="ip" data-value="localhost"><% out.println(request.getAttribute("me")); %><span></span></li>
 						</ul>
 						<h2>Formats<span class="websymbol">]</span></h2>
 						<ul>

@@ -7,12 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
-
-import javax.swing.text.Utilities;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -25,7 +20,6 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 //import org.apache.solr.core.CoreContainer;
 //import org.apache.solr.schema.UUIDField;
-import org.xml.sax.SAXException;
 
 
 
@@ -110,6 +104,7 @@ public class SearchModel {
 		return sb.toString();
 	}
 
+	@SuppressWarnings("unused")
 	private void checkConnection() {
 		try {
 			solr.ping();
@@ -202,17 +197,22 @@ public class SearchModel {
 	private SolrQuery buildQuery(String searchString, String params){
 		
 		// Debug output.
-		System.out.println("Entering buildQuery");
+		System.out.println("----Entering buildQuery-----");
 		System.out.println("searchString:"+searchString);
 		System.out.println("params:"+params);
+	
+		// If the searchString is empty, set it to *:*.
+		if(searchString.trim().length() == 0)
+			searchString = "*:*";
 		
 		// Fix the paramters such as doctype:avi,exe
 		String[] ps = params.split(";");
 		
-		System.out.println("Cleaning searchString");
-		if (!searchString.equals("*:*")){
+		if (!searchString.matches("\\s*\\*:\\*\\s*")) {
 			System.out.println("Removing illegal characters from searchString.");
 			searchString = searchString.replaceAll("[^A-Za-z0-9 ]","");
+		} else {
+			System.out.println("Not cleaning searchString.");
 		}
 		System.out.println("Result:" + searchString + " length:" + searchString.length());
 		
@@ -248,8 +248,17 @@ public class SearchModel {
 				}
 			} else {
 				String paramValue = values[1];
-				System.out.println("Adding filter query: " + paramName + ":" + paramValue);
-				solrQuery.addFilterQuery(paramName + ":" + paramValue);
+				
+				if(paramName.compareTo("minfilesize") == 0) {
+					System.out.println("Adding filter query: " + "filesize: ["+paramValue+" TO *]");
+					solrQuery.addFilterQuery("filesize: ["+paramValue+" TO *]");
+				} else if (paramName.compareTo("maxfilesize") == 0) {
+					System.out.println("Adding filter query: " + "filesize: [0 TO "+paramValue+"]");
+					solrQuery.addFilterQuery("filesize: [0 TO "+paramValue+"]");
+				} else { 
+					System.out.println("Adding filter query: " + paramName + ":" + paramValue);
+					solrQuery.addFilterQuery(paramName + ":" + paramValue);
+				}
 			}
 		}
 	

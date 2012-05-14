@@ -117,6 +117,15 @@ public class UserModel {
 		Collections.sort(userList);
 		return userList;
 	}
+	
+	public List<User> getUserlistWithStatus(List<User> list, String state){
+		List<User> returnList = new ArrayList<User>();
+		for (User u : list){
+			if(u.getStatus().equals(state))
+				returnList.add(u);
+		}
+		return returnList;
+	}
 	/**
 	 * Change the display name of a contact
 	 * @param IP  the IP address of the contact to change

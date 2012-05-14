@@ -1,10 +1,14 @@
 package se.starbox.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.json.simple.JSONObject;
-
 import se.starbox.models.SettingsModel;
 
 public class SearchResult {
+	
+	// This manages how the JSON will be formatted.
+	private String datePattern = "dd-MM-yyyy";
 	
 	private String name, url, filetype, timestamp, username;
 	private int filesize;
@@ -14,7 +18,7 @@ public class SearchResult {
 	 */
 	public SearchResult() {
 		
-		// SearchModel skickar inte med några parametrar vid skapandet av SearchResult-objekt, tänkte att det var dumt att ändra 
+		// SearchModel skickar inte med nï¿½gra parametrar vid skapandet av SearchResult-objekt, tï¿½nkte att det var dumt att ï¿½ndra 
 	}
 	
 	/**
@@ -28,14 +32,35 @@ public class SearchResult {
 		
 		json.put("name", this.getName());
 		// Obs: fulhack nedan, varning
-		if (this.getUrl().indexOf(':') < 2)
-			json.put("url", "http://localhost:8080/starbox/file?file=" + this.getUrl().replace((new SettingsModel()).getStarboxFolder(), ""));
-		else
-			json.put("url", "http://" + this.getUrl().substring(0, this.getUrl().indexOf(':')) + ":8080/starbox/file?file=" + this.getUrl().substring(this.getUrl().indexOf(':') + 1));
+		if (this.getUrl().indexOf(':') < 2) {
+			String ip = "localhost";
+			json.put("ip", ip);
+			json.put("url", "http://" + ip + ":8080/starbox/file?file=" + this.getUrl().replace((new SettingsModel()).getStarboxFolder(), ""));
+		} else {
+			String ip = this.getUrl().substring(0, this.getUrl().indexOf(':'));
+			json.put("ip", ip);
+			json.put("url", "http://" + ip + ":8080/starbox/file?file=" + this.getUrl().substring(this.getUrl().indexOf(':') + 1));
+		}
 		json.put("filetype", this.getFiletype());
-		json.put("timestamp", this.getTimestamp());
-		json.put("filesize", this.getFilesize());
 		json.put("username", this.getUsername());
+		
+		// Format timestamp
+		Date timeStamp = new Date(Long.valueOf(this.getTimestamp())); // s -> ms
+		SimpleDateFormat formatter = new SimpleDateFormat(datePattern);
+		json.put("timestamp", formatter.format(timeStamp));
+		
+		// Format filesize.
+		int fileSize = this.getFilesize();
+		if (fileSize <= 1000)
+			json.put("filesize", (this.getFilesize()) + "B");
+		else if (fileSize <= 1000000)
+			json.put("filesize", (this.getFilesize()/1000) + "KB");
+		else if(filesize <= 1024*1000000 )
+			json.put("filesize", (this.getFilesize()/1000000) + "MB");
+		else if(filesize <= 1024*1012*1000000 )
+			json.put("filesize", (this.getFilesize()/1000000000) + "GB");
+		else 
+			json.put("filesize", this.getFilesize());
 		
 		return json;
 	}
