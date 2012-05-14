@@ -3,9 +3,9 @@
   <jobname>StarboxJob</jobname>
   <max-file-size>100</max-file-size>
   <!-- <fileroots>D:\Linus\KTH\Starbox\Starbox\WebContent\Testfiler</fileroots> -->
-  <!--<fileroots>C:/Users/Kim/workspace/Starbox/WebContent/Testfiler</fileroots>-->
+  <fileroots>C:/Users/Kim/workspace/Starbox/WebContent/Testfiler</fileroots>
 
-  <fileroots>E:/KTH/Starbox/WebContent/Testfiler</fileroots>
+  <!-- <fileroots>E:/KTH/Starbox/WebContent/Testfiler</fileroots> -->
 
   
   <subdirs>Y</subdirs>
@@ -25,7 +25,9 @@
         </docfilter>
         <docfilter>
           <classname>org.openpipeline.pipeline.docfilter.MetadataOnlyFilter</classname>
-          <extensions>mp3,jpg,avi,exe,js,torrent,pdf</extensions>
+          <extensions>
+          	mp3,jpg,avi,exe,js,torrent,pdf,doc,docx,odf,zip,rar,bz,gz,bz2,7zip,dmg,out,mkv,wmv,mov,jpeg,png,gif,psd
+          </extensions>
           <enabled>Y</enabled>
         </docfilter>
         <docfilter>

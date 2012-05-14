@@ -5,7 +5,6 @@ import org.json.simple.JSONObject;
 public class SearchResult {
 	
 	private String name, url, filetype, timestamp, username;
-	
 	private int filesize;
 
 	/**
@@ -30,6 +29,7 @@ public class SearchResult {
 		json.put("filetype", this.getFiletype());
 		json.put("timestamp", this.getTimestamp());
 		json.put("filesize", this.getFilesize());
+		json.put("username", this.getUsername());
 		
 		return json;
 	}

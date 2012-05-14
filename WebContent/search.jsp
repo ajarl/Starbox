@@ -20,11 +20,13 @@
 						</ul>
 						<h2>Formats<span class="websymbol">]</span></h2>
 						<ul>
-							<li class="selected" data-type="format" data-value="exe,dmg,out">Executeable<span></span></li>
-							<li class="selected" data-type="format" data-value="doc,pdf,docx,odf,txt">Document<span></span></li>
+							<li class="selected" data-type="format" data-value="exe,dmg,out">Executables<span></span></li>
+							<li class="selected" data-type="format" data-value="doc,pdf,docx,odf,txt,js,py,c,php,html,htm,rb">Documents<span></span></li>
 							<li class="selected" data-type="format" data-value="rar,zip,gzip,tar,bz2,gz,bz,7zip">Archives<span></span></li>
-							<li class="selected" data-type="format" data-value="avi,mkv,mov,wmv">Movie<span></span></li>
-							<li class="selected" data-type="format" data-value="jpg,jpeg,png,gif,psd">Image<span></span></li>
+							<li class="selected" data-type="format" data-value="torrent">Torrents<span></span></li>
+							<li class="selected" data-type="format" data-value="avi,mkv,mov,wmv">Movies<span></span></li>
+							<li class="selected" data-type="format" data-value="mp3,ogg,flac">Music<span></span></li>
+							<li class="selected" data-type="format" data-value="jpg,jpeg,png,gif,psd">Images<span></span></li>
 						</ul>
 					</div>
 				</div>
@@ -39,7 +41,7 @@
 						</div>
 					</div>
 					<div class="search-results">
-						<table>
+						<table style="display:none;">
 							<thead>
 								<tr>
 									<th width="330px">Name</th>
@@ -50,29 +52,9 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr data-user="Otto" data-format="exe">
-									<td>Testfil.exe</td>
-									<td>15 Mb</td>
-									<td>2012-02-31</td>
-									<td>Otto</td>
-									<td>DL</td>
-								</tr>
-								<tr data-user="Kim" data-format="jpg">
-									<td>profil.jpeg</td>
-									<td>1 Mb</td>
-									<td>2012-01-25</td>
-									<td>Kim</td>
-									<td>DL</td>
-								</tr>
-								<tr data-user="Lukas" data-format="pdf">
-									<td>kex.pdf</td>
-									<td>356 Kb</td>
-									<td>2012-03-10</td>
-									<td>Lukas</td>
-									<td>DL</td>
-								</tr>
 							</tbody>
 						</table>
+						<span>Type something to search!</span>
 					</div>
 				</div>
 			</div>
