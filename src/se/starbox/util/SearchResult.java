@@ -1,5 +1,7 @@
 package se.starbox.util;
 
+import java.util.Date;
+
 import org.json.simple.JSONObject;
 
 public class SearchResult {
@@ -27,9 +29,24 @@ public class SearchResult {
 		json.put("name", this.getName());
 		json.put("url", this.getUrl());
 		json.put("filetype", this.getFiletype());
-		json.put("timestamp", this.getTimestamp());
-		json.put("filesize", this.getFilesize());
 		json.put("username", this.getUsername());
+		
+		// Format timestamp
+		Date time = new Date(Integer.valueOf(this.getTimestamp())*1000); // s -> ms
+		json.put("timestamp", time.toLocaleString());
+		
+		// Format filesize.
+		int fileSize = this.getFilesize();
+		if (fileSize <= 1000)
+			json.put("filesize", (this.getFilesize()) + "B");
+		else if (fileSize <= 1000000)
+			json.put("filesize", (this.getFilesize()/1000) + "KB");
+		else if(filesize <= 1024*1000000 )
+			json.put("filesize", (this.getFilesize()/1000000) + "MB");
+		else if(filesize <= 1024*1012*1000000 )
+			json.put("filesize", (this.getFilesize()/1000000000) + "GB");
+		else 
+			json.put("filesize", this.getFilesize());
 		
 		return json;
 	}
