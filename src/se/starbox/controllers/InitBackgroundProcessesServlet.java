@@ -32,10 +32,16 @@ public class InitBackgroundProcessesServlet extends HttpServlet {
 		try {
 			System.setProperty("app.home", SettingsModel.getProjectRootPath());
 			PipelineScheduler scheduler = PipelineScheduler.getInstance();
+<<<<<<< HEAD
+			if (!scheduler.isJobRunning("StarboxJob")) {
+				System.out.println("InitBackgroundProcessesServlet > starting StartboxJob");
+				scheduler.startJob("StarboxJob");
+=======
 			if (!hasStartedStarboxJob) {
 				System.out.println("InitBackgroundProcesses: Starting StarboxJob now");
 				scheduler.startJob("StarboxJob");
 				hasStartedStarboxJob = true;
+>>>>>>> f61e0316278cf80e345d1807aed57108d96c007f
 			}
 		} catch (SchedulerException e) {
 			// TODO Auto-generated catch block
