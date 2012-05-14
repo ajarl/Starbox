@@ -244,11 +244,11 @@ public class SearchModel {
 			} else {
 				String paramValue = values[1];
 				
-				if(paramValue.compareTo("minfilesize") == 0) {
+				if(paramName.compareTo("minfilesize") == 0) {
 					System.out.println("Adding filter query: " + "filesize: ["+paramValue+" TO *]");
 					solrQuery.addFilterQuery("filesize: ["+paramValue+" TO *]");
-				} else if (paramValue.compareTo("maxfilesize") == 0) {
-					System.out.println("Adding filter query: " + "filesize: ["+paramValue+" TO *]");
+				} else if (paramName.compareTo("maxfilesize") == 0) {
+					System.out.println("Adding filter query: " + "filesize: [0 TO "+paramValue+"]");
 					solrQuery.addFilterQuery("filesize: [0 TO "+paramValue+"]");
 				} else { 
 					System.out.println("Adding filter query: " + paramName + ":" + paramValue);
