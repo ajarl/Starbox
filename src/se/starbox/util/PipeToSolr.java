@@ -117,7 +117,8 @@ public class PipeToSolr extends Stage{
 		
 		if (docBinary != null && docBinary.getBinary().size() > 0) {
 			userName 	= sm.getDisplayName();
-			url 		= docBinary.getName().replace(sm.getStarboxFolder(), "");
+			url 		= docBinary.getName().replace('\\', '/').replace(sm.getStarboxFolder(), "");
+			//System.out.println("  !  docBinary.name= " + docBinary.getName() + ", Starbox folder: " + sm.getStarboxFolder());
 			filetype 	= docBinary.getExtension();
 			size 		= docBinary.getSize();
 			timeStamp 	= docBinary.getTimestamp();
@@ -359,7 +360,7 @@ public class PipeToSolr extends Stage{
 				if(name.equals("url")){
 					String value = e.getText();
 					e.setText(ip + ":" + value);
-					System.out.println("Url field changed to " + e.getText());
+					//System.out.println("Url field changed to " + e.getText());
 				}	
 			}
 		}
