@@ -18,7 +18,7 @@ public class SearchResult {
 	 */
 	public SearchResult() {
 		
-		// SearchModel skickar inte med några parametrar vid skapandet av SearchResult-objekt, tänkte att det var dumt att ändra 
+		// SearchModel skickar inte med nï¿½gra parametrar vid skapandet av SearchResult-objekt, tï¿½nkte att det var dumt att ï¿½ndra 
 	}
 	
 	/**
