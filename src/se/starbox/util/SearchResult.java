@@ -25,7 +25,7 @@ public class SearchResult {
 		JSONObject json = new JSONObject();
 		
 		json.put("name", this.getName());
-		json.put("url", this.getUrl());
+		json.put("url", "http://" + this.getUrl().substring(0, this.getUrl().indexOf(':')) + ":8080/starbox/file?file=" + this.getUrl().substring(this.getUrl().indexOf(':')));
 		json.put("filetype", this.getFiletype());
 		json.put("timestamp", this.getTimestamp());
 		json.put("filesize", this.getFilesize());
