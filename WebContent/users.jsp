@@ -16,8 +16,8 @@
 					<form name="add-user-form" class="add-user-form">
 						<input type="text" name="name" id="name" placeholder="Name"/> 
 		          		<input type="text" name="ip" id="ip" placeholder="IP (Required)" required="required"/>  
-		          		<input type="email" name="email" placeholder="Email-adress"/> 
-		          		<input type="text" name="group" placeholder="Group"/>  		
+		          		<input type="email" name="email" id="email" placeholder="Email-adress"/> 
+		          		<input type="text" name="group" id="group" placeholder="Group"/>  		
 		          	</form>		
 					<div class="add-users">
 						<a class="button button-blue button-add-user">Add user</a>
@@ -43,6 +43,13 @@
 								<td class="email"><% out.println(u.getEmail()); %></td>
 								<td class="group"><% out.println(u.getGroup()); %></td>
 								<td class="buttons">
+									<a class="button-tiny button-blue button-edit-user"
+									data-name="<% out.println(u.getName()); %>"
+									data-email="<% out.println(u.getEmail()); %>"
+									data-group="<% out.println(u.getGroup()); %>"
+									data-IP="<% out.println(u.getIp()); %>">Edit</a>
+								</td>
+								<td>
 									<a class="button-tiny button-red button-remove-user"
 									data-IP="<% out.println(u.getIp()); %>">Remove</a>
 								</td>
