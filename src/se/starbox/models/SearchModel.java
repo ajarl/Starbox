@@ -208,7 +208,7 @@ public class SearchModel {
 		// Fix the paramters such as doctype:avi,exe
 		String[] ps = params.split(";");
 		
-		if (!searchString.matches("\\s*\\*:\\*")) {
+		if (!searchString.matches("\\s*\\*:\\*\\s")) {
 			System.out.println("Removing illegal characters from searchString.");
 			searchString = searchString.replaceAll("[^A-Za-z0-9 ]","");
 		} else {
