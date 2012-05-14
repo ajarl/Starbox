@@ -1,11 +1,8 @@
 package se.starbox.util;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.json.simple.JSONObject;
-
 import se.starbox.models.SettingsModel;
 
 public class SearchResult {

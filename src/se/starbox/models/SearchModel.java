@@ -7,12 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
-
-import javax.swing.text.Utilities;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -25,7 +20,6 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 //import org.apache.solr.core.CoreContainer;
 //import org.apache.solr.schema.UUIDField;
-import org.xml.sax.SAXException;
 
 
 
@@ -110,6 +104,7 @@ public class SearchModel {
 		return sb.toString();
 	}
 
+	@SuppressWarnings("unused")
 	private void checkConnection() {
 		try {
 			solr.ping();
@@ -248,8 +243,17 @@ public class SearchModel {
 				}
 			} else {
 				String paramValue = values[1];
-				System.out.println("Adding filter query: " + paramName + ":" + paramValue);
-				solrQuery.addFilterQuery(paramName + ":" + paramValue);
+				
+				if(paramValue.compareTo("minfilesize") == 0) {
+					System.out.println("Adding filter query: " + "filesize: ["+paramValue+" TO *]");
+					solrQuery.addFilterQuery("filesize: ["+paramValue+" TO *]");
+				} else if (paramValue.compareTo("maxfilesize") == 0) {
+					System.out.println("Adding filter query: " + "filesize: ["+paramValue+" TO *]");
+					solrQuery.addFilterQuery("filesize: [0 TO "+paramValue+"]");
+				} else { 
+					System.out.println("Adding filter query: " + paramName + ":" + paramValue);
+					solrQuery.addFilterQuery(paramName + ":" + paramValue);
+				}
 			}
 		}
 	
