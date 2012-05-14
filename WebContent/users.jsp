@@ -31,6 +31,7 @@
 					List<User> pending = (List<User>) request.getAttribute("USERS_PENDING");
 		          	List<User> accepted = (List<User>) request.getAttribute("USERS_ACCEPTED");
 		          	List<User> sent = (List<User>) request.getAttribute("USERS_SENT");
+		          	List<User> denied = (List<User>) request.getAttribute("USERS_DENIED");
 					%>
 					<h2>Users</h2>
 					<div class="accepted-users">
@@ -78,6 +79,23 @@
 						<h3>Requested Users (<% out.println(sent.size()); %>)<span class="websymbol">]</span></h3>
 						<table>
 							<% for(User u: sent) { %>
+							<tr>
+								<td class="name"><% out.println(u.getName()); %></td>
+								<td class="IP"><% out.println(u.getIp()); %></td>
+								<td class="email"><% out.println(u.getEmail()); %></td>
+								<td class="group"><% out.println(u.getGroup()); %></td>
+								<td class="buttons">
+									<a class="button-tiny button-red button-remove-user"
+									data-IP="<% out.println(u.getIp()); %>">Remove</a>
+								</td>
+							</tr>
+							<% } %>
+						</table>
+					</div>
+					<div class="denied-users">
+						<h3>Denied Users (<% out.println(denied.size()); %>)<span class="websymbol">]</span></h3>
+						<table>
+							<% for(User u: denied) { %>
 							<tr>
 								<td class="name"><% out.println(u.getName()); %></td>
 								<td class="IP"><% out.println(u.getIp()); %></td>

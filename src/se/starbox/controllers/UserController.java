@@ -26,7 +26,6 @@ public class UserController extends HttpServlet {
 	private static String LIST_JSP = "/users.jsp";
 	private static String ADD_JSP = "/newuser.jsp";
 	private static String EMPTY_JSP = "/empty.jsp";
-	private static String TEST_JSP = "/JSONTests.jsp";
 	private UserModel userModel;
 	private SettingsModel settingsModel;
 
@@ -36,22 +35,28 @@ public class UserController extends HttpServlet {
 	private static final String ACTION_ANSWER = "friendrequest";
 	private static final String ACTION_DELETE_XML = "deletexml";
 
-	private static final String ACTION_GO_TO_ADD = "gotoadd";
 
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Initializes background processes if necessary
 		new InitBackgroundProcessesServlet().doGet(request, response);
-		
+
+		boolean isLocalUser = false;
+		if(request.getRemoteAddr().equals(request.getLocalAddr())){
+			isLocalUser = true;
+		}
+
 		setFields(request);
 		String forward="";
 		String action = request.getParameter("action");
 		if (action == null) {
-			request = getUserlistRequest(request);
-			forward = LIST_JSP;
-		}
-		else if (action.equals(ACTION_GO_TO_ADD)) {
-			forward = ADD_JSP;
+			if(isLocalUser){
+				request = getUserlistRequest(request);
+				forward = LIST_JSP;
+			}else{
+				response.sendError(403);
+				return;
+			}
 		}
 		else if(action.equals(Requests.REQUEST_ADD)){
 			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
@@ -72,27 +77,39 @@ public class UserController extends HttpServlet {
 			name = format(name);
 			String requestResponse = (String) request.getParameter("response");
 			requestResponse = format(requestResponse);
-			userModel.setRequestResponse(ip,requestResponse,email,name);
+			if(requestResponse.equals(userModel.STATE_DENIED))
+				userModel.removeUser(ip);
+			else
+				userModel.setRequestResponse(ip,requestResponse,email,name);
 			forward = EMPTY_JSP;
 
 		} else {
-			request = getUserlistRequest(request);
-			forward = LIST_JSP;
+			if(isLocalUser){
+				request = getUserlistRequest(request);
+				forward = LIST_JSP;
+			} else{
+				response.sendError(403);
+				return;
+			}
 		}
 		RequestDispatcher view = request.getRequestDispatcher(forward);
 		view.forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("Remote address: "+request.getRemoteAddr());
+		System.out.println("Local address: "+request.getLocalAddr());
+		if(!request.getRemoteAddr().equals(request.getLocalAddr())){
+			response.sendError(403);
+			return;
+		}
 		setFields(request);
-		String forward="";
 		String action = request.getParameter("action");
 
 		if (action == null) {
 			//error?
 			request.setAttribute("errorMessage", "Du kan inte göra en post till users controllen utan en action. Tänk över ditt beteende.");
 			request = getUserlistRequest(request);
-			forward = LIST_JSP;
 		} else if (action.equals(ACTION_ADD_USER)){
 			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
 			ip = format(ip);
@@ -107,28 +124,30 @@ public class UserController extends HttpServlet {
 			if(!responseHeader.contains("200"))
 				response.setStatus(404);
 			request.setAttribute("addedUser", ip);
-			forward = ADD_JSP;
+			request = getUserlistRequest(request);
 		} else if (action.equals(ACTION_UPDATE)){
 			String newName = (String) request.getParameter(Requests.ATTRIBUTE_NAME);
 			newName = format(newName);
 			String newGroup = (String) request.getParameter(Requests.ATTRIBUTE_GROUP);
 			newGroup = format(newGroup);
+			String newEmail = (String) request.getParameter(Requests.ATTRIBUTE_EMAIL);
+			newEmail = format(newEmail);
 			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
 			ip = format(ip);
-			if (newName != null){
+			if (newName != null)
 				userModel.changeName(ip, newName);
-			}
-			if (newGroup != null){
+
+			if (newGroup != null)
 				userModel.changeGroup(ip, newGroup);
-			}
+
+			if(newEmail != null)
+				userModel.changeEmail(ip, newEmail);
 			request = getUserlistRequest(request);
-			forward = LIST_JSP;
 		} else if(action.equals(ACTION_REMOVE)){
 			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
 			ip = format(ip);
 			userModel.removeUser(ip);
 			request = getUserlistRequest(request);
-			forward = LIST_JSP;
 		} else if(action.equals(ACTION_ANSWER)){
 			String answer = request.getParameter(Requests.ATTRIBUTE_RESPONSE);
 			answer = format(answer);
@@ -143,17 +162,15 @@ public class UserController extends HttpServlet {
 			}else
 				userModel.denyRequest(IP);
 			request = getUserlistRequest(request);
-			forward = LIST_JSP;
 		} else if(action.equals(ACTION_DELETE_XML)){
 			userModel.removeUsersXML();
 			request = getUserlistRequest(request);
-			forward = LIST_JSP;
+
 		} else {
 			request.setAttribute("errorMessage", "Nu har du valt en knasig action. Felaktigt beteende igen.");
 			request = getUserlistRequest(request);
-			forward = LIST_JSP;
 		}
-
+		String forward = LIST_JSP;
 		RequestDispatcher view = request.getRequestDispatcher(forward);
 		view.forward(request, response);
 	}
@@ -168,14 +185,19 @@ public class UserController extends HttpServlet {
 		request.setAttribute("USERS_PENDING", getPendingUsers(allUsers));
 		request.setAttribute("USERS_ACCEPTED", getAcceptedUsers(allUsers));
 		request.setAttribute("USERS_SENT", getSentUsers(allUsers));
+		request.setAttribute("USERS_DENIED", getDeniedUsers(allUsers));
 		return request;
 	}
+	private List<User> getDeniedUsers(List<User> list) {
+		return getUserlistWithStatus(list,UserModel.STATE_DENIED);
+	}
+
 	private void setFields(HttpServletRequest request){
 		ServletContext context = request.getServletContext();
 		userModel = new UserModel(context);
 		settingsModel = new SettingsModel();
 	}
-	
+
 	private List<User> getPendingUsers(List<User> list){
 		return getUserlistWithStatus(list,UserModel.STATE_PENDING);
 	}
@@ -193,8 +215,8 @@ public class UserController extends HttpServlet {
 		}
 		return returnList;
 	}
-	
-	
-	
+
+
+
 
 }

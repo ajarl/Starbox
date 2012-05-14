@@ -2,8 +2,15 @@ function applyFilters(data) {
 	var formats = $(data).attr('data-value');
 	
 	$.each(formats.split(','), function(i, val) {
-		//alert(val);
 		$('.search-results tr[data-' + $(data).attr('data-type') + '=' + val + ']').toggle();
+	});	
+}
+
+function hideResults(data) {
+	var formats = $(data).attr('data-value');
+	
+	$.each(formats.split(','), function(i, val) {
+		$('.search-results tr[data-' + $(data).attr('data-type') + '=' + val + ']').hide();
 	});	
 }
 
@@ -14,14 +21,27 @@ function renderResults(data) {
 	$(tbody).empty();
 	
 	$(data).each(function(index, value) {
+		var qtip_data = "";
+		var qtip_class = "";
+		if(value.name.length > 35) {
+			qtip_data = value.name;
+			qtip_class = 'qtip';
+			value.name = value.name.substring(0, 25) + '...' + value.name.substring(value.name.length - 7);
+		}
 		$(tbody).append(
-				'<tr data-user="' + 'Otto' + '" data-format="' + value.filetype + '">' +
+				'<tr class="' + qtip_class + '" data-qtip="' + qtip_data + '" data-user="' + 'Otto' + '" data-format="' + value.filetype + '">' +
 				'<td>' + value.name + '</td>' +
 				'<td>' + value.filesize + '</td>' +
 				'<td>' + value.timestamp + '</td>' +
 				'<td>Username</td>' +
 				'<td><a href="' + value.url + '" class="button-green button-tiny">DL</a></td>' +
 				'</tr>');	
+	});
+	
+	$('.search-filters li').each(function() {
+		if(!$(this).hasClass('selected')) {
+			hideResults($(this));
+		}
 	});
 	
 	$(table).trigger('update');
@@ -57,13 +77,21 @@ $(document).ready(function() {
 	$('.search-results table').tablesorter();
 	
 	$('#search-query').keyup(function() {
-		$.get('/starbox/search/', {
-			query : $(this).val()
-		}, function(data) {
-			if(data.length > 0) {
-				renderResults(data);
-			}
-		});
+		if($(this).val().length > 0) {
+			$.get('/starbox/search/', {
+				query : $(this).val()
+			}, function(data) {
+				if(data.length > 0) {
+					$('.search-results table').show();
+					$('.search-results span').hide();
+					renderResults(data);
+				}
+				else {
+					$('.search-results table').hide();
+					$('.search-results span').show().text('Nothing found:(');
+				}
+			});
+		}
 	});
 
 	$('.search-filters h2').click(function() {
@@ -86,5 +114,32 @@ $(document).ready(function() {
 		return false;
 	});
 	
-	
+	$('.qtip').live('mouseover', function() {
+		   $(this).qtip({
+		      overwrite: false,
+		      content: $(this).attr('data-qtip'),
+		      show: {
+		         ready: true
+		      },
+		      position: {
+					corner: {
+						tooltip: 'bottomMiddle',
+						target: 'topLeft'
+					}
+				},
+	            style: {
+					width: 700,
+					'font-size': 17,
+					'font-family': 'arial',
+	                border: {
+	                   width: 2,
+	                   radius: 5 
+	                },
+	                padding: 5, 
+	                textAlign: 'left',
+	                tip: true, // Give it a speech bubble tip with automatic corner detection
+	                name: 'cream' // Style it according to the preset 'cream' style
+		         }
+		   });
+		});
 });
