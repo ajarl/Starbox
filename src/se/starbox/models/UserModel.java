@@ -84,7 +84,7 @@ public class UserModel {
 		SettingsModel settings = new SettingsModel();
 		String responseHeader = "HTTP/1.1 "+HttpStatus.SC_NOT_FOUND+" not found";
 		if(hasThisUser(ip))
-			return "404 duplicate user";
+			return "HTTP/1.1 "+HttpStatus.SC_OK+" duplicate user";
 		try {
 			String ownIP = InetAddress.getLocalHost().getHostAddress().toString();
 			String request = Requests.addRequest(ownIP, settings.getEmail(), settings.getDisplayName());
@@ -145,6 +145,16 @@ public class UserModel {
 		}
 		writeToFile();
 	}
+	
+	public void changeEmail(String IP, String newEmail){
+		for(User u : userList){
+			if(u.getIp().equals(IP)){
+				u.setEmail(newEmail);
+				break;
+			}
+		}
+		writeToFile();
+	}
 	/**
 	 * Set if a friend request was accepted by a user (change STATE_SENT to STATE_ACCEPTED)
 	 * @param IP the ip address of the accepting contact
@@ -168,7 +178,6 @@ public class UserModel {
 		for(int i=0;i<userList.size();i++){
 			if(userList.get(i).getIp().equals(IP)){
 				userList.remove(i);
-				break;
 			}
 		}
 		writeToFile();
