@@ -31,7 +31,7 @@ public class SearchResult {
 		if (this.getUrl().indexOf(':') < 2)
 			json.put("url", "http://localhost:8080/starbox/file?file=" + this.getUrl().replace((new SettingsModel()).getStarboxFolder(), ""));
 		else
-			json.put("url", "http://" + this.getUrl().substring(0, this.getUrl().indexOf(':')) + ":8080/starbox/file?file=" + this.getUrl().substring(this.getUrl().indexOf(':') + 2));
+			json.put("url", "http://" + this.getUrl().substring(0, this.getUrl().indexOf(':')) + ":8080/starbox/file?file=" + this.getUrl().substring(this.getUrl().indexOf(':') + 1));
 		json.put("filetype", this.getFiletype());
 		json.put("timestamp", this.getTimestamp());
 		json.put("filesize", this.getFilesize());
