@@ -94,6 +94,8 @@ public class UserController extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("Remote address: "+request.getRemoteAddr());
+		System.out.println("Local address: "+request.getLocalAddr());
 		if(!request.getRemoteAddr().equals(request.getLocalAddr())){
 			response.sendError(403);
 			return;
@@ -119,19 +121,24 @@ public class UserController extends HttpServlet {
 			if(!responseHeader.contains("200"))
 				response.setStatus(404);
 			request.setAttribute("addedUser", ip);
+			request = getUserlistRequest(request);
 		} else if (action.equals(ACTION_UPDATE)){
 			String newName = (String) request.getParameter(Requests.ATTRIBUTE_NAME);
 			newName = format(newName);
 			String newGroup = (String) request.getParameter(Requests.ATTRIBUTE_GROUP);
 			newGroup = format(newGroup);
+			String newEmail = (String) request.getParameter(Requests.ATTRIBUTE_EMAIL);
+			newEmail = format(newEmail);
 			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
 			ip = format(ip);
-			if (newName != null){
+			if (newName != null)
 				userModel.changeName(ip, newName);
-			}
-			if (newGroup != null){
+
+			if (newGroup != null)
 				userModel.changeGroup(ip, newGroup);
-			}
+
+			if(newEmail != null)
+				userModel.changeEmail(ip, newEmail);
 			request = getUserlistRequest(request);
 		} else if(action.equals(ACTION_REMOVE)){
 			String ip = (String) request.getParameter(Requests.ATTRIBUTE_IP);
@@ -155,11 +162,10 @@ public class UserController extends HttpServlet {
 		} else if(action.equals(ACTION_DELETE_XML)){
 			userModel.removeUsersXML();
 			request = getUserlistRequest(request);
-			
+
 		} else {
 			request.setAttribute("errorMessage", "Nu har du valt en knasig action. Felaktigt beteende igen.");
 			request = getUserlistRequest(request);
-			
 		}
 		String forward = LIST_JSP;
 		RequestDispatcher view = request.getRequestDispatcher(forward);
@@ -176,8 +182,13 @@ public class UserController extends HttpServlet {
 		request.setAttribute("USERS_PENDING", getPendingUsers(allUsers));
 		request.setAttribute("USERS_ACCEPTED", getAcceptedUsers(allUsers));
 		request.setAttribute("USERS_SENT", getSentUsers(allUsers));
+		request.setAttribute("USERS_DENIED", getDeniedUsers(allUsers));
 		return request;
 	}
+	private List<User> getDeniedUsers(List<User> list) {
+		return getUserlistWithStatus(list,UserModel.STATE_DENIED);
+	}
+
 	private void setFields(HttpServletRequest request){
 		ServletContext context = request.getServletContext();
 		userModel = new UserModel(context);
