@@ -1,5 +1,7 @@
 package se.starbox.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.json.simple.JSONObject;
@@ -7,6 +9,9 @@ import org.json.simple.JSONObject;
 import se.starbox.models.SettingsModel;
 
 public class SearchResult {
+	
+	// This manages how the JSON will be formatted.
+	private String datePattern = "dd-MM-yyyy";
 	
 	private String name, url, filetype, timestamp, username;
 	private int filesize;
@@ -38,8 +43,9 @@ public class SearchResult {
 		json.put("username", this.getUsername());
 		
 		// Format timestamp
-		Date time = new Date(Integer.valueOf(this.getTimestamp())*1000); // s -> ms
-		json.put("timestamp", "tempfix");
+		Date timeStamp = new Date(Long.valueOf(this.getTimestamp())); // s -> ms
+		SimpleDateFormat formatter = new SimpleDateFormat(datePattern);
+		json.put("timestamp", formatter.format(timeStamp));
 		
 		// Format filesize.
 		int fileSize = this.getFilesize();
