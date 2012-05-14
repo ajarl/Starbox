@@ -197,17 +197,22 @@ public class SearchModel {
 	private SolrQuery buildQuery(String searchString, String params){
 		
 		// Debug output.
-		System.out.println("Entering buildQuery");
+		System.out.println("----Entering buildQuery-----");
 		System.out.println("searchString:"+searchString);
 		System.out.println("params:"+params);
+	
+		// If the searchString is empty, set it to *:*.
+		if(searchString.trim().length() == 0)
+			searchString = "*:*";
 		
 		// Fix the paramters such as doctype:avi,exe
 		String[] ps = params.split(";");
 		
-		System.out.println("Cleaning searchString");
-		if (!searchString.equals("*:*")){
+		if (!searchString.matches("\\s*\\*:\\*")) {
 			System.out.println("Removing illegal characters from searchString.");
 			searchString = searchString.replaceAll("[^A-Za-z0-9 ]","");
+		} else {
+			System.out.println("Not cleaning searchString.");
 		}
 		System.out.println("Result:" + searchString + " length:" + searchString.length());
 		

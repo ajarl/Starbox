@@ -53,7 +53,7 @@ public class SearchController extends HttpServlet {
 		
 		// If query is empty, return HTML view.
 		if (query == null) {
-			System.out.println("Rendering HTML.");
+			System.out.println("-----Rendering HTML-----");
 			RequestDispatcher view = request.getRequestDispatcher("/search.jsp");
 			request.setAttribute("query", query);
 			request.setAttribute("params", params);
@@ -63,7 +63,7 @@ public class SearchController extends HttpServlet {
 			// query="seanbanan"
 			// params="filetype:exe;minfilesize:20;maxfilesize:10"
 			// Parse out params and remove them from query.
-			System.out.println("Rendering JSON.");
+			System.out.println("-----Rendering JSON-----");
 			
 			Pattern pFileType = Pattern.compile("filetype[:=][,a-z0-9]*");
 			Matcher mFileType = pFileType.matcher(query);
