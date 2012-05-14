@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 
 import org.apache.solr.client.solrj.SolrServerException;
@@ -19,6 +20,7 @@ import org.openpipeline.pipeline.stage.Stage;
 import org.openpipeline.scheduler.JobInfo;
 import org.openpipeline.scheduler.PipelineException;
 import org.openpipeline.scheduler.PipelineScheduler;
+import org.openpipeline.util.ByteArray;
 import org.quartz.SchedulerException;
 
 import org.jdom.Document;
@@ -93,10 +95,12 @@ public class PipeToSolr extends Stage{
 		String url = "";
 		String filetype = "";
 		String id = "";
+		String text = "";
 		long size = 0;
 		long timeStamp = 0;
 		UUID uuid = null;
 		byte[] nameByteArray;
+		boolean textFile = false;
 		
 		DocBinary docBinary = item.getDocBinary();
 		if(first){
@@ -118,7 +122,7 @@ public class PipeToSolr extends Stage{
 		if (docBinary != null && docBinary.getBinary().size() > 0) {
 			userName 	= sm.getDisplayName();
 			url 		= docBinary.getName().replace('\\', '/').replace(sm.getStarboxFolder(), "");
-			//System.out.println("  !  docBinary.name= " + docBinary.getName() + ", Starbox folder: " + sm.getStarboxFolder());
+			System.out.println("  !  docBinary.name= " + docBinary.getName() + ", Starbox folder: " + sm.getStarboxFolder());
 			filetype 	= docBinary.getExtension();
 			size 		= docBinary.getSize();
 			timeStamp 	= docBinary.getTimestamp();
@@ -126,7 +130,23 @@ public class PipeToSolr extends Stage{
 			id = userName + fileName;
 			nameByteArray = id.getBytes();
 			uuid 		= uuid.nameUUIDFromBytes(nameByteArray);
-			
+			if(filetype.equals("txt")){
+				String[] split = docBinary.getBinary().toString().split(" ");
+				byte[] ba = new byte[split.length];
+				int t = 0;
+				for(String s : split){
+					ba[t] = Byte.valueOf(s);
+					t++;
+				}
+				try {
+					text = new String(ba, "UTF8");
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("Text ur txt: " + text);
+				textFile = true;
+			}
 			url = url.replace("\\", "/");
 		
 			boolean exists = (new File(indexDataPath + "/indexData.xml")).exists();
@@ -153,6 +173,11 @@ public class PipeToSolr extends Stage{
 				indexItem.addContent(new Element("filetype").setText(filetype));
 				indexItem.addContent(new Element("timestamp").setText("" + timeStamp));
 				indexItem.addContent(new Element("filesize").setText("" + size));
+				if(textFile){
+					indexItem.addContent(new Element("text").setText(text));
+					textFile = false;
+				}
+	
 				
 	
 				indexDataDocument.getRootElement().addContent(indexItem);
@@ -181,7 +206,10 @@ public class PipeToSolr extends Stage{
 				indexItem.addContent(new Element("filetype").setText(filetype));
 				indexItem.addContent(new Element("timestamp").setText("" + timeStamp));
 				indexItem.addContent(new Element("filesize").setText("" + size));
-		
+				if(textFile){
+					indexItem.addContent(new Element("text").setText(text));
+					textFile = false;
+				}
 				
 				indexDataDocument.getRootElement().addContent(indexItem);
 				

@@ -33,7 +33,7 @@
         <docfilter>
           <classname>org.openpipeline.pipeline.docfilter.PlainTextFilter</classname>
           <enabled>Y</enabled>
-          <extensions>txt</extensions>
+          <extensions>txt, doc, odt, rtf</extensions>
           <mimetypes>text/plain</mimetypes>
         </docfilter>
         <docfilter>
