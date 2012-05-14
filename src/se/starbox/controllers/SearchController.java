@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import se.starbox.models.SearchModel;
 import se.starbox.models.SettingsModel;
 import se.starbox.models.User;
@@ -61,6 +59,7 @@ public class SearchController extends HttpServlet {
 		if (query == null) {
 			List<User> acceptedUsers = UserModel.getWhitelistStatic();
 			SettingsModel sm = new SettingsModel();
+			System.out.println("-----Rendering HTML-----");
 			RequestDispatcher view = request.getRequestDispatcher("/search.jsp");
 			request.setAttribute("query", query);
 			request.setAttribute("params", params);
@@ -72,7 +71,7 @@ public class SearchController extends HttpServlet {
 			// query="seanbanan"
 			// params="filetype:exe;minfilesize:20;maxfilesize:10"
 			// Parse out params and remove them from query.
-			System.out.println("Rendering JSON.");
+			System.out.println("-----Rendering JSON-----");
 			
 			Pattern pFileType = Pattern.compile("filetype[:=][,a-z0-9]*");
 			Matcher mFileType = pFileType.matcher(query);
