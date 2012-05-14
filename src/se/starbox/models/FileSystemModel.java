@@ -205,6 +205,7 @@ public class FileSystemModel {
 			return DownloadFileResult.EARLY_FAIL;
 		}
 		if (conn.getContentType().equals("JSONObject;charset=ISO-8859-1")) {
+			System.out.println("FileSystemModel.downloadFile: " + url.getHost());
 			System.out.println("FileSystemModel.downloadFile: Download request was rejected (either you do not have permissions or the file does not exist).");
 			return DownloadFileResult.EARLY_FAIL;
 		}

@@ -24,14 +24,25 @@ import se.starbox.util.IndexDownloader;
 public class InitBackgroundProcessesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
+	private static boolean hasStartedStarboxJob = false;
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		IndexDownloader.start();
 
 		try {
 			System.setProperty("app.home", SettingsModel.getProjectRootPath());
 			PipelineScheduler scheduler = PipelineScheduler.getInstance();
-			if (!scheduler.isJobRunning("StarboxJob"))
+<<<<<<< HEAD
+			if (!scheduler.isJobRunning("StarboxJob")) {
+				System.out.println("InitBackgroundProcessesServlet > starting StartboxJob");
 				scheduler.startJob("StarboxJob");
+=======
+			if (!hasStartedStarboxJob) {
+				System.out.println("InitBackgroundProcesses: Starting StarboxJob now");
+				scheduler.startJob("StarboxJob");
+				hasStartedStarboxJob = true;
+>>>>>>> f61e0316278cf80e345d1807aed57108d96c007f
+			}
 		} catch (SchedulerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
