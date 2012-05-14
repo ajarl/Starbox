@@ -30,7 +30,7 @@ public class FileSystemModel {
 	 */
 	protected static boolean isRequestAllowed(String ip) {
 		boolean ret = ip != null;
-		if (ret) {
+		if (ret && !ip.equals("127.0.0.1") && !ip.equals("localhost") && !ip.equals("0:0:0:0:0:0:0:1")) {
 			ret = false;
 			List<User> users;
 			synchronized (UserModel.class) {

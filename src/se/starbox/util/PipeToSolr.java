@@ -359,10 +359,19 @@ public class PipeToSolr extends Stage{
 				if(name.equals("url")){
 					String value = e.getText();
 					e.setText(ip + ":" + value);
+					System.out.println("Url field changed to " + e.getText());
 				}	
 			}
 		}
-
+		
+		XMLOutputter xmlOutput = new XMLOutputter();
+		xmlOutput.setFormat(Format.getPrettyFormat());
+		try {
+			xmlOutput.output(indexDataDocument, new FileWriter(indexData));
+		} catch (IOException e) {
+			System.err.println("PipeToSolr - addIp error writing to file");
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
