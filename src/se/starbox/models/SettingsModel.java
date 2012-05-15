@@ -143,8 +143,8 @@ public class SettingsModel {
 	public static String getIP() {
 		String ip;
 		try {
-			//Connect to whatismyip.com to fetch external IP
-			URL whatismyip = new URL("http://automation.whatismyip.com/n09230945.asp");
+			//Connect to externalip.net to fetch external IP
+			URL whatismyip = new URL("http://api.externalip.net/ip/");
 			BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
 			
 			ip = in.readLine();
