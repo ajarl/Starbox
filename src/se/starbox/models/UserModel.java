@@ -5,10 +5,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.InetAddress;
+//import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.UnknownHostException;
+//import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -85,15 +85,16 @@ public class UserModel {
 		String responseHeader = "HTTP/1.1 "+HttpStatus.SC_NOT_FOUND+" not found";
 		if(hasThisUser(ip))
 			return "HTTP/1.1 "+HttpStatus.SC_OK+" duplicate user";
-		try {
-			String ownIP = InetAddress.getLocalHost().getHostAddress().toString();
-			String request = Requests.addRequest(ownIP, settings.getEmail(), settings.getDisplayName());
-			responseHeader = sendRequest(ip,request);
-		} catch (UnknownHostException e) {
+		//try {
+		//String ownIP = InetAddress.getLocalHost().getHostAddress().toString();
+		String ownIP = SettingsModel.getIP();
+		String request = Requests.addRequest(ownIP, settings.getEmail(), settings.getDisplayName());
+		responseHeader = sendRequest(ip,request);
+		//} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return responseHeader;
-		}
+			//e.printStackTrace();
+			//return responseHeader;
+		//}
 		if(responseHeader.contains("200")){
 			userList.add(new User(ip,STATE_SENT,email,name,group));
 			writeToFile();
@@ -222,13 +223,13 @@ public class UserModel {
 
 	private void sendRequestResponse(String response, String IP,String email, String name){
 		String ownIP;
-		try {
-			ownIP = InetAddress.getLocalHost().getHostAddress().toString();
-			String request = Requests.responseRequest(ownIP,response, email, name);
-			sendRequest(IP,request);
-		} catch (UnknownHostException e) {
+		//try {
+		ownIP = SettingsModel.getIP();//InetAddress.getLocalHost().getHostAddress().toString();
+		String request = Requests.responseRequest(ownIP,response, email, name);
+		sendRequest(IP,request);
+		/*} catch (UnknownHostException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	private String sendRequest(String IP,String request){
