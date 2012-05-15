@@ -242,7 +242,7 @@ public class PipeToSolr extends Stage{
 			long t0,t1;
 	        t0=System.currentTimeMillis();
 	        t1=System.currentTimeMillis();
-	        while (t1-t0<10000){
+	        while (t1-t0<3000){
 	            t1=System.currentTimeMillis();
 	        }
 //			PipelineScheduler scheduler = null;
