@@ -140,9 +140,6 @@ public class SearchModel {
 	* @return Returns a LinkedList<SearchResult> with the matches, null if empty.
 	*/
 	public LinkedList<SearchResult> query(String searchString, String params){
-		// If search string is empty, simply return an empty serachresult array.
-		if (searchString == "") 
-			searchString = "*:*";
 		
 		SolrQuery solrQuery = null;
 	    
@@ -168,7 +165,7 @@ public class SearchModel {
 	    		sr.setName((String)res.getFieldValue("name"));
 	    		sr.setUrl((String)res.getFieldValue("url"));
 	    		sr.setFiletype((String)res.getFieldValue("filetype"));
-	    		sr.setFilesize(Integer.parseInt((String)res.getFieldValue("filesize"))); // i bytes
+	    		sr.setFilesize((Integer)res.getFieldValue("filesize")); // i bytes
 	    		sr.setTimestamp((String)res.getFieldValue("timestamp"));
 	    		sr.setUsername((String)res.getFieldValue("username"));
 	    		searchResults.add(sr);
@@ -177,7 +174,8 @@ public class SearchModel {
 			System.out.println("SearchModel() - Caught an exception while exeucting the solr query!" +
 								"\ninputQuery was " + searchString + 
 								"\nparams was " + params);
-			//sse.printStackTrace();	    	
+			System.out.println("This is the stacktrace:");
+			sse.printStackTrace();	    	
 	    }
 	    
 	    return searchResults;
@@ -200,20 +198,20 @@ public class SearchModel {
 		System.out.println("----Entering buildQuery-----");
 		System.out.println("searchString:"+searchString);
 		System.out.println("params:"+params);
-	
-		// If the searchString is empty, set it to *:*.
-		if(searchString.trim().length() == 0)
+		
+		// Clean the searchString
+		if (searchString.matches("^\\s*$")) {
+			System.out.println("searchString was empty or only contains spaces. Setting to *:*");
 			searchString = "*:*";
+		} else {
+			// Replacing \w with spaces.
+			System.out.println("Removing illegal characters from search string");
+			searchString = searchString.replaceAll("[^\\w]", " ");
+		}
 		
 		// Fix the paramters such as doctype:avi,exe
 		String[] ps = params.split(";");
-		
-		if (!searchString.matches("\\s*\\*:\\*\\s*")) {
-			System.out.println("Removing illegal characters from searchString.");
-			searchString = searchString.replaceAll("[^A-Za-z0-9 ]","");
-		} else {
-			System.out.println("Not cleaning searchString.");
-		}
+	
 		System.out.println("Result:" + searchString + " length:" + searchString.length());
 		
 		// Create query with main search string
@@ -225,7 +223,7 @@ public class SearchModel {
 			return null;
 		}
 	
-		System.out.println("Traversing params.");
+		System.out.println("Traversing parammeters such as minfilesize, filetype etc.");
 		for (String param: ps) {
 			System.out.println("Current param:" + param);
 			
@@ -261,7 +259,6 @@ public class SearchModel {
 				}
 			}
 		}
-	
 		return solrQuery;
 	}
 
