@@ -34,10 +34,12 @@
 								<h2>Settings</h2>
 							<tr>
 							<tr>
-								<td><label for="path">Path</label></td>
+								<td><label for="path">Path</label>
+									<p>Requires restart</p></td>
 								<td>
 									<input type="text" name="path" id="path"
 									value="<%= request.getAttribute("starboxFolder") %>" />
+									
 								<td>
 									<button class="save-setting button-small button-green">Save</button>
 									<span class="status"></span>
