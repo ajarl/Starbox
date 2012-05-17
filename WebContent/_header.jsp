@@ -10,6 +10,7 @@
       <li class="icon"><a href="/starbox/search/" class="search"></a></li>
       <li class="icon"><a href="/starbox/users/" class="user"></a></li>
       <li class="icon"><a href="/starbox/settings/" class="settings"></a></li>
+      <li><a href="/starbox/help/" class="help">?</a></li>
     </ul>
   </div>
 </div>

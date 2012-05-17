@@ -158,7 +158,7 @@ h3 {
 	padding: 16px 15px 16px 0px;
 }
 
-.menu .search, .user, .settings {
+.menu .search, .user, .settings, .help {
 	height: 24px;
 	width: 40px;
 	display: block;
@@ -173,6 +173,13 @@ h3 {
 }
 .menu .user {
 	background-image: url('images/user.png');
+}
+.menu .help {
+	padding: 10px 0px 0px 0px;
+	text-decoration: none;
+	height: 15px;
+	color: white;
+	font-size: 30px;
 }
 
 .button {

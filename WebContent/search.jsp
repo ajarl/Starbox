@@ -37,8 +37,8 @@
 				<div class="right">
 					<div class="search-inputs">
 						<input type="text" name="query" id="search-query">
-						<div id="search-help" class="websymbol">
-							L
+						<div id="search-help" class="menu.help">
+							?
 						</div>
 						<div class="match-highlight">
 							Match
